@@ -1,0 +1,13 @@
+{
+  "name": "my-robot2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run build --prefix client && npm run start --prefix client",
+    "server": "npm run build --prefix server && npm run start --prefix server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
