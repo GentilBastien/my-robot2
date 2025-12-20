@@ -1,3 +1,10 @@
+# Global ignores
+node_modules
+
+# Shared ignores
+shared/dist
+shared/node_modules
+
 # Client ignores
 client/dist
 client/node_modules
