@@ -1,11 +1,10 @@
 {
-  "name": "client",
+  "name": "shared",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "types.js",
   "type": "module",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",

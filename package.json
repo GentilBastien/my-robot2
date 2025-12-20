@@ -2,12 +2,26 @@
   "name": "my-robot2",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "module",
   "scripts": {
+    "shared": "npm run build --prefix shared",
     "client": "npm run build --prefix client && npm run start --prefix client",
     "server": "npm run build --prefix server && npm run start --prefix server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.7.4",
+    "@types/node": "^25.0.3",
+    "@types/ws": "^8.18.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
 }
