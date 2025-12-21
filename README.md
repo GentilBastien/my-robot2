@@ -1,5 +1,5 @@
 # MyRobot2
-MyRobot2 est un jeu de combats de robots tour par tour dans un univers de fiction.
+MyRobot2 est un jeu de combats de robots tour par tour dans un univers de fiction (très vraisemblablement Star Wars car lore infini).
 
 ## Principe
 Chaque joueur possède son propre robot. Il est nommé et amélioré à sa guise. Chaque jour, le joueur fait combattre son
