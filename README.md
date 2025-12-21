@@ -31,7 +31,6 @@ Chaque robot possède des statistiques qui définissent ses performances en comb
 - **réduction dégât** Augmente la réduction de dégâts du robot
 - **armure** Augmente l'armure du robot
 - **vitesse de déplacement** Augmente la portée de déplacement du robot
-- **vitesse d'attaque** Augmente
 
 ## Ressources
 - Surchauffe. Utiliser une compétence engendre de la chaleur. Être en surchauffe paralyse le robot jusqu'à dissipation complète de la chaleur
@@ -40,7 +39,7 @@ Chaque robot possède des statistiques qui définissent ses performances en comb
 ## Types de dégâts
 - Énergétique : dégâts de base
 - Ionique : dégâts qui ignorent les boucliers s'il y en a
-- EMP : dégâts qui bloquent les compétences du robot ennemi
+- EMP : dégâts qui bloquent les compétences du robot ennemi (silence)
 - Corrosion : dégâts qui réduisent l'armure du robot
 - Surcharge : dégâts classiques qui ont une chance de faire de plus gros dégâts aléatoirement
 - Feu : dégâts sur la durée

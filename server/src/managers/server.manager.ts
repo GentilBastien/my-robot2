@@ -1,19 +1,30 @@
 import { RawData, WebSocket, WebSocketServer } from 'ws';
 
+export interface ServerManagerConfig {
+  port: number;
+}
+
 export class ServerManager {
   private readonly webSocketServer: WebSocketServer;
-  constructor(webSocketServer: WebSocketServer) {
-    this.webSocketServer = webSocketServer;
+
+  constructor(serverConfig: ServerManagerConfig) {
+    this.webSocketServer = new WebSocketServer({ port: serverConfig.port });
     this.webSocketServer.on('connection', (ws: WebSocket) => this.clientConnected(ws));
+    console.log('WebSocket server running on ws://localhost:8080');
   }
 
   private clientConnected(ws: WebSocket): void {
     console.log('client connected', ws);
-    ws.on('message', (data: RawData) => this.clientSentData(ws, data));
+    ws.on('message', (data: RawData) => this.clientToServer(ws, data));
     ws.on('error', () => this.clientDisconnected());
   }
 
-  private clientSentData(ws: WebSocket, data: RawData): void {
+  private serverToClient(ws: WebSocket, data: string): void {
+    console.log('sent data to client', ws);
+    ws.send(JSON.stringify(data));
+  }
+
+  private clientToServer(ws: WebSocket, data: RawData): void {
     const message: string = data.toString();
     console.log('Received:', message);
   }
@@ -22,20 +33,3 @@ export class ServerManager {
     console.log('Client disconnected');
   }
 }
-
-// wss.on('connection', (ws: WebSocket) => {
-//   console.log('Client connected');
-//
-//   ws.on('message', data => {
-//     const message = data.toString();
-//     console.log('Received:', message);
-//
-//     ws.send(JSON.stringify({ type: 'echo', payload: message }));
-//   });
-//
-//   ws.on('close', () => {
-//     console.log('Client disconnected');
-//   });
-// });
-//
-// console.log('WebSocket server running on ws://localhost:8080');
