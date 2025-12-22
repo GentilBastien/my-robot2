@@ -7,7 +7,7 @@
   "scripts": {
     "test": "vitest run",
     "build": "tsc --project tsconfig.build.json",
-    "start": "node index.ts"
+    "start": "npx tsx src/index.ts"
   },
   "keywords": [],
   "author": "",
