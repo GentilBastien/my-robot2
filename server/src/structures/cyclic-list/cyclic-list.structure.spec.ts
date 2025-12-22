@@ -157,4 +157,80 @@ describe('CyclicListStructure', () => {
     //                          ^
     expect(cyclicList.next()).toBe(robot1);
   });
+
+  test('CyclicList remove item in empty list does nothing', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    //when
+    expect(() => cyclicList.removeItem(robot4));
+  });
+
+  test('CyclicList remove single item in list makes it empty', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    //when
+    expect(cyclicList.next()).toBe(robot1);
+    //then
+    expect(cyclicList.entryPoint).toBe(robot1);
+    cyclicList.removeItem(robot1);
+    expect(() => cyclicList.next()).toThrow(CyclicListError.nextOnEmptyListErrorMessage);
+    expect(cyclicList.entryPoint).toBe(undefined);
+  });
+
+  test('CyclicList remove the current item selected in the cycle queue makes the next one selected', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    cyclicList.insertItem(robot2);
+    cyclicList.insertItem(robot3);
+    cyclicList.insertItem(robot4); // selected because robot 4 has biggest weight
+    //when
+    cyclicList.removeItem(robot4);
+    //then
+    expect(cyclicList.entryPoint).toBe(robot3);
+  });
+
+  test('CyclicList remove any item but the one selected in the cycle queue does not change the selection', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    cyclicList.insertItem(robot2);
+    cyclicList.insertItem(robot3);
+    cyclicList.insertItem(robot4); // selected because robot 4 has biggest weight
+    //when
+    cyclicList.removeItem(robot3); // remove robot 3
+    //then
+    expect(cyclicList.entryPoint).toBe(robot4);
+  });
+
+  test('CyclicList try all next insert and remove', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    expect(cyclicList.entryPoint).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot1);
+    cyclicList.insertItem(robot2);
+    expect(cyclicList.entryPoint).toBe(robot2);
+    expect(cyclicList.next()).toBe(robot2);
+    expect(cyclicList.next()).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot2);
+    cyclicList.insertItem(robot3);
+    expect(cyclicList.entryPoint).toBe(robot3);
+    expect(cyclicList.next()).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot3);
+    cyclicList.removeItem(robot3);
+    expect(cyclicList.entryPoint).toBe(robot2);
+    expect(cyclicList.next()).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot2);
+    expect(cyclicList.next()).toBe(robot1);
+    cyclicList.insertItem(robot4);
+    expect(cyclicList.entryPoint).toBe(robot4);
+    expect(cyclicList.next()).toBe(robot4);
+    cyclicList.removeItem(robot2);
+    expect(cyclicList.next()).toBe(robot1);
+    expect(cyclicList.next()).toBe(robot4);
+    expect(cyclicList.next()).toBe(robot1);
+  });
 });

@@ -33,6 +33,12 @@ export interface CyclicListStructureInterface<T extends Weight> {
   insertItem(item: T): void;
 
   /**
+   *
+   * @param item
+   */
+  removeItem(item: T): void;
+
+  /**
    * Advances the internal cursor and returns the next item in the list.
    *
    * Because the list is cyclic, calling this method repeatedly will
