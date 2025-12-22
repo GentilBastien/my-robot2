@@ -21,10 +21,23 @@ describe('CyclicListStructure', () => {
   const robot3 = new ComparableRobot('jade', 12);
   const robot4 = new ComparableRobot('bast', 8);
 
-  test('isCyclicListSorted', () => {
+  test('CyclicList sorted in decreasing order', () => {
     //given
     const cyclicList: CyclicListStructure<ComparableRobot> = new CyclicListStructure([robot1, robot2, robot3, robot4]);
     //then
     expect(cyclicList.items).toStrictEqual([robot3, robot4, robot1, robot2]);
+  });
+
+  test('CyclicList next item and cycles 10 times in a row', () => {
+    //given
+    const nIterationsForTest = 10;
+    const cyclicList: CyclicListStructure<ComparableRobot> = new CyclicListStructure([robot1, robot2, robot3, robot4]);
+    //then
+    for (let cycle = 0; cycle < nIterationsForTest; cycle++) {
+      expect(cyclicList.next()).toStrictEqual(robot3);
+      expect(cyclicList.next()).toStrictEqual(robot4);
+      expect(cyclicList.next()).toStrictEqual(robot1);
+      expect(cyclicList.next()).toStrictEqual(robot2);
+    }
   });
 });

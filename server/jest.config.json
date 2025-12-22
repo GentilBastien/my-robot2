@@ -1,9 +1,16 @@
 {
-  "preset": "ts-jest",
   "testEnvironment": "node",
-  "roots": ["<rootDir>/src"],
-  "moduleFileExtensions": ["ts", "js", "json"],
-  "clearMocks": true,
+  "testMatch": ["**/*.spec.ts"],
   "extensionsToTreatAsEsm": [".ts"],
-  "testMatch": ["**/*.spec.ts"]
+  "transform": {
+    "^.+\\.ts?$": [
+      "ts-jest",
+      {
+        "useESM": true,
+        "tsconfig": "tsconfig.json"
+      }
+    ]
+  },
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "clearMocks": true
 }

@@ -4,6 +4,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "test": "npm run test --prefix server",
     "shared": "npm run build --prefix shared",
     "client": "npm run build --prefix client && npm run start --prefix client",
     "server": "npm run build --prefix server && npm run start --prefix server"
