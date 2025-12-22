@@ -1,4 +1,4 @@
-export { StatisticsEnum } from './types/statistics.enum.ts';
-export { Robot, ComparableRobot } from './types/robot.ts';
-export { Comparable } from './types/comparable.ts';
-export { AttributesEnum } from './types/attributes.enum.ts';
+export { StatisticsEnum } from './types/statistics.enum';
+export { Robot, ComparableRobot } from './types/robot';
+export { Comparable } from './types/comparable';
+export { AttributesEnum } from './types/attributes.enum';

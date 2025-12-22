@@ -1,4 +1,4 @@
-import { StatisticsEnum } from 'shared/dist/types/statistics.enum.js';
+import { StatisticsEnum } from 'shared';
 
 export class StatisticsManager {
   private statisticsMap = new Map<StatisticsEnum, number>([

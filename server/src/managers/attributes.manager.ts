@@ -1,4 +1,4 @@
-import { AttributesEnum } from 'shared/dist/index.js';
+import { AttributesEnum } from 'shared';
 
 export class AttributesManager {
   private attributesMap = new Map<AttributesEnum, number>([

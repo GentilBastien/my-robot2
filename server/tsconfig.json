@@ -2,12 +2,15 @@
   "compilerOptions": {
     "isolatedModules": true,
     "target": "ES2020",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "outDir": "dist",
     "rootDir": "src",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "shared": ["../shared/src"]
+    }
   },
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src", "../shared/src"]
 }
