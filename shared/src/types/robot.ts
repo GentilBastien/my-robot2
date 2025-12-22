@@ -1,7 +1,3 @@
-import { Comparable } from './weight.ts';
-
-export type ComparableRobot = Robot & Comparable<Robot>;
-
 export type Robot = {
   name: string;
 

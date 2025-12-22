@@ -19,10 +19,7 @@
   },
   "overrides": [
     {
-      "files": ["**/*.spec.ts"],
-      "env": {
-        "jest": true
-      }
+      "files": ["**/*.spec.ts"]
     }
   ]
 }
