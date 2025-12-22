@@ -1,4 +1,4 @@
 export { StatisticsEnum } from './types/statistics.enum';
 export { Robot, ComparableRobot } from './types/robot';
-export { Comparable } from './types/comparable';
+export { Weight } from './types/weight.ts';
 export { AttributesEnum } from './types/attributes.enum';

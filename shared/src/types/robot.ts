@@ -1,4 +1,4 @@
-import { Comparable } from './comparable.js';
+import { Comparable } from './weight.ts';
 
 export type ComparableRobot = Robot & Comparable<Robot>;
 
