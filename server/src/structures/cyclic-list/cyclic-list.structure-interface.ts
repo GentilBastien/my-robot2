@@ -34,7 +34,17 @@ export interface CyclicListStructureInterface<T extends Weight> {
 
   /**
    * Remove a specific item from the cycle list.
+   *
+   * If the item removed was pointed by the internal cursor, the next one
+   * in the list is selected.
+   *
+   * If there is no item in the list, the methods does nothing. If the list
+   * is non-empty and the item not found, an exception is thrown. If the
+   * item removed is the heaviest item in the list, the next one becomes the
+   * new heaviest item in the list (as the first has been removed).
+   *
    * @param item
+   * @throws {Error} If the item is not found in a non-empty list.
    */
   removeItem(item: T): void;
 
