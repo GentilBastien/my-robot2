@@ -1,4 +1,8 @@
-export interface Robot {
+import { Comparable } from './comparable.js';
+
+export type ComparableRobot = Robot & Comparable<Robot>;
+
+export type Robot = {
   name: string;
 
   x: number;
@@ -30,4 +34,4 @@ export interface Robot {
   regenMana: number;
   energyModules: number;
   overheating: number;
-}
+};

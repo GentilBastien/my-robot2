@@ -1,13 +1,13 @@
-import { AttributesEnum } from 'shared/dist/types/attributes.enum.js';
+import { AttributesEnum } from 'shared/dist/index.js';
 
 export class AttributesManager {
   private attributesMap = new Map<AttributesEnum, number>([
-    [AttributesEnum.POW, 8],
-    [AttributesEnum.MOB, 8],
-    [AttributesEnum.CHS, 8],
-    [AttributesEnum.CPU, 8],
-    [AttributesEnum.ENE, 8],
-    [AttributesEnum.INTF, 8],
+    [AttributesEnum.POW, 0],
+    [AttributesEnum.MOB, 0],
+    [AttributesEnum.CHS, 0],
+    [AttributesEnum.CPU, 0],
+    [AttributesEnum.ENE, 0],
+    [AttributesEnum.INTF, 0],
   ]);
 
   public getModifier(attr: AttributesEnum): number {
@@ -16,5 +16,12 @@ export class AttributesManager {
 
   public setPoint(attr: AttributesEnum, value: number): void {
     this.attributesMap.set(attr, value);
+  }
+
+  public addPoint(attr: AttributesEnum, value: number): void {
+    const oldValue = this.attributesMap.get(attr);
+    if (oldValue !== undefined) {
+      this.attributesMap.set(attr, oldValue + value);
+    }
   }
 }

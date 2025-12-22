@@ -14,6 +14,15 @@
     }
   },
   "rules": {
+    "no-unused-vars": "off"
     // Optional: Add extra linting rules if required
-  }
+  },
+  "overrides": [
+    {
+      "files": ["**/*.spec.ts"],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
