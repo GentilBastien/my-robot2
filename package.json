@@ -4,25 +4,26 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm run test --prefix server",
-    "shared": "npm run build --prefix shared",
-    "client": "npm run build --prefix client && npm run start --prefix client",
-    "server": "npm run build --prefix server && npm run start --prefix server"
+//    "test": "npm run test --prefix server",
+//    "shared": "npm run build --prefix shared",
+//    "client": "npm run build --prefix client && npm run start --prefix client",
+//    "server": "npm run build --prefix server && npm run start --prefix server"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.7.4",
-    "@types/node": "^25.0.3",
-    "@types/ws": "^8.18.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

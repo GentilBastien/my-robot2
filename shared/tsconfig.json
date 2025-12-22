@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist",
+    "moduleResolution": "Node",
+    "target": "ES2020",
     "rootDir": "src",
-    "strict": true,
+    "outDir": "dist",
+    "esModuleInterop": true,
     "declaration": true,
-    "esModuleInterop": true
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "strict": true
   }
 }
