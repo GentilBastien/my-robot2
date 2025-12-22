@@ -33,7 +33,7 @@ export interface CyclicListStructureInterface<T extends Weight> {
   insertItem(item: T): void;
 
   /**
-   *
+   * Remove a specific item from the cycle list.
    * @param item
    */
   removeItem(item: T): void;

@@ -165,6 +165,15 @@ describe('CyclicListStructure', () => {
     expect(() => cyclicList.removeItem(robot4));
   });
 
+  test('CyclicList remove item that does not exist in the list throws error, except if the list is empty', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    //when
+    cyclicList.insertItem(robot1);
+    //then
+    expect(() => cyclicList.removeItem(robot4)).toThrow(CyclicListError.removeNotFoundItemErrorMessage);
+  });
+
   test('CyclicList remove single item in list makes it empty', () => {
     //given
     const cyclicList = new CyclicListStructure<InitiativeRobot>();
