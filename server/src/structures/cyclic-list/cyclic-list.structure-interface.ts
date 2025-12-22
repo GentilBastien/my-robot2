@@ -10,7 +10,14 @@ import { Weight } from 'shared';
  * Inserted items are defined by their weight. Heaviest element are returned
  * first. Calling next to the lightest element of the collection will return
  * the heaviest one.
- *
+ * ```
+ *  ┌───────────┐                 ┌───────────┐                ┌───────────┐
+ *  │  Item A   │ ----next------> │  Item B   │ ----next-----> │  Item C   │
+ *  │ (weight)  │ <---previous--- │ (weight)  │ <---previous-- │ (weight)  │
+ *  └──▲────────┘                 └───────────┘                └──▲────────┘
+ *     │     └──────────────────────previous──────────────────────┘     │
+ *     └───────────────────────────────next─────────────────────────────┘
+ * ```
  * @typeParam T - The item type stored in the list. Must implement the weight
  * interface
  */

@@ -71,6 +71,30 @@ describe('CyclicListStructure', () => {
     expect(cyclicList.entryPoint).toBe(robot3);
   });
 
+  test('CyclicList next cycles correctly over several iterations with a single item', () => {
+    //given
+    const nIterations = 10;
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    //then
+    for (let i = 0; i < nIterations; i++) {
+      expect(cyclicList.next()).toBe(robot1);
+    }
+  });
+
+  test('CyclicList next cycles correctly over several iterations with two items', () => {
+    //given
+    const nIterations = 10;
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1);
+    cyclicList.insertItem(robot2);
+    //then
+    for (let i = 0; i < nIterations; i++) {
+      expect(cyclicList.next()).toBe(robot2);
+      expect(cyclicList.next()).toBe(robot1);
+    }
+  });
+
   test('CyclicList next cycles correctly over several iterations', () => {
     //given
     const nIterations = 10;
@@ -93,5 +117,44 @@ describe('CyclicListStructure', () => {
     const cyclicList = new CyclicListStructure<InitiativeRobot>();
     //then
     expect(() => cyclicList.next()).toThrow(CyclicListError.nextOnEmptyListErrorMessage);
+  });
+
+  test('CyclicList next cycles correctly when inserting elements', () => {
+    //given
+    const cyclicList = new CyclicListStructure<InitiativeRobot>();
+    cyclicList.insertItem(robot1); // [robot1]
+    // [robot1]
+    //  ^
+    expect(cyclicList.next()).toBe(robot1);
+    cyclicList.insertItem(robot2); // [robot2, robot1]
+    // [robot2, robot1]
+    //  ^
+    expect(cyclicList.next()).toBe(robot2);
+    cyclicList.insertItem(robot3); // [robot3, robot2, robot1]
+    // [robot3, robot2, robot1]
+    //                  ^
+    expect(cyclicList.next()).toBe(robot1);
+    // [robot3, robot2, robot1]
+    //  ^
+    expect(cyclicList.next()).toBe(robot3);
+    // [robot3, robot2, robot1]
+    //          ^
+    expect(cyclicList.next()).toBe(robot2);
+    cyclicList.insertItem(robot4); // [robot4, robot3, robot2, robot1]
+    // [robot4, robot3, robot2, robot1]
+    //                          ^
+    expect(cyclicList.next()).toBe(robot1);
+    // [robot4, robot3, robot2, robot1]
+    //  ^
+    expect(cyclicList.next()).toBe(robot4);
+    // [robot4, robot3, robot2, robot1]
+    //          ^
+    expect(cyclicList.next()).toBe(robot3);
+    // [robot4, robot3, robot2, robot1]
+    //                  ^
+    expect(cyclicList.next()).toBe(robot2);
+    // [robot4, robot3, robot2, robot1]
+    //                          ^
+    expect(cyclicList.next()).toBe(robot1);
   });
 });
