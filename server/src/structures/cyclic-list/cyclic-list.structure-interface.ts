@@ -44,7 +44,7 @@ export interface CyclicListStructureInterface<T extends Weight> {
    * new heaviest item in the list (as the first has been removed).
    *
    * @param item
-   * @throws {Error} If the item is not found in a non-empty list.
+   * @throws {removeNotFoundItemError} If the item is not found in a non-empty list.
    */
   removeItem(item: T): void;
 
@@ -59,7 +59,7 @@ export interface CyclicListStructureInterface<T extends Weight> {
    * @returns The next item according to the cyclic definition of this
    * structure.
    *
-   * @throws {Error} If the list is empty.
+   * @throws {nextOnEmptyListError} If the list is empty.
    */
   next(): T;
 
