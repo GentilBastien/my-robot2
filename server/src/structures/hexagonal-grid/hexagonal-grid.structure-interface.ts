@@ -18,23 +18,25 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   cells: HexagonalCellStructure<T>[];
 
   /**
-   *
-   * @param start
-   * @param end
+   * Returns the cells that must be crossed to make the shortest path between two cells.
+   * @param start The starting cell.
+   * @param end The ending cell.
    */
   shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[];
 
   /**
-   *
-   * @param start
-   * @param maxCost
+   * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where
+   * an entity can move to, knowing its remaining movement. As a reminder, cells are weighted and every cell
+   * do not have the same weight.
+   * @param start The starting cell.
+   * @param maxCost The maximum cost allowed from the starting cell.
    */
   possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[];
 
   /**
-   *
-   * @param origin
-   * @param radius
+   * Returns the cells adjacent to the origin cell in parameter with a given radius.
+   * @param origin Origin cell.
+   * @param radius The radius.
    */
   getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[];
 }
