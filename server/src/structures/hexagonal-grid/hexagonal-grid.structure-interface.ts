@@ -22,6 +22,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @param coordinates The given coordinates.
    * @throws {invalidCoordinatesError} if given coordinates are invalid (sum of x+y+z different from 0).
    * @throws {noCellFoundError} if no cell have the given coordinate.
+   * @throws {outOfBoundsCoordinatesError} if the given coordinates are off the grid width/height.
    */
   cellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
 

@@ -3,7 +3,6 @@ import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structu
 import { Coordinates, Weight } from 'shared';
 import { HexagonalCellDirectionEnum } from '../hexagonal-cell/hexagonal-cell-direction.enum';
 import { HexagonalGridError } from './hexagonal-grid.error';
-import { HexagonalCellError } from '../hexagonal-cell/hexagonal-cell.error';
 
 export class HexagonalGridStructure<T extends Weight> implements HexagonalGridStructureInterface<T> {
   private readonly _cells: HexagonalCellStructure<T>[];
@@ -30,11 +29,11 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   }
 
   public cellAt(coordinates: Coordinates): HexagonalCellStructure<T> {
-    if (coordinates.x + coordinates.y + coordinates.z !== 0) {
-      throw HexagonalCellError.invalidCoordinatesError;
+    if (coordinates.x > this._width - 1 || coordinates.y > this._height - 1) {
+      throw HexagonalGridError.outOfBoundsCoordinatesError;
     }
     const found: HexagonalCellStructure<T> | undefined = this._cells.find(cell => cell.isLocatedAt(coordinates));
-    if (!found) throw new HexagonalGridError();
+    if (!found) throw HexagonalGridError.noCellFoundError;
     return found;
   }
 

@@ -6,11 +6,13 @@ describe('HexagonalGridStructure', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
     //when
-    const expectedCoordinates = { x: 2, y: 2, z: -4 };
+    const expectedCoordinates = { x: -1, y: 1, z: 0 };
     const result = grid.cellAt(expectedCoordinates);
     //then
     expect(result.coordinates).toStrictEqual(expectedCoordinates);
   });
+
+  //add tests for cellAt, includes all the errors
 
   test('HexagonalGrid setAllCoordinates with any widths or heights', () => {
     const testGridWidthHeight = (width: number, height: number) => {
