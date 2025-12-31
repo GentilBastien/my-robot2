@@ -53,6 +53,13 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   hasSameLocationWith(otherCell: HexagonalCellStructure<T>): boolean;
 
   /**
+   * Returns true if the given coordinates are this cell's one.
+   * @param coordinates Given coordinates
+   * @throws {invalidCoordinatesError} if given coordinates are invalid (sum of x+y+z different from 0).
+   */
+  isLocatedAt(coordinates: Coordinates): boolean;
+
+  /**
    * Returns true if the cell in parameter is adjacent to this cell.
    * @param otherCell The cell to text this cell with.
    */

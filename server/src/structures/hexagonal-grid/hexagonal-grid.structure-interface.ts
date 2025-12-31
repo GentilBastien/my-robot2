@@ -1,5 +1,5 @@
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
-import { Weight } from 'shared';
+import { Coordinates, Weight } from 'shared';
 
 export interface HexagonalGridStructureInterface<T extends Weight> {
   /**
@@ -16,6 +16,14 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * The {@link HexagonalCellStructure} cells of the map.
    */
   cells: HexagonalCellStructure<T>[];
+
+  /**
+   * Returns the cell at the given coordinates.
+   * @param coordinates The given coordinates.
+   * @throws {invalidCoordinatesError} if given coordinates are invalid (sum of x+y+z different from 0).
+   * @throws {noCellFoundError} if no cell have the given coordinate.
+   */
+  cellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
 
   /**
    * Returns the cells that must be crossed to make the shortest path between two cells.

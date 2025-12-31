@@ -78,6 +78,13 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return this._x === otherCell._x && this._y === otherCell._y;
   }
 
+  public isLocatedAt(coordinates: Coordinates): boolean {
+    if (coordinates.x + coordinates.y + coordinates.z !== 0) {
+      throw HexagonalCellError.invalidCoordinatesError;
+    }
+    return this._x === coordinates.x && this._y === coordinates.y;
+  }
+
   public isAdjacentTo(otherCell: HexagonalCellStructure<T>): boolean {
     return Math.abs(this._x - otherCell._x) + Math.abs(this._y - otherCell._y) + Math.abs(this.z - otherCell.z) === 2;
   }

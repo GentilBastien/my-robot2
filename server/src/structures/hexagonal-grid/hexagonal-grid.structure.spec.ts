@@ -2,6 +2,16 @@ import { describe, expect, test } from 'vitest';
 import { HexagonalGridStructure } from './hexagonal-grid.structure';
 
 describe('HexagonalGridStructure', () => {
+  test('HexagonalGrid get cells at specified coordinates', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    //when
+    const expectedCoordinates = { x: 2, y: 2, z: -4 };
+    const result = grid.cellAt(expectedCoordinates);
+    //then
+    expect(result.coordinates).toStrictEqual(expectedCoordinates);
+  });
+
   test('HexagonalGrid setAllCoordinates with any widths or heights', () => {
     const testGridWidthHeight = (width: number, height: number) => {
       const grid = new HexagonalGridStructure(width, height);
@@ -28,4 +38,12 @@ describe('HexagonalGridStructure', () => {
       }
     }
   });
+
+  // test('HexagonalGrid get cells in radius of origin (top left)', () => {
+  //   //given
+  //   const grid = new HexagonalGridStructure(30, 30);
+  //   //when
+  //   const result = grid.getCellsInRadius();
+  //   //then
+  // });
 });

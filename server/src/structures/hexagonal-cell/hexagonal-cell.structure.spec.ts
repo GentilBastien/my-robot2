@@ -88,6 +88,28 @@ describe('HexagonalCellStructure', () => {
     expect(land.coordinates).toStrictEqual({ x: 1, y: 0, z: -1 });
   });
 
+  test('HexagonalCell isLocatedAt same locations', () => {
+    //given
+    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const coords = { x: -4, y: 3, z: 1 };
+    land1.setCoordinates({ x: -4, y: 3, z: 1 });
+    //when
+    const result = land1.isLocatedAt(coords);
+    //then
+    expect(result).toBe(true);
+  });
+
+  test('HexagonalCell isLocatedAt different locations', () => {
+    //given
+    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const coords = { x: -4, y: 3, z: 1 };
+    land1.setCoordinates({ x: -4, y: 3, z: 1 });
+    //when
+    const result = land1.isLocatedAt(coords);
+    //then
+    expect(result).toBe(true);
+  });
+
   test('HexagonalCell hasSameLocationWith same locations', () => {
     //given
     const land1 = new HexagonalCellStructure({ weight: 1 });
