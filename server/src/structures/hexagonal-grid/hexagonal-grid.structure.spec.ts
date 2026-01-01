@@ -1,5 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { HexagonalGridStructure } from './hexagonal-grid.structure';
+import { HexagonalCellError } from '../hexagonal-cell/hexagonal-cell.error';
+import { HexagonalGridError } from './hexagonal-grid.error';
 
 describe('HexagonalGridStructure', () => {
   test('HexagonalGrid get cells at specified coordinates', () => {
@@ -12,7 +14,33 @@ describe('HexagonalGridStructure', () => {
     expect(result.coordinates).toStrictEqual(expectedCoordinates);
   });
 
-  //add tests for cellAt, includes all the errors
+  test('HexagonalGrid get cells at invalid coordinates', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    //when
+    const expectedCoordinates = { x: -2, y: 1, z: 0 };
+    //then
+    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalCellError.invalidCoordinatesErrorMessage);
+  });
+
+  test('HexagonalGrid get cells at out of bounds coordinates', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    //when
+    const expectedCoordinates = { x: -20, y: 10, z: 10 };
+    //then
+    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalGridError.outOfBoundsCoordinatesErrorMessage);
+  });
+
+  test('HexagonalGrid get cells at out of bounds coordinates', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    grid.cells.shift(); //remove first cell (x:0 y:0 z:0)
+    //when
+    const expectedCoordinates = { x: 0, y: 0, z: 0 };
+    //then
+    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalGridError.noCellFoundErrorMessage);
+  });
 
   test('HexagonalGrid setAllCoordinates with any widths or heights', () => {
     const testGridWidthHeight = (width: number, height: number) => {
