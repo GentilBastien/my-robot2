@@ -69,11 +69,64 @@ describe('HexagonalGridStructure', () => {
     }
   });
 
-  // test('HexagonalGrid get cells in radius of origin (top left)', () => {
-  //   //given
-  //   const grid = new HexagonalGridStructure(30, 30);
-  //   //when
-  //   const result = grid.getCellsInRadius();
-  //   //then
-  // });
+  test('HexagonalGrid getCellsInRadius radius 0', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    //when
+    const result = grid.getCellsInRadius(origin, 0).map(cell => cell.coordinates);
+    const expected = [{ x: 1, y: 2, z: -3 }];
+    //then
+    expect(result).toEqual(expect.arrayContaining(expected));
+    expect(result).toHaveLength(expected.length);
+  });
+
+  test('HexagonalGrid getCellsInRadius radius 1', () => {
+    //given
+    const grid = new HexagonalGridStructure(10, 10);
+    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    //when
+    const result = grid.getCellsInRadius(origin, 1).map(cell => cell.coordinates);
+    const expected = [
+      { x: 1, y: 1, z: -2 },
+      { x: 2, y: 1, z: -3 },
+      { x: 2, y: 2, z: -4 },
+      { x: 1, y: 2, z: -3 },
+      { x: 1, y: 3, z: -4 },
+      { x: 0, y: 3, z: -3 },
+      { x: 0, y: 2, z: -2 },
+    ];
+    //then
+    expect(result).toEqual(expect.arrayContaining(expected));
+    expect(result).toHaveLength(expected.length);
+  });
+
+  test('HexagonalGrid getCellsInRadius radius 2 but it is cropped', () => {
+    //given
+    const grid = new HexagonalGridStructure(5, 4);
+    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    //when
+    const result = grid.getCellsInRadius(origin, 2).map(cell => cell.coordinates);
+    const expected = [
+      { x: 2, y: 0, z: -2 },
+      { x: 3, y: 0, z: -3 },
+      { x: 3, y: 1, z: -4 },
+      { x: 3, y: 2, z: -5 },
+      { x: 1, y: 0, z: -1 },
+      { x: 2, y: 3, z: -5 },
+      { x: 0, y: 1, z: -1 },
+      { x: -1, y: 2, z: -1 },
+      { x: -1, y: 3, z: -2 },
+      { x: 1, y: 1, z: -2 },
+      { x: 2, y: 1, z: -3 },
+      { x: 2, y: 2, z: -4 },
+      { x: 1, y: 2, z: -3 },
+      { x: 1, y: 3, z: -4 },
+      { x: 0, y: 3, z: -3 },
+      { x: 0, y: 2, z: -2 },
+    ];
+    //then
+    expect(result).toEqual(expect.arrayContaining(expected));
+    expect(result).toHaveLength(expected.length);
+  });
 });

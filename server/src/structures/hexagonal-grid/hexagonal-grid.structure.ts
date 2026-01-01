@@ -38,12 +38,16 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   }
 
   public getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[] {
-    return this._cells.filter(
-      cell =>
-        Math.abs(origin.x - cell.x) <= radius &&
-        Math.abs(origin.y - cell.y) <= radius &&
-        Math.abs(origin.z - cell.z) <= radius
-    );
+    if (radius === 0) {
+      return [origin];
+    } else {
+      return this._cells.filter(
+        cell =>
+          Math.abs(origin.x - cell.x) <= radius &&
+          Math.abs(origin.y - cell.y) <= radius &&
+          Math.abs(origin.z - cell.z) <= radius
+      );
+    }
   }
 
   public possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[] {

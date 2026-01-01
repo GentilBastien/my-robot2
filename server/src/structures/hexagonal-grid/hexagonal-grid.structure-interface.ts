@@ -27,11 +27,14 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   cellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
 
   /**
-   * Returns the cells that must be crossed to make the shortest path between two cells.
-   * @param start The starting cell.
-   * @param end The ending cell.
+   * Returns the cells adjacent to the origin cell in parameter with a given radius. If the origin cell was
+   * on the grid borders, only the concerned cells are returned. Just note that it does not always return a
+   * 6 length array. The origin cell is always returned. Radius 0 will return a 1 length array containing the
+   * origin cell only.
+   * @param origin Origin cell.
+   * @param radius The radius.
    */
-  shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[];
+  getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[];
 
   /**
    * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where
@@ -43,9 +46,9 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[];
 
   /**
-   * Returns the cells adjacent to the origin cell in parameter with a given radius.
-   * @param origin Origin cell.
-   * @param radius The radius.
+   * Returns the cells that must be crossed to make the shortest path between two cells.
+   * @param start The starting cell.
+   * @param end The ending cell.
    */
-  getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[];
+  shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[];
 }
