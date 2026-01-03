@@ -2,6 +2,9 @@ import { describe, expect, test } from 'vitest';
 import { HexagonalGridStructure } from './hexagonal-grid.structure';
 import { HexagonalCellError } from '../hexagonal-cell/hexagonal-cell.error';
 import { HexagonalGridError } from './hexagonal-grid.error';
+import { Weight } from 'shared';
+
+type Land = Weight & { landType: number };
 
 describe('HexagonalGridStructure', () => {
   test('HexagonalGrid get cells at specified coordinates', () => {
@@ -9,7 +12,7 @@ describe('HexagonalGridStructure', () => {
     const grid = new HexagonalGridStructure(10, 10);
     //when
     const expectedCoordinates = { x: -1, y: 1, z: 0 };
-    const result = grid.cellAt(expectedCoordinates);
+    const result = grid.getCellAt(expectedCoordinates);
     //then
     expect(result.coordinates).toStrictEqual(expectedCoordinates);
   });
@@ -20,7 +23,7 @@ describe('HexagonalGridStructure', () => {
     //when
     const expectedCoordinates = { x: -2, y: 1, z: 0 };
     //then
-    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalCellError.invalidCoordinatesErrorMessage);
+    expect(() => grid.getCellAt(expectedCoordinates)).toThrow(HexagonalCellError.invalidCoordinatesErrorMessage);
   });
 
   test('HexagonalGrid get cells at out of bounds coordinates', () => {
@@ -29,7 +32,7 @@ describe('HexagonalGridStructure', () => {
     //when
     const expectedCoordinates = { x: -20, y: 10, z: 10 };
     //then
-    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalGridError.outOfBoundsCoordinatesErrorMessage);
+    expect(() => grid.getCellAt(expectedCoordinates)).toThrow(HexagonalGridError.outOfBoundsCoordinatesErrorMessage);
   });
 
   test('HexagonalGrid get cells at out of bounds coordinates', () => {
@@ -39,7 +42,16 @@ describe('HexagonalGridStructure', () => {
     //when
     const expectedCoordinates = { x: 0, y: 0, z: 0 };
     //then
-    expect(() => grid.cellAt(expectedCoordinates)).toThrow(HexagonalGridError.noCellFoundErrorMessage);
+    expect(() => grid.getCellAt(expectedCoordinates)).toThrow(HexagonalGridError.noCellFoundErrorMessage);
+  });
+
+  test('HexagonalGrid setAllCellItems throws if items length is not equal to width*height', () => {
+    //given
+    const grid = new HexagonalGridStructure<Land>(8, 18);
+    //when
+    const expectedItems = Array.from({ length: 7 * 18 }).fill({ weight: 1, landType: 1 }) as Land[];
+    //then
+    expect(() => grid.setAllCellItems(expectedItems)).toThrow(HexagonalGridError.invalidItemSizeError);
   });
 
   test('HexagonalGrid setAllCoordinates with any widths or heights', () => {
@@ -72,7 +84,7 @@ describe('HexagonalGridStructure', () => {
   test('HexagonalGrid getCellsInRadius radius 0', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
-    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
     const result = grid.getCellsInRadius(origin, 0).map(cell => cell.coordinates);
     const expected = [{ x: 1, y: 2, z: -3 }];
@@ -84,7 +96,7 @@ describe('HexagonalGridStructure', () => {
   test('HexagonalGrid getCellsInRadius radius 1', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
-    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
     const result = grid.getCellsInRadius(origin, 1).map(cell => cell.coordinates);
     const expected = [
@@ -104,7 +116,7 @@ describe('HexagonalGridStructure', () => {
   test('HexagonalGrid getCellsInRadius radius 2 but it is cropped', () => {
     //given
     const grid = new HexagonalGridStructure(5, 4);
-    const origin = grid.cellAt({ x: 1, y: 2, z: -3 });
+    const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
     const result = grid.getCellsInRadius(origin, 2).map(cell => cell.coordinates);
     const expected = [
@@ -129,4 +141,6 @@ describe('HexagonalGridStructure', () => {
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
   });
+
+  test('HexagonalGrid possibleTargets', () => {});
 });

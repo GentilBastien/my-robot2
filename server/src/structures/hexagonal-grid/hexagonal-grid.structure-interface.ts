@@ -24,7 +24,25 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @throws {noCellFoundError} if no cell have the given coordinates.
    * @throws {outOfBoundsCoordinatesError} if the given coordinates are off the grid width/height.
    */
-  cellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
+  getCellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
+
+  /**
+   * Set an item in the cell located at the given coordinates. Returns the previous item in it.
+   * @param coordinates The coordinates to get a single cell.
+   * @param item The new item to set.
+   * @throws {invalidCoordinatesError} if given coordinates are invalid (sum of x+y+z different from 0).
+   * @throws {noCellFoundError} if no cell have the given coordinates.
+   * @throws {outOfBoundsCoordinatesError} if the given coordinates are off the grid width/height.
+   */
+  setCellAt(coordinates: Coordinates, item: T | null): T | null;
+
+  /**
+   * Set all cells with an item.
+   * @param items The items to set.
+   * @throws {invalidItemSizeError} if length of the given parameter is different from
+   * grid's {@linkcode width} * {@linkcode height}
+   */
+  setAllCellItems(items: T[]): void;
 
   /**
    * Returns the cells adjacent to the origin cell in parameter with a given radius. If the origin cell was

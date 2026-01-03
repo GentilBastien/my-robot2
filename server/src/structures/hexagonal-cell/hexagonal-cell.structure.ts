@@ -4,7 +4,7 @@ import { HexagonalCellError } from './hexagonal-cell.error';
 import { Coordinates, EqualsUtils, Weight } from 'shared';
 
 export class HexagonalCellStructure<T extends Weight> implements HexagonalCellStructureInterface<T> {
-  private readonly _item: T | null;
+  private _item: T | null;
   private _x: number = 0;
   private _y: number = 0;
   // z = -x - y, no need to define it
@@ -93,6 +93,10 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return Math.sqrt(
       Math.pow(this._x - otherCell._x, 2) + Math.pow(this._y - otherCell._y, 2) + Math.pow(this.z - otherCell.z, 2)
     );
+  }
+
+  public setItem(item: T | null): void {
+    this._item = item;
   }
 
   public hasSameItem(otherCell: HexagonalCellStructure<T>): boolean {

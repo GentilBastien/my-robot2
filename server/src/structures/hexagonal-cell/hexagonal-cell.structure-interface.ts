@@ -72,6 +72,12 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   euclideanDistanceFrom(otherCell: HexagonalCellStructure<T>): number;
 
   /**
+   * A setter for the item wrapped in this hexagonal cell.
+   * @param item The item to set.
+   */
+  setItem(item: T | null): void;
+
+  /**
    * Returns true if the cell in parameter has the same item wrapped in it as this cell.
    * @param otherCell The cell to compare this cell with.
    */

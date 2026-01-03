@@ -28,13 +28,37 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     return this._height;
   }
 
-  public cellAt(coordinates: Coordinates): HexagonalCellStructure<T> {
+  public getCellAt(coordinates: Coordinates): HexagonalCellStructure<T> {
     if (coordinates.x > this._width - 1 || coordinates.y > this._height - 1) {
       throw HexagonalGridError.outOfBoundsCoordinatesError;
     }
     const found: HexagonalCellStructure<T> | undefined = this._cells.find(cell => cell.isLocatedAt(coordinates));
     if (!found) throw HexagonalGridError.noCellFoundError;
     return found;
+  }
+
+  public setCellAt(coordinates: Coordinates, item: T | null): T | null {
+    if (coordinates.x > this._width - 1 || coordinates.y > this._height - 1) {
+      throw HexagonalGridError.outOfBoundsCoordinatesError;
+    }
+    const found: HexagonalCellStructure<T> | undefined = this._cells.find(cell => cell.isLocatedAt(coordinates));
+    if (!found) throw HexagonalGridError.noCellFoundError;
+    let previousItem = null;
+    if (found.hasItem()) {
+      previousItem = found.getItemOrThrow();
+    }
+    found.setItem(item);
+    return previousItem;
+  }
+
+  public setAllCellItems(items: T[]): void {
+    const totalCells: number = this._width * this._height;
+    if (items.length !== totalCells) {
+      throw HexagonalGridError.invalidItemSizeError;
+    }
+    for (let index = 0; index < totalCells; index++) {
+      this._cells[index].setItem(items[index]);
+    }
   }
 
   public getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[] {
