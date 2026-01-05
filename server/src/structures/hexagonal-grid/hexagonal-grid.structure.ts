@@ -61,24 +61,28 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     }
   }
 
-  public getCellsInRadius(origin: HexagonalCellStructure<T>, radius: number): HexagonalCellStructure<T>[] {
+  public getCellsInRadius(
+    origin: HexagonalCellStructure<T>,
+    radius: number,
+    includeOrigin: boolean = true
+  ): HexagonalCellStructure<T>[] {
     if (radius === 0) {
-      return [origin];
+      return includeOrigin ? [origin] : [];
     } else {
-      return this._cells.filter(
-        cell =>
-          Math.abs(origin.x - cell.x) <= radius &&
-          Math.abs(origin.y - cell.y) <= radius &&
-          Math.abs(origin.z - cell.z) <= radius
+      return this._cells.filter(cell =>
+        cell.hasSameLocationWith(origin)
+          ? includeOrigin
+          : Math.abs(origin.x - cell.x) <= radius &&
+            Math.abs(origin.y - cell.y) <= radius &&
+            Math.abs(origin.z - cell.z) <= radius
       );
     }
   }
 
   public possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[] {
-    const queue: HexagonalCellStructure<T>[] = [start];
-    const visited: HexagonalCellStructure<T>[] = [];
-    this.possibleTargets_NewMove(queue, visited, 0, maxCost);
-    return visited;
+    const visitedPaths: HexagonalCellStructure<T>[][] = [];
+    this.possibleTargets_NewMove(start, visitedPaths, -start.weight(), maxCost);
+    return visitedPaths.map(a => a.pop()!).filter((item, index, self) => self.indexOf(item) === index);
   }
 
   public shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[] {
@@ -86,23 +90,20 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   }
 
   private possibleTargets_NewMove(
-    queue: HexagonalCellStructure<T>[],
-    visited: HexagonalCellStructure<T>[],
+    cellCandidate: HexagonalCellStructure<T>,
+    visitedPaths: HexagonalCellStructure<T>[][],
     costFromStart: number,
-    maxCostFromStart: number
+    maxCostFromStart: number,
+    pathToCandidate?: HexagonalCellStructure<T>[] = []
   ): void {
-    if (queue.length === 0) return;
-    const cellCandidate: HexagonalCellStructure<T> = queue.shift()!;
     const costCandidate: number = costFromStart + cellCandidate.weight();
     if (costCandidate <= maxCostFromStart) {
       //candidate is valid, add it in the valid cells and check its adjacent cells.
-      visited.push(cellCandidate);
-      this.getCellsInRadius(cellCandidate, 1)
-        .filter(adjacentCell => !visited.includes(adjacentCell))
-        .forEach(adjacentCell => {
-          queue.push(adjacentCell);
-          this.possibleTargets_NewMove(queue, visited, costFromStart, maxCostFromStart);
-        });
+      const path = pathToCandidate.concat(cellCandidate);
+      visitedPaths.push(path);
+      this.getCellsInRadius(cellCandidate, 1, false).forEach(adjacentCell =>
+        this.possibleTargets_NewMove(adjacentCell, visitedPaths, costCandidate, maxCostFromStart, path)
+      );
     }
   }
 

@@ -5,3 +5,4 @@ export { Coordinates } from './types/coordinates';
 export { AttributesEnum } from './types/attributes.enum';
 
 export { EqualsUtils } from './utils/equals.utils';
+export { ArrayUtils } from './utils/array.utils';
