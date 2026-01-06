@@ -89,19 +89,12 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   }
 
   public shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate {
-    const aStarComparator: Comparator<HexagonalCellStructure<T>> = {
-      compare(cell1: HexagonalCellStructure<T>, cell2: HexagonalCellStructure<T>): number {
-        const weight1 = cell1.weightFromStart + cell1.weightFromTarget;
-        const weight2 = cell2.weightFromStart + cell2.weightFromTarget;
-        return weight1 - weight2;
-      },
-    };
-    const aStarFromStartComparator: Comparator<HexagonalCellStructure<T>> = {
+    const cellWeightFromStartComparator: Comparator<HexagonalCellStructure<T>> = {
       compare(cell1: HexagonalCellStructure<T>, cell2: HexagonalCellStructure<T>): number {
         return cell1.weightFromStart - cell2.weightFromStart;
       },
     };
-    const openList = new PriorityListStructure<HexagonalCellStructure<T>>(aStarComparator);
+    const openList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
     const closedList = new Set<HexagonalCellStructure<T>>();
     openList.add(start);
     while (openList.elements.length > 0) {
@@ -111,14 +104,24 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
       voisins = voisins.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
       voisins.forEach(voisin => {
         voisin.weightFromStart = currentNode.weightFromStart + voisin.weight();
-        voisin.weightFromTarget = voisin.euclideanDistanceFrom(target);
+        voisin.distanceFromTarget = voisin.euclideanDistanceFrom(target);
+        voisin.travelSegments = currentNode.travelSegments + 1;
       });
       openList.addAll(voisins);
     }
-    console.log(closedList);
+    const shortestPath: HexagonalCellStructure<T>[] = [];
+    let currentNodePath = target;
+    while (!currentNodePath.hasSameLocationWith(start)) {
+      shortestPath.push(currentNodePath);
+      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRadius(currentNodePath, 1, false);
+      voisins = voisins.filter(voisin => closedList.has(voisin));
+      const tempList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
+      tempList.addAll(voisins);
+      currentNodePath = tempList.elements[0];
+    }
     return {
-      coordinatesPath: [],
-      cost: 0,
+      coordinatesPath: shortestPath.reverse().map(cell => cell.coordinates),
+      cost: target.weightFromStart,
     };
   }
 

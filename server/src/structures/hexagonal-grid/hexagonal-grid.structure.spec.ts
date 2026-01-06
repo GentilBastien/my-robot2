@@ -513,7 +513,8 @@ describe('HexagonalGridStructure', () => {
   test('HexagonalGrid shortestPath', () => {
     const grid = produceCustomGrid();
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 0, z: 0 });
-    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });
-    grid.shortestPathTo(start, target);
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
+    const result = grid.shortestPathTo(start, target);
+    console.log(result);
   });
 });

@@ -33,7 +33,8 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   weight(): number;
 
   weightFromStart: number;
-  weightFromTarget: number;
+  distanceFromTarget: number;
+  travelSegments: number;
 
   /**
    * Sets this cell's coordinates.

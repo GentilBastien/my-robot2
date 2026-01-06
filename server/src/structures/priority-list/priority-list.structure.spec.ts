@@ -15,7 +15,7 @@ describe('SortedListStructure', () => {
     //when
     sortedList.addAll(['a', 'd', 'c', 'b']);
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b', 'c', 'd']);
   });
 
   test('SortedListStructure addAll #2', () => {
@@ -24,7 +24,7 @@ describe('SortedListStructure', () => {
     //when
     sortedList.addAll(['b', 'c', 'd', 'a']);
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b', 'c', 'd']);
   });
 
   test('SortedListStructure addAll #3', () => {
@@ -33,7 +33,7 @@ describe('SortedListStructure', () => {
     //when
     sortedList.addAll(['a', 'b', 'c', 'd']);
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b', 'c', 'd']);
   });
 
   test('SortedListStructure addAll #3', () => {
@@ -42,7 +42,7 @@ describe('SortedListStructure', () => {
     //when
     sortedList.addAll(['a', 'b', 'c', 'd']);
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b', 'c', 'd']);
   });
 
   test('SortedListStructure add #1', () => {
@@ -54,7 +54,7 @@ describe('SortedListStructure', () => {
     sortedList.add('b');
     sortedList.add('d');
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b', 'c', 'd']);
   });
 
   test('SortedListStructure add #2', () => {
@@ -66,7 +66,7 @@ describe('SortedListStructure', () => {
     sortedList.add('d');
     sortedList.add('c');
     //then
-    expect(sortedList.elements).toStrictEqual(['d', 'c', 'a', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'a', 'c', 'd']);
   });
 
   test('SortedListStructure add #3', () => {
@@ -76,6 +76,6 @@ describe('SortedListStructure', () => {
     sortedList.add('b');
     sortedList.add('a');
     //then
-    expect(sortedList.elements).toStrictEqual(['b', 'a']);
+    expect(sortedList.elements).toStrictEqual(['a', 'b']);
   });
 });

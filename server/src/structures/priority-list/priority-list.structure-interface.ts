@@ -1,7 +1,7 @@
 import { Comparator } from 'shared';
 
 /**
- * A priority list sort its elements in a decreasing order according to a given {@link Comparator}.
+ * A priority list sort its elements in increasing order according to a given {@link Comparator}.
  */
 export interface PriorityListStructureInterface<T> {
   /**
@@ -27,7 +27,7 @@ export interface PriorityListStructureInterface<T> {
   addAll(elems: T[]): void;
 
   /**
-   * Removes and returns the first element (heaviest element according to
+   * Removes and returns the first element (lowest cost element according to
    * the internal sort)
    */
   poll(): T | undefined;
