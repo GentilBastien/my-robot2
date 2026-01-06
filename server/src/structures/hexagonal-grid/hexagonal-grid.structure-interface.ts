@@ -1,5 +1,5 @@
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
-import { Coordinates, Weight } from 'shared';
+import { Coordinates, PathCoordinate, Weight } from 'shared';
 
 export interface HexagonalGridStructureInterface<T extends Weight> {
   /**
@@ -64,18 +64,18 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   ): HexagonalCellStructure<T>[];
 
   /**
-   * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where
-   * an entity can move to, knowing its remaining movement. As a reminder, cells are weighted and every cell
-   * do not have the same weight.
+   * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where an entity can
+   * move to, knowing its remaining movement. As a reminder, cells are weighted and every cell do not have the same
+   * weight.
    * @param start The starting cell.
    * @param maxCost The maximum cost allowed from the starting cell.
    */
-  possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[];
+  possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[];
 
   /**
-   * Returns the cells that must be crossed to make the shortest path between two cells.
+   * Returns the shortest path between two cells.
    * @param start The starting cell.
    * @param end The ending cell.
    */
-  shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[];
+  shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): PathCoordinate;
 }

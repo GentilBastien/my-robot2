@@ -13,13 +13,4 @@
   "requirePragma": false,
   "semi": true,
   "singleAttributePerLine": false,
-  "overrides": [
-    {
-      "files": "*.html",
-      "options": {
-        "parser": "angular",
-        "printWidth": 120
-      }
-    }
-  ]
 }

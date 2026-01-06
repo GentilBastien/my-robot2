@@ -1,6 +1,6 @@
 import { HexagonalGridStructureInterface } from './hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
-import { Coordinates, Weight } from 'shared';
+import { ArrayUtils, Coordinates, PathCoordinate, Weight } from 'shared';
 import { HexagonalCellDirectionEnum } from '../hexagonal-cell/hexagonal-cell-direction.enum';
 import { HexagonalGridError } from './hexagonal-grid.error';
 
@@ -79,27 +79,33 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     }
   }
 
-  public possibleTargets(start: HexagonalCellStructure<T>, maxCost: number): HexagonalCellStructure<T>[] {
-    const visitedPaths: HexagonalCellStructure<T>[][] = [];
+  public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[] {
+    const visitedPaths: PathCoordinate[] = [];
     this.possibleTargets_NewMove(start, visitedPaths, -start.weight(), maxCost);
-    return visitedPaths.map(a => a.pop()!).filter((item, index, self) => self.indexOf(item) === index);
+    return visitedPaths.filter(
+      path => !ArrayUtils.arrayHasDuplicates(path.coordinatesPath, cell => `${cell.x}.${cell.y}.${cell.z}`)
+    );
   }
 
-  public shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): HexagonalCellStructure<T>[] {
-    return [];
+  public shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): PathCoordinate {
+    return { coordinatesPath: [], cost: 0 };
   }
 
   private possibleTargets_NewMove(
     cellCandidate: HexagonalCellStructure<T>,
-    visitedPaths: HexagonalCellStructure<T>[][],
+    visitedPaths: PathCoordinate[],
     costFromStart: number,
     maxCostFromStart: number,
-    pathToCandidate?: HexagonalCellStructure<T>[] = []
+    pathToCandidate?: PathCoordinate
   ): void {
     const costCandidate: number = costFromStart + cellCandidate.weight();
     if (costCandidate <= maxCostFromStart) {
       //candidate is valid, add it in the valid cells and check its adjacent cells.
-      const path = pathToCandidate.concat(cellCandidate);
+      const basePath: Coordinates[] = pathToCandidate?.coordinatesPath ?? [];
+      const path: PathCoordinate = {
+        coordinatesPath: [...basePath, cellCandidate.coordinates],
+        cost: costCandidate,
+      };
       visitedPaths.push(path);
       this.getCellsInRadius(cellCandidate, 1, false).forEach(adjacentCell =>
         this.possibleTargets_NewMove(adjacentCell, visitedPaths, costCandidate, maxCostFromStart, path)

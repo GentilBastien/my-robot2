@@ -250,56 +250,263 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid possibleTargets #1', () => {
+  test('HexagonalGrid possiblePaths #1', () => {
     const grid = produceCustomGrid();
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });
-    const result = grid.possibleTargets(start, 3).map(cell => cell.coordinates);
+    const result = grid.possiblePaths(start, 3).map(path => path.coordinatesPath);
     const expected = [
-      { x: 1, y: 0, z: -1 },
-      { x: 0, y: 0, z: 0 },
-      { x: 2, y: 0, z: -2 },
-      { x: -1, y: 1, z: 0 },
-      { x: -1, y: 2, z: -1 },
-      { x: 0, y: 1, z: -1 },
-      { x: 3, y: 0, z: -3 },
-      { x: 3, y: 1, z: -4 },
-      { x: 1, y: 1, z: -2 },
-      { x: 0, y: 2, z: -2 },
+      [{ x: 1, y: 0, z: -1 }],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+        { x: -1, y: 1, z: 0 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+        { x: -1, y: 1, z: 0 },
+        { x: -1, y: 2, z: -1 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+        { x: 0, y: 1, z: -1 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 2, y: 0, z: -2 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 2, y: 0, z: -2 },
+        { x: 3, y: 0, z: -3 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 2, y: 0, z: -2 },
+        { x: 3, y: 0, z: -3 },
+        { x: 3, y: 1, z: -4 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 2, y: 0, z: -2 },
+        { x: 1, y: 1, z: -2 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 1, z: -1 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 1, z: -1 },
+        { x: 0, y: 0, z: 0 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 1, z: -1 },
+        { x: -1, y: 1, z: 0 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 1, z: -1 },
+        { x: -1, y: 2, z: -1 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 1, z: -1 },
+        { x: 0, y: 2, z: -2 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 1, y: 1, z: -2 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 1, y: 1, z: -2 },
+        { x: 2, y: 0, z: -2 },
+      ],
+      [
+        { x: 1, y: 0, z: -1 },
+        { x: 1, y: 1, z: -2 },
+        { x: 0, y: 2, z: -2 },
+      ],
     ];
+
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid possibleTargets #2', () => {
+  test('HexagonalGrid possiblePaths #2', () => {
     const grid = produceCustomGrid();
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 1, z: -1 });
-    const result = grid.possibleTargets(start, 1).map(cell => cell.coordinates);
+    const result = grid.possiblePaths(start, 1).map(path => path.coordinatesPath);
     const expected = [
-      { x: 1, y: 0, z: -1 },
-      { x: 0, y: 0, z: 0 },
-      { x: -1, y: 1, z: 0 },
-      { x: 0, y: 1, z: -1 },
-      { x: -1, y: 2, z: -1 },
-      { x: 0, y: 2, z: -2 },
+      [{ x: 0, y: 1, z: -1 }],
+      [
+        { x: 0, y: 1, z: -1 },
+        { x: 0, y: 0, z: 0 },
+      ],
+      [
+        { x: 0, y: 1, z: -1 },
+        { x: 1, y: 0, z: -1 },
+      ],
+      [
+        { x: 0, y: 1, z: -1 },
+        { x: -1, y: 1, z: 0 },
+      ],
+      [
+        { x: 0, y: 1, z: -1 },
+        { x: -1, y: 2, z: -1 },
+      ],
+      [
+        { x: 0, y: 1, z: -1 },
+        { x: 0, y: 2, z: -2 },
+      ],
     ];
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid possibleTargets #2', () => {
+  test('HexagonalGrid possiblePaths #3', () => {
     const grid = produceCustomGrid();
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 3, y: 1, z: -4 });
-    const result = grid.possibleTargets(start, 4).map(cell => cell.coordinates);
-    console.log(result);
-    // const expected = [
-    //   { x: 1, y: 0, z: -1 },
-    //   { x: 0, y: 0, z: 0 },
-    //   { x: -1, y: 1, z: 0 },
-    //   { x: 0, y: 1, z: -1 },
-    //   { x: -1, y: 2, z: -1 },
-    //   { x: 0, y: 2, z: -2 },
-    // ];
-    // expect(result).toEqual(expect.arrayContaining(expected));
-    // expect(result).toHaveLength(expected.length);
+    const result = grid.possiblePaths(start, 4).map(path => path.coordinatesPath);
+    const expected = [
+      [{ x: 3, y: 1, z: -4 }],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+        { x: 1, y: 0, z: -1 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+        { x: 1, y: 1, z: -2 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 4, y: 0, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 4, y: 0, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 4, y: 0, z: -4 },
+        { x: 3, y: 0, z: -3 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 4, y: 0, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 1, z: -3 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 2, z: -3 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 3, y: 2, z: -5 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+        { x: 0, y: 3, z: -3 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+        { x: 0, y: 3, z: -3 },
+        { x: 0, y: 2, z: -2 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+        { x: 0, y: 3, z: -3 },
+        { x: -1, y: 3, z: -2 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+        { x: 2, y: 3, z: -5 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 2, y: 3, z: -5 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 2, y: 2, z: -4 },
+        { x: 2, y: 3, z: -5 },
+        { x: 1, y: 3, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 2, z: -5 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 2, z: -5 },
+        { x: 2, y: 2, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 2, z: -5 },
+        { x: 2, y: 2, z: -4 },
+        { x: 1, y: 3, z: -4 },
+      ],
+      [
+        { x: 3, y: 1, z: -4 },
+        { x: 3, y: 2, z: -5 },
+        { x: 2, y: 3, z: -5 },
+      ],
+    ];
+    expect(result).toEqual(expect.arrayContaining(expected));
+    expect(result).toHaveLength(expected.length);
   });
 });
