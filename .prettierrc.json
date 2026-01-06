@@ -12,5 +12,5 @@
   "useTabs": false,
   "requirePragma": false,
   "semi": true,
-  "singleAttributePerLine": false,
+  "singleAttributePerLine": false
 }
