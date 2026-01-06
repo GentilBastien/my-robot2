@@ -31,4 +31,6 @@ export interface PriorityListStructureInterface<T> {
    * the internal sort)
    */
   poll(): T | undefined;
+
+  includes(elem: T): boolean;
 }

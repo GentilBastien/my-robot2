@@ -50,4 +50,8 @@ export class PriorityListStructure<T> implements PriorityListStructureInterface<
   public poll(): T | undefined {
     return this._elems.shift();
   }
+
+  public includes(elem: T): boolean {
+    return this._elems.includes(elem);
+  }
 }

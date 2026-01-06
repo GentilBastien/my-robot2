@@ -75,7 +75,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   /**
    * Returns the shortest path between two cells.
    * @param start The starting cell.
-   * @param end The ending cell.
+   * @param target The target cell.
    */
-  shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): PathCoordinate;
+  shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate;
 }

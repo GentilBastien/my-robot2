@@ -509,4 +509,11 @@ describe('HexagonalGridStructure', () => {
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
   });
+
+  test('HexagonalGrid shortestPath', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 0, z: 0 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });
+    grid.shortestPathTo(start, target);
+  });
 });

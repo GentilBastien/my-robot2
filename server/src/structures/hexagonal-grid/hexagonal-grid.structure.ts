@@ -1,8 +1,9 @@
 import { HexagonalGridStructureInterface } from './hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
-import { ArrayUtils, Coordinates, PathCoordinate, Weight } from 'shared';
+import { ArrayUtils, Comparator, Coordinates, PathCoordinate, Weight } from 'shared';
 import { HexagonalCellDirectionEnum } from '../hexagonal-cell/hexagonal-cell-direction.enum';
 import { HexagonalGridError } from './hexagonal-grid.error';
+import { PriorityListStructure } from '../priority-list/priority-list.structure';
 
 export class HexagonalGridStructure<T extends Weight> implements HexagonalGridStructureInterface<T> {
   private readonly _cells: HexagonalCellStructure<T>[];
@@ -87,8 +88,38 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     );
   }
 
-  public shortestPathTo(start: HexagonalCellStructure<T>, end: HexagonalCellStructure<T>): PathCoordinate {
-    return { coordinatesPath: [], cost: 0 };
+  public shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate {
+    const aStarComparator: Comparator<HexagonalCellStructure<T>> = {
+      compare(cell1: HexagonalCellStructure<T>, cell2: HexagonalCellStructure<T>): number {
+        const weight1 = cell1.weightFromStart + cell1.weightFromTarget;
+        const weight2 = cell2.weightFromStart + cell2.weightFromTarget;
+        return weight1 - weight2;
+      },
+    };
+    const aStarFromStartComparator: Comparator<HexagonalCellStructure<T>> = {
+      compare(cell1: HexagonalCellStructure<T>, cell2: HexagonalCellStructure<T>): number {
+        return cell1.weightFromStart - cell2.weightFromStart;
+      },
+    };
+    const openList = new PriorityListStructure<HexagonalCellStructure<T>>(aStarComparator);
+    const closedList = new Set<HexagonalCellStructure<T>>();
+    openList.add(start);
+    while (openList.elements.length > 0) {
+      const currentNode: HexagonalCellStructure<T> = openList.poll()!;
+      closedList.add(currentNode);
+      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRadius(currentNode, 1, false);
+      voisins = voisins.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
+      voisins.forEach(voisin => {
+        voisin.weightFromStart = currentNode.weightFromStart + voisin.weight();
+        voisin.weightFromTarget = voisin.euclideanDistanceFrom(target);
+      });
+      openList.addAll(voisins);
+    }
+    console.log(closedList);
+    return {
+      coordinatesPath: [],
+      cost: 0,
+    };
   }
 
   private possibleTargets_NewMove(

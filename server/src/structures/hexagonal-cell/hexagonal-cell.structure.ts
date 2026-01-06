@@ -9,6 +9,9 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
   private _y: number = 0;
   // z = -x - y, no need to define it
 
+  public weightFromStart = -1;
+  public weightFromTarget = -1;
+
   constructor(item?: T | null) {
     this._item = item ?? null;
   }
