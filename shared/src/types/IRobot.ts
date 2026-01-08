@@ -1,4 +1,4 @@
-export type Robot = {
+export type IRobot = {
   name: string;
 
   x: number;

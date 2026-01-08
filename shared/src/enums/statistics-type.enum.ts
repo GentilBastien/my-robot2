@@ -1,4 +1,4 @@
-export enum StatisticsEnum {
+export enum StatisticsTypeEnum {
   HP,
   DAMAGE,
   ACCURACY,

@@ -66,7 +66,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   /**
    * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where an entity can
    * move to, knowing its remaining movement. As a reminder, cells are weighted and every cell do not have the same
-   * weight.
+   * weight. Returns null if no path has been found.
    * @param start The starting cell.
    * @param maxCost The maximum cost allowed from the starting cell.
    */
@@ -77,5 +77,5 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @param start The starting cell.
    * @param target The target cell.
    */
-  shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate;
+  shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate | null;
 }

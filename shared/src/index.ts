@@ -1,10 +1,16 @@
-export { StatisticsEnum } from './types/statistics.enum';
-export { Robot } from './types/robot';
+export { StatisticsTypeEnum } from './enums/statistics-type.enum';
+export { AttributesTypeEnum } from './enums/attributes-type.enum';
+export { EffectTypeEnum } from './enums/effect-type.enum';
+export { StateTypeEnum } from './enums/state-type.enum';
+
+export { IRobot } from './types/IRobot';
+export { RobotData } from './types/robot-data';
 export { Weight } from './types/weight';
 export { Coordinates } from './types/coordinates';
-export { AttributesEnum } from './types/attributes.enum';
 export { PathCoordinate } from './types/path-coordinate';
 export { Comparator } from './types/comparator';
+export { EffectModifier } from './types/effect-modifier';
+export { Updatable } from './types/updatable';
 
 export { EqualsUtils } from './utils/equals.utils';
 export { ArrayUtils } from './utils/array.utils';

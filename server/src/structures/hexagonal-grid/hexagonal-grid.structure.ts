@@ -88,7 +88,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     );
   }
 
-  public shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate {
+  public shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate | null {
     const cellWeightFromStartComparator: Comparator<HexagonalCellStructure<T>> = {
       compare(cell1: HexagonalCellStructure<T>, cell2: HexagonalCellStructure<T>): number {
         return cell1.weightFromStart - cell2.weightFromStart;
@@ -118,6 +118,13 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
       const tempList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
       tempList.addAll(voisins);
       currentNodePath = tempList.elements[0];
+      if (currentNodePath === undefined) {
+        return null;
+      }
+      if (currentNodePath.hasSameLocationWith(start)) {
+        shortestPath.push(currentNodePath);
+        break;
+      }
     }
     return {
       coordinatesPath: shortestPath.reverse().map(cell => cell.coordinates),

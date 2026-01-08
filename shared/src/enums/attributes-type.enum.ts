@@ -1,4 +1,4 @@
-export enum AttributesEnum {
+export enum AttributesTypeEnum {
   POW,
   MOB,
   CHS,

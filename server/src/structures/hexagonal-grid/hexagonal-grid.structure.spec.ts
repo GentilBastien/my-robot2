@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { HexagonalGridStructure } from './hexagonal-grid.structure';
 import { HexagonalCellError } from '../hexagonal-cell/hexagonal-cell.error';
 import { HexagonalGridError } from './hexagonal-grid.error';
-import { Weight } from 'shared';
+import { PathCoordinate, Weight } from 'shared';
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
 
 type Land = Weight & { landType: number };
@@ -510,11 +510,58 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid shortestPath', () => {
+  test('HexagonalGrid shortestPath #1', () => {
     const grid = produceCustomGrid();
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 0, z: 0 });
     const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
     const result = grid.shortestPathTo(start, target);
-    console.log(result);
+    const expected: PathCoordinate = {
+      coordinatesPath: [
+        { x: 0, y: 0, z: 0 },
+        { x: 0, y: 1, z: -1 },
+        { x: 0, y: 2, z: -2 },
+        { x: 0, y: 3, z: -3 },
+        { x: 1, y: 3, z: -4 },
+      ],
+      cost: 5,
+    };
+    expect(result).toStrictEqual(expected);
+  });
+
+  test('HexagonalGrid shortestPath #2', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 4, y: 0, z: -4 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: -1, y: 2, z: -1 });
+    const result = grid.shortestPathTo(start, target);
+    const expected: PathCoordinate = {
+      coordinatesPath: [
+        { x: 4, y: 0, z: -4 },
+        { x: 3, y: 0, z: -3 },
+        { x: 2, y: 0, z: -2 },
+        { x: 1, y: 0, z: -1 },
+        { x: 0, y: 0, z: 0 },
+        { x: -1, y: 1, z: 0 },
+        { x: -1, y: 2, z: -1 },
+      ],
+      cost: 6,
+    };
+    expect(result).toStrictEqual(expected);
+  });
+
+  test('HexagonalGrid shortestPath #3', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 1, z: -2 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
+    const result = grid.shortestPathTo(start, target);
+    const expected: PathCoordinate = {
+      coordinatesPath: [
+        { x: 1, y: 1, z: -2 },
+        { x: 0, y: 2, z: -2 },
+        { x: 0, y: 3, z: -3 },
+        { x: 1, y: 3, z: -4 },
+      ],
+      cost: 3,
+    };
+    expect(result).toStrictEqual(expected);
   });
 });

@@ -15,7 +15,7 @@ export interface PriorityListStructureInterface<T> {
   comparator: Comparator<T>;
 
   /**
-   * Add an element in the list preserving its order.
+   * Adds an element in the list preserving its order.
    * @param elem The element to add.
    */
   add(elem: T): void;
