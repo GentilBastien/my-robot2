@@ -28,20 +28,6 @@ export class PriorityListStructure<T> implements PriorityListStructureInterface<
     this._elems.push(elem);
   }
 
-  // public add(elem: T): void {
-  //   let low = 0;
-  //   let high = this._elems.length;
-  //   while (low < high) {
-  //     const mid = (low + high) >> 1;
-  //     if (this._comparator.compare(elem, this._elems[mid]) > 0) {
-  //       high = mid;
-  //     } else {
-  //       low = mid + 1;
-  //     }
-  //   }
-  //   this._elems.splice(low, 0, elem);
-  // }
-
   public addAll(elems: T[]): void {
     this._elems.push(...elems);
     this._elems.sort((a, b) => this._comparator.compare(a, b));
@@ -53,5 +39,11 @@ export class PriorityListStructure<T> implements PriorityListStructureInterface<
 
   public includes(elem: T): boolean {
     return this._elems.includes(elem);
+  }
+
+  public remove(elem: T): void {
+    const index = this._elems.indexOf(elem);
+    if (index === -1) return;
+    this._elems.splice(index, 1);
   }
 }

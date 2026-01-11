@@ -4,7 +4,7 @@ import { Robot } from '../game-entities/robot';
 export abstract class AbstractTemporalState implements Updatable {
   protected state: StateTypeEnum;
   protected totalTurns: number;
-  protected remainingTurns: number;
+  protected _remainingTurns: number;
 
   protected _source: Robot | undefined;
   protected _target: Robot | undefined;
@@ -12,15 +12,19 @@ export abstract class AbstractTemporalState implements Updatable {
   protected constructor() {
     this.state = StateTypeEnum.PENDING;
     this.totalTurns = 0;
-    this.remainingTurns = 0;
+    this._remainingTurns = 0;
   }
 
   public update(): void {
-    this.remainingTurns--;
+    this._remainingTurns--;
+  }
+
+  public get remainingTurns(): number {
+    return this._remainingTurns;
   }
 
   public isStateConsumed(): boolean {
-    return this.remainingTurns === 0;
+    return this._remainingTurns === 0;
   }
 
   public get source(): Robot {

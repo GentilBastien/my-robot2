@@ -3,9 +3,18 @@ import { PriorityListStructure } from './priority-list.structure';
 import { Comparator } from 'shared';
 
 describe('SortedListStructure', () => {
+  type ARandomObject = {
+    a: number;
+    b: string;
+  };
   const comparator: Comparator<string> = {
     compare(item1: string, item2: string): number {
       return item1.localeCompare(item2);
+    },
+  };
+  const objectComparator: Comparator<ARandomObject> = {
+    compare(item1: ARandomObject, item2: ARandomObject): number {
+      return item1.a - item2.a;
     },
   };
 
@@ -77,5 +86,63 @@ describe('SortedListStructure', () => {
     sortedList.add('a');
     //then
     expect(sortedList.elements).toStrictEqual(['a', 'b']);
+  });
+
+  test('SortedListStructure includes #1', () => {
+    //given
+    const sortedList = new PriorityListStructure(comparator);
+    sortedList.addAll(['z', 'a', 'b', 't']);
+    //when
+    const result = sortedList.includes('b');
+    //then
+    expect(result).toBe(true);
+  });
+
+  test('SortedListStructure includes #2', () => {
+    //given
+    const sortedList = new PriorityListStructure(comparator);
+    sortedList.addAll(['z', 'a', 'b', 't']);
+    //when
+    const result = sortedList.includes('g');
+    //then
+    expect(result).toBe(false);
+  });
+
+  test('SortedListStructure includes #3', () => {
+    //given
+    const sortedList = new PriorityListStructure(objectComparator);
+    const includedElement = { a: 7, b: 'aze' };
+    sortedList.addAll([{ a: 1, b: 'name' }, includedElement]);
+    //when
+    const result = sortedList.includes(includedElement);
+    //then
+    expect(result).toBe(true);
+  });
+
+  test('SortedListStructure remove #1', () => {
+    //given
+    const sortedList = new PriorityListStructure(objectComparator);
+    const elementToRemove = { a: 7, b: 'aze' };
+    sortedList.addAll([{ a: 1, b: 'name' }, elementToRemove]);
+    //when
+    sortedList.remove(elementToRemove);
+    //then
+    expect(sortedList.elements).toStrictEqual([{ a: 1, b: 'name' }]);
+  });
+
+  test('SortedListStructure remove #2', () => {
+    //given
+    const sortedList = new PriorityListStructure(objectComparator);
+    sortedList.addAll([
+      { a: 1, b: 'name' },
+      { a: 7, b: 'aze' },
+    ]);
+    //when
+    sortedList.remove({ a: 7, b: 'aze' });
+    //then
+    expect(sortedList.elements).toStrictEqual([
+      { a: 1, b: 'name' },
+      { a: 7, b: 'aze' },
+    ]);
   });
 });

@@ -14,7 +14,7 @@ améliorations sont proposées aléatoirement au joueur ; une seule devra être 
 
 ## Attributs
 Chaque robot possède des attributs qui définissent la plupart de ses actions et réactions en jeu.
-- PUISSANCE (**POW**) Dégâts des attaques et compétences
+- PUISSANCE (**POW**) Dégâts et soins des attaques et compétences
 - MOBILITE (**MOB**) Portée de déplacement, chances d'esquiver les dégâts directs
 - CHASSIS (**CHS**) PV du robot et réduction de dégât
 - PROCESSEUR (**CPU**) Augmente les soins et boucliers reçus/donnés et les chances de toucher sa cible

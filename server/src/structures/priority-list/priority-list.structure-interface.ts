@@ -32,5 +32,16 @@ export interface PriorityListStructureInterface<T> {
    */
   poll(): T | undefined;
 
+  /**
+   * Returns true if the given element is included in the array. Test the reference.
+   * @param elem Given element.
+   */
   includes(elem: T): boolean;
+
+  /**
+   * Remove the given element from the array. Works with reference because element is found
+   * with indexOf before being removed from array.
+   * @param elem Given element.
+   */
+  remove(elem: T): void;
 }

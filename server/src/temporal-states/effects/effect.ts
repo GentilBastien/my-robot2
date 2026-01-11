@@ -1,5 +1,5 @@
 import { EffectModifier, EffectTypeEnum, StateTypeEnum } from 'shared';
-import { AbstractTemporalState } from './abstract-temporal-state';
+import { AbstractTemporalState } from '../abstract-temporal-state';
 
 export abstract class Effect extends AbstractTemporalState {
   protected readonly type: EffectTypeEnum;
@@ -24,9 +24,12 @@ export abstract class Effect extends AbstractTemporalState {
   public abstract effectModifier(): EffectModifier;
 
   public override update(): void {
-    super.update();
-    if (this.applyEveryTurn) {
+    if (this.applyEveryTurn || this.state === StateTypeEnum.PENDING) {
       this.applyEffect();
+    }
+    super.update();
+    if (this.isStateConsumed()) {
+      this.removeEffect();
     }
   }
 

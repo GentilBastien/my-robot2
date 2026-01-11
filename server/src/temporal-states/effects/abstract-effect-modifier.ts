@@ -1,5 +1,5 @@
 import { EffectModifier } from 'shared';
-import { Robot } from '../game-entities/robot';
+import { Robot } from '../../game-entities/robot';
 
 export abstract class AbstractEffectModifier implements EffectModifier {
   protected source: Robot;

@@ -1,7 +1,7 @@
 import { Effect } from '../effect';
 import { EffectModifier, EffectTypeEnum } from 'shared';
 import { AbstractEffectModifier } from '../abstract-effect-modifier';
-import { Robot } from '../../game-entities/robot';
+import { Robot } from '../../../game-entities/robot';
 
 export class EffectFire extends Effect {
   constructor() {
