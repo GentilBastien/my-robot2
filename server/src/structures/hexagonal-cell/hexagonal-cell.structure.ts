@@ -99,6 +99,10 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     );
   }
 
+  public cubeDistanceFrom(otherCell: HexagonalCellStructure<T>): number {
+    return (Math.abs(this._x - otherCell._x) + Math.abs(this._y - otherCell._y) + Math.abs(this.z - otherCell.z)) / 2;
+  }
+
   public setItem(item: T | null): void {
     this._item = item;
   }

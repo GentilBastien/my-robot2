@@ -14,8 +14,8 @@ export abstract class Robot implements Updatable {
   private readonly attributesManager = new AttributesManager();
   private readonly statisticsManager = new StatisticsManager();
   private readonly effectManager = new EffectManager();
-  private readonly arenaManager = new ArenaManager();
   private readonly resourcesManager = new ResourcesManager();
+  private readonly arenaManager = new ArenaManager();
   private readonly actionManager = new ActionManager(this);
 
   private _isAlive: boolean = true;
@@ -31,6 +31,11 @@ export abstract class Robot implements Updatable {
 
   public get location(): Coordinates {
     return this.arenaManager.location();
+  }
+
+  public rangeTo(otherRobot: Robot): number {
+    // return this.arenaManager.
+    return 0;
   }
 
   public addEffect(effect: Effect): void {

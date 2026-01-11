@@ -158,7 +158,7 @@ describe('HexagonalCellStructure', () => {
     expect(land1Adjacent.isAdjacentTo(land1)).toBe(false);
   });
 
-  test('HexagonalCell distanceFrom is commutative', () => {
+  test('HexagonalCell euclideanDistanceFrom is commutative', () => {
     //given
     const land1 = new HexagonalCellStructure({ weight: 1 });
     const land2 = new HexagonalCellStructure({ weight: 8 });
@@ -169,6 +169,22 @@ describe('HexagonalCellStructure', () => {
     //then
     expect(land1.euclideanDistanceFrom(land2)).toBe(expectedResult);
     expect(land2.euclideanDistanceFrom(land1)).toBe(expectedResult);
+  });
+
+  test('HexagonalCell cubeDistanceFrom is commutative', () => {
+    //given
+    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land2 = new HexagonalCellStructure({ weight: 8 });
+    //when
+    land1.setCoordinates({ x: -1, y: 1, z: 0 });
+    land2.setCoordinates({ x: 1, y: 2, z: -3 });
+    const expectedCalculations =
+      (Math.abs(land1.x - land2.x) + Math.abs(land1.y - land2.y) + Math.abs(land1.z - land2.z)) / 2;
+    const expectedResult = 3;
+    //then
+    expect(expectedCalculations).toBe(expectedResult);
+    expect(land1.cubeDistanceFrom(land2)).toBe(expectedCalculations);
+    expect(land2.cubeDistanceFrom(land1)).toBe(expectedCalculations);
   });
 
   test('HexagonalCell hasSameItem is true and commutative', () => {

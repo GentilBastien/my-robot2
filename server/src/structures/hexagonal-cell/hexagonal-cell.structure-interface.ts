@@ -71,9 +71,15 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
 
   /**
    * Returns the Euclidean distance between two cells.
-   * @param otherCell The cell to where the distance is calculated from this cell.
+   * @param otherCell The cell to where the distance is calculated from.
    */
   euclideanDistanceFrom(otherCell: HexagonalCellStructure<T>): number;
+
+  /**
+   * Returns the Cube distance between two cells.
+   * @param otherCell The cell to where the distance is calculated from.
+   */
+  cubeDistanceFrom(otherCell: HexagonalCellStructure<T>): number;
 
   /**
    * A setter for the item wrapped in this hexagonal cell.
