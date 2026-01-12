@@ -1,7 +1,7 @@
 import { Updatable } from 'shared';
-import { Action } from '../action/action';
+import { Action } from '../../action/action';
 
-export class ResourcesManager implements Updatable {
+export class ResourcesRobotManager implements Updatable {
   private _hp: number = 0;
   private _maxHp: number = 0;
   private _regenHp: number = 0;
@@ -18,8 +18,8 @@ export class ResourcesManager implements Updatable {
   private _energyModules: number = 0;
 
   public update(): void {
-    this._hp = this.incrementsValue(0, this._maxHp, this._hp, this._regenHp);
-    this._mana = this.incrementsValue(0, this._maxMana, this._mana, this._regenMana);
+    this.incrementsHpByValue(this._regenHp);
+    this.incrementsManaByValue(this._regenMana);
     if (this._isOverheating && this._overheating === 0) {
       this._isOverheating = false;
     }
@@ -27,16 +27,55 @@ export class ResourcesManager implements Updatable {
       this._isOverheating = true;
     }
     const cooling = this._isOverheating ? this._coolingDown / 2 : this._coolingDown;
-    this._overheating = this.incrementsValue(0, this._maxOverheating, this._overheating, cooling);
+    this.decrementsOverheatingByValue(cooling);
+  }
+
+  public hasEnergyModule(): boolean {
+    return this._energyModules > 0;
+  }
+
+  public useEnergyModule(): void {
+    if (this._energyModules > 0) {
+      this._energyModules--;
+    }
+  }
+
+  public restoreHp(value: number): void {
+    this.incrementsHpByValue(value);
+  }
+
+  public restoreMana(value: number): void {
+    this.incrementsManaByValue(value);
+  }
+
+  public cooling(value: number, enableWhileOverheating: boolean = true): void {
+    if (enableWhileOverheating || !this._isOverheating) {
+      this.decrementsOverheatingByValue(value);
+    }
   }
 
   public checkResourcesForAction(action: Action): boolean {
     if (this._mana >= action.manaCost && (!this._isOverheating || action.overheatingCost === 0)) {
       this._mana -= action.manaCost;
       this._overheating += action.overheatingCost;
+      if (this._overheating >= this._maxOverheating) {
+        this._isOverheating = true;
+      }
       return true;
     }
     return false;
+  }
+
+  private incrementsHpByValue(value: number): void {
+    this._hp = this.incrementsValue(0, this._maxHp, this._hp, value);
+  }
+
+  private incrementsManaByValue(value: number): void {
+    this._mana = this.incrementsValue(0, this._maxMana, this._mana, value);
+  }
+
+  private decrementsOverheatingByValue(value: number): void {
+    this._overheating = this.incrementsValue(0, this._maxOverheating, this._overheating, value);
   }
 
   /**

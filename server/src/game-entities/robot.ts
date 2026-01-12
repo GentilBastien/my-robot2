@@ -1,22 +1,15 @@
-import { AttributesManager } from '../managers/attributes.manager';
-import { StatisticsManager } from '../managers/statistics.manager';
-import { EffectManager } from '../managers/effect.manager';
-import { AttributesTypeEnum, Coordinates, StatisticsTypeEnum, Updatable } from 'shared';
+import { AttributesTypeEnum, StatisticsTypeEnum, Updatable } from 'shared';
 import { Effect } from '../temporal-states/effects/effect';
-import { ArenaManager } from '../managers/arena.manager';
-import { Tile } from '../tiles/tile';
-import { HexagonalGridStructure } from '../structures/hexagonal-grid/hexagonal-grid.structure';
-import { Action } from '../action/action';
-import { ActionManager } from '../managers/action.manager';
-import { ResourcesManager } from '../managers/resouces.manager';
+import { AttributesRobotManager } from '../managers/robot/attributes.robot-manager';
+import { StatisticsRobotManager } from '../managers/robot/statistics.robot-manager';
+import { EffectRobotManager } from '../managers/robot/effect.robot-manager';
+import { ResourcesRobotManager } from '../managers/robot/resources.robot-manager';
 
 export abstract class Robot implements Updatable {
-  private readonly attributesManager = new AttributesManager();
-  private readonly statisticsManager = new StatisticsManager();
-  private readonly effectManager = new EffectManager();
-  private readonly resourcesManager = new ResourcesManager();
-  private readonly arenaManager = new ArenaManager();
-  private readonly actionManager = new ActionManager(this);
+  private readonly attributesManager = new AttributesRobotManager();
+  private readonly statisticsManager = new StatisticsRobotManager();
+  private readonly effectManager = new EffectRobotManager();
+  private readonly resourcesManager = new ResourcesRobotManager();
 
   private _isAlive: boolean = true;
 
@@ -25,17 +18,6 @@ export abstract class Robot implements Updatable {
       this.effectManager.update();
       this.resourcesManager.update();
     }
-  }
-
-  public doAction(action: Action): void {}
-
-  public get location(): Coordinates {
-    return this.arenaManager.location();
-  }
-
-  public rangeTo(otherRobot: Robot): number {
-    // return this.arenaManager.
-    return 0;
   }
 
   public addEffect(effect: Effect): void {
@@ -48,9 +30,5 @@ export abstract class Robot implements Updatable {
 
   public getStatisticModifier(statistic: StatisticsTypeEnum): number {
     return this.statisticsManager.getModifier(statistic);
-  }
-
-  public enterArena(arena: HexagonalGridStructure<Tile>): void {
-    this.arenaManager.enterArena(arena);
   }
 }

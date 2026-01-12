@@ -1,6 +1,6 @@
 import { RobotData, StatisticsTypeEnum } from 'shared';
 
-export class StatisticsManager implements RobotData<StatisticsTypeEnum> {
+export class StatisticsRobotManager implements RobotData<StatisticsTypeEnum> {
   public map = new Map<StatisticsTypeEnum, number>([
     [StatisticsTypeEnum.HP, 0],
     [StatisticsTypeEnum.DAMAGE, 0],

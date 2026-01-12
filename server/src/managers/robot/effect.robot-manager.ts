@@ -1,8 +1,8 @@
-import { PriorityListStructure } from '../structures/priority-list/priority-list.structure';
 import { Updatable } from 'shared';
-import { Effect } from '../temporal-states/effects/effect';
+import { PriorityListStructure } from '../../structures/priority-list/priority-list.structure';
+import { Effect } from '../../temporal-states/effects/effect';
 
-export class EffectManager implements Updatable {
+export class EffectRobotManager implements Updatable {
   private readonly effects = new PriorityListStructure<Effect>({
     compare: (e1, e2) => e1.remainingTurns - e2.remainingTurns,
   });
