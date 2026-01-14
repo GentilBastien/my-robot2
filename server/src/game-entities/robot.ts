@@ -11,13 +11,9 @@ export abstract class Robot implements Updatable {
   private readonly effectManager = new EffectRobotManager();
   private readonly resourcesManager = new ResourcesRobotManager();
 
-  private _isAlive: boolean = true;
-
   public update(): void {
-    if (this._isAlive) {
-      this.effectManager.update();
-      this.resourcesManager.update();
-    }
+    this.effectManager.update();
+    this.resourcesManager.update();
   }
 
   public addEffect(effect: Effect): void {

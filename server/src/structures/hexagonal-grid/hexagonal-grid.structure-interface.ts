@@ -64,6 +64,14 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
   ): HexagonalCellStructure<T>[];
 
   /**
+   * Returns true if the target cell is in a specified range from the origin cell.
+   * @param origin The origin cell.
+   * @param range The range.
+   * @param target The target cell.
+   */
+  isCellInRange(origin: HexagonalCellStructure<T>, range: number, target: HexagonalCellStructure<T>): boolean;
+
+  /**
    * Returns the reachable cells knowing a starting cell and a maximum cost. This is useful to know where an entity can
    * move to, knowing its remaining movement. As a reminder, cells are weighted and every cell do not have the same
    * weight. Returns null if no path has been found.

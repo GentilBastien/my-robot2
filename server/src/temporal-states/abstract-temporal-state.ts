@@ -1,8 +1,8 @@
-import { StateTypeEnum, Updatable } from 'shared';
+import { EffectStateTypeEnum, Updatable } from 'shared';
 import { Robot } from '../game-entities/robot';
 
 export abstract class AbstractTemporalState implements Updatable {
-  protected state: StateTypeEnum;
+  protected state: EffectStateTypeEnum;
   protected totalTurns: number;
   protected _remainingTurns: number;
 
@@ -10,7 +10,7 @@ export abstract class AbstractTemporalState implements Updatable {
   protected _target: Robot | undefined;
 
   protected constructor() {
-    this.state = StateTypeEnum.PENDING;
+    this.state = EffectStateTypeEnum.PENDING;
     this.totalTurns = 0;
     this._remainingTurns = 0;
   }

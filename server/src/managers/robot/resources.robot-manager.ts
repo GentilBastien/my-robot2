@@ -2,6 +2,8 @@ import { Updatable } from 'shared';
 import { Action } from '../../action/action';
 
 export class ResourcesRobotManager implements Updatable {
+  private _isAlive: boolean = true;
+
   private _hp: number = 0;
   private _maxHp: number = 0;
   private _regenHp: number = 0;
@@ -18,13 +20,15 @@ export class ResourcesRobotManager implements Updatable {
   private _energyModules: number = 0;
 
   public update(): void {
-    this.incrementsHpByValue(this._regenHp);
-    this.incrementsManaByValue(this._regenMana);
-    if (this._isOverheating && this._overheating === 0) {
-      this._isOverheating = false;
-    }
-    if (!this._isOverheating && this._overheating >= this._maxOverheating) {
-      this._isOverheating = true;
+    if (this._isAlive) {
+      this.incrementsHpByValue(this._regenHp);
+      this.incrementsManaByValue(this._regenMana);
+      if (this._isOverheating && this._overheating === 0) {
+        this._isOverheating = false;
+      }
+      if (!this._isOverheating && this._overheating >= this._maxOverheating) {
+        this._isOverheating = true;
+      }
     }
     const cooling = this._isOverheating ? this._coolingDown / 2 : this._coolingDown;
     this.decrementsOverheatingByValue(cooling);
@@ -40,11 +44,14 @@ export class ResourcesRobotManager implements Updatable {
     }
   }
 
-  public restoreHp(value: number): void {
+  public hp(value: number): void {
     this.incrementsHpByValue(value);
+    if (this._hp <= 0) {
+      this._isAlive = false;
+    }
   }
 
-  public restoreMana(value: number): void {
+  public mana(value: number): void {
     this.incrementsManaByValue(value);
   }
 

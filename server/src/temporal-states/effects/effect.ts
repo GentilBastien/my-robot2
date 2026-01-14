@@ -1,4 +1,4 @@
-import { EffectModifier, EffectTypeEnum, StateTypeEnum } from 'shared';
+import { EffectModifier, EffectStateTypeEnum, EffectTypeEnum } from 'shared';
 import { AbstractTemporalState } from '../abstract-temporal-state';
 
 export abstract class Effect extends AbstractTemporalState {
@@ -24,7 +24,7 @@ export abstract class Effect extends AbstractTemporalState {
   public abstract effectModifier(): EffectModifier;
 
   public override update(): void {
-    if (this.applyEveryTurn || this.state === StateTypeEnum.PENDING) {
+    if (this.applyEveryTurn || this.state === EffectStateTypeEnum.PENDING) {
       this.applyEffect();
     }
     super.update();
@@ -34,7 +34,7 @@ export abstract class Effect extends AbstractTemporalState {
   }
 
   public applyEffect(): void {
-    this.state = StateTypeEnum.STARTED;
+    this.state = EffectStateTypeEnum.STARTED;
     if (this.isStackable && this.stacks < this.maxStacks) {
       this.stacks++;
     }
@@ -42,7 +42,7 @@ export abstract class Effect extends AbstractTemporalState {
   }
 
   public removeEffect(): void {
-    this.state = StateTypeEnum.FINISHED;
+    this.state = EffectStateTypeEnum.FINISHED;
     if (this.isStackable) {
       this.stacks = 0;
     }

@@ -1,4 +1,4 @@
-export enum StateTypeEnum {
+export enum EffectStateTypeEnum {
   PENDING,
   STARTED,
   FINISHED,

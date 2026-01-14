@@ -1,10 +1,19 @@
-import { Weight } from 'shared';
 import { CyclicListStructureInterface } from './cyclic-list.structure-interface';
 import { CyclicListError } from './cyclic-list.error';
+import { Comparator } from 'shared';
 
-export class CyclicListStructure<T extends Weight> implements CyclicListStructureInterface<T> {
-  private _heaviestNode: ItemNode<T> | undefined = undefined;
+export class CyclicListStructure<T> implements CyclicListStructureInterface<T> {
+  private readonly _comparator: Comparator<T>;
+  private _heaviestNode: ItemNode<T> | undefined;
   private _currentNode: ItemNode<T> | undefined;
+
+  constructor(comparator: Comparator<T>) {
+    this._comparator = comparator;
+  }
+
+  public get comparator(): Comparator<T> {
+    return this._comparator;
+  }
 
   public next(): T {
     this._currentNode = this._currentNode ? this._currentNode.next : this._heaviestNode;
@@ -26,7 +35,7 @@ export class CyclicListStructure<T extends Weight> implements CyclicListStructur
 
     let currentNode = this._heaviestNode;
     do {
-      if (item.weight > currentNode.item.weight) {
+      if (this._comparator.compare(item, currentNode.item) > 0) {
         this.insertNodeBefore(newNode, currentNode);
         // if currentNode was the heaviestNode, then it needs to be reassigned
         if (currentNode === this._heaviestNode) {

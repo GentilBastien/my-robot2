@@ -1,13 +1,14 @@
-import { Weight } from 'shared';
+import { Comparator } from 'shared';
 
 /**
- * Represents a cyclic (circular) list structure ordered by item weight.
+ * Represents a cyclic (circular) list structure ordered by item custom
+ * comparator.
  *
  * The list maintains a circular traversal where calling {@link next}
  * repeatedly will iterate through all stored items and loop back
  * to the beginning.
  *
- * Inserted items are defined by their weight. Heaviest element are returned
+ * Inserted items are internally compared. Heaviest element are returned
  * first. Calling next to the lightest element of the collection will return
  * the heaviest one.
  * ```
@@ -18,14 +19,18 @@ import { Weight } from 'shared';
  *     │     └──────────────────────previous──────────────────────┘     │
  *     └───────────────────────────────next─────────────────────────────┘
  * ```
- * @typeParam T - The item type stored in the list. Must implement the weight
- * interface
+ * @typeParam T - The item type stored in the list.
  */
-export interface CyclicListStructureInterface<T extends Weight> {
+export interface CyclicListStructureInterface<T> {
+  /**
+   * The comparator used.
+   */
+  comparator: Comparator<T>;
+
   /**
    * Inserts an item into the cyclic list.
    *
-   * The item is placed in the list according to its weight, preserving
+   * The item is placed in the list according to the {@link comparator}, preserving
    * the internal ordering of elements.
    *
    * @param item - The item to insert.
@@ -43,7 +48,7 @@ export interface CyclicListStructureInterface<T extends Weight> {
    * item removed is the heaviest item in the list, the next one becomes the
    * new heaviest item in the list (as the first has been removed).
    *
-   * @param item
+   * @param item The item to remove.
    * @throws {removeNotFoundItemError} If the item is not found in a non-empty list.
    */
   removeItem(item: T): void;
