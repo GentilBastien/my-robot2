@@ -3,18 +3,21 @@ import { Tile } from '../tiles/tile';
 import { Coordinates, Updatable } from 'shared';
 
 export class ArenaManager implements Updatable {
-  update(): void {
-    throw new Error('Method not implemented.');
-  }
   private arena: HexagonalGridStructure<Tile> | undefined;
 
   public enterArena(arena: HexagonalGridStructure<Tile>): void {
     this.arena = arena;
   }
 
+  public update(): void {
+    throw new Error('Method not implemented.');
+  }
+
   public location(): Coordinates {
     return { x: 0, y: 0, z: 0 };
   }
+
+  public inRange();
 
   // public rangeTo(otherRobot: Robot): number {
   //   if (this.arena) {

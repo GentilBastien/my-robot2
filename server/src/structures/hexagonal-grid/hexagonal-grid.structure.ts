@@ -62,7 +62,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     }
   }
 
-  public getCellsInRadius(
+  public getCellsInRange(
     origin: HexagonalCellStructure<T>,
     radius: number,
     includeOrigin: boolean = true
@@ -78,6 +78,14 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
             Math.abs(origin.z - cell.z) <= radius
       );
     }
+  }
+
+  public isCellInRange(origin: HexagonalCellStructure<T>, range: number, target: HexagonalCellStructure<T>): boolean {
+    return (
+      Math.abs(origin.x - target.x) <= range &&
+      Math.abs(origin.y - target.y) <= range &&
+      Math.abs(origin.z - target.z) <= range
+    );
   }
 
   public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[] {
@@ -100,7 +108,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     while (openList.elements.length > 0) {
       const currentNode: HexagonalCellStructure<T> = openList.poll()!;
       closedList.add(currentNode);
-      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRadius(currentNode, 1, false);
+      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNode, 1, false);
       voisins = voisins.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
       voisins.forEach(voisin => {
         voisin.weightFromStart = currentNode.weightFromStart + voisin.weight();
@@ -113,7 +121,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     let currentNodePath = target;
     while (!currentNodePath.hasSameLocationWith(start)) {
       shortestPath.push(currentNodePath);
-      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRadius(currentNodePath, 1, false);
+      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNodePath, 1, false);
       voisins = voisins.filter(voisin => closedList.has(voisin));
       const tempList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
       tempList.addAll(voisins);
@@ -148,7 +156,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
         cost: costCandidate,
       };
       visitedPaths.push(path);
-      this.getCellsInRadius(cellCandidate, 1, false).forEach(adjacentCell =>
+      this.getCellsInRange(cellCandidate, 1, false).forEach(adjacentCell =>
         this.possibleTargets_NewMove(adjacentCell, visitedPaths, costCandidate, maxCostFromStart, path)
       );
     }

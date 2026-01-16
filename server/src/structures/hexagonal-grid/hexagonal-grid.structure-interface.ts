@@ -57,7 +57,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @param radius The radius.
    * @param includeOrigin If origin cell should be included in the returned cells. Default is true.
    */
-  getCellsInRadius(
+  getCellsInRange(
     origin: HexagonalCellStructure<T>,
     radius: number,
     includeOrigin?: boolean

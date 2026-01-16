@@ -1,6 +1,7 @@
 import { Robot } from '../game-entities/robot';
 import { ActionOutput } from './action-output';
 import { AttributesTypeEnum, DiceUtils, GameFunctionsUtils, StatisticsTypeEnum } from 'shared';
+import { ActionManager } from '../managers/action.manager';
 
 export abstract class Action {
   protected _source: Robot | undefined;
@@ -18,7 +19,7 @@ export abstract class Action {
     this._target = target;
   }
 
-  public abstract computeAction(): ActionOutput;
+  public abstract doAction(actionManager: ActionManager, source: Robot, target: Robot): void;
 
   public get source(): Robot {
     if (!this._source) {
@@ -50,7 +51,7 @@ export abstract class Action {
     return this._overheatingCost;
   }
 
-  public static doDamage(source: Robot, target: Robot, baseDamage: number): Partial<ActionOutput> {
+  public static doDamage(source: Robot, target: Robot, baseDamage: number): ActionOutput {
     let amount: number;
     let isDodged: boolean;
     let isCritical: boolean;
@@ -87,7 +88,7 @@ export abstract class Action {
     return { amount, isDodged, isCritical };
   }
 
-  public static doHeal(source: Robot, target: Robot, baseHeal: number): Partial<ActionOutput> {
+  public static doHeal(source: Robot, target: Robot, baseHeal: number): ActionOutput {
     let amount: number;
     let isCritical: boolean;
     const healFromAttributePower = source.getAttributeModifier(AttributesTypeEnum.POW);
@@ -100,7 +101,7 @@ export abstract class Action {
     return { amount, isCritical };
   }
 
-  public static doShield(source: Robot, target: Robot, baseShield: number): Partial<ActionOutput> {
+  public static doShield(source: Robot, target: Robot, baseShield: number): ActionOutput {
     let amount: number;
     const shieldFromAttributeCpu =
       source.getAttributeModifier(AttributesTypeEnum.CPU) + target.getAttributeModifier(AttributesTypeEnum.CPU);

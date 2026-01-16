@@ -131,35 +131,35 @@ describe('HexagonalGridStructure', () => {
     }
   });
 
-  test('HexagonalGrid getCellsInRadius radius 0 with origin', () => {
+  test('HexagonalGrid getCellsInRange range 0 with origin', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 0).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 0).map(cell => cell.coordinates);
     const expected = [{ x: 1, y: 2, z: -3 }];
     //then
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid getCellsInRadius radius 0 without origin included', () => {
+  test('HexagonalGrid getCellsInRange range 0 without origin included', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 0, false).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 0, false).map(cell => cell.coordinates);
     //then
     expect(result).toEqual(expect.arrayContaining([]));
     expect(result).toHaveLength(0);
   });
 
-  test('HexagonalGrid getCellsInRadius radius 1', () => {
+  test('HexagonalGrid getCellsInRange range 1', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 1).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 1).map(cell => cell.coordinates);
     const expected = [
       { x: 1, y: 1, z: -2 },
       { x: 2, y: 1, z: -3 },
@@ -174,12 +174,12 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid getCellsInRadius radius 1 WITHOUT origin', () => {
+  test('HexagonalGrid getCellsInRange range 1 WITHOUT origin', () => {
     //given
     const grid = new HexagonalGridStructure(10, 10);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 1, false).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 1, false).map(cell => cell.coordinates);
     const expected = [
       { x: 1, y: 1, z: -2 },
       { x: 2, y: 1, z: -3 },
@@ -193,12 +193,12 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid getCellsInRadius radius 2 but it is cropped', () => {
+  test('HexagonalGrid getCellsInRange range 2 but it is cropped', () => {
     //given
     const grid = new HexagonalGridStructure(5, 4);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 2).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 2).map(cell => cell.coordinates);
     const expected = [
       { x: 2, y: 0, z: -2 },
       { x: 3, y: 0, z: -3 },
@@ -222,12 +222,12 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
-  test('HexagonalGrid getCellsInRadius radius 2 but it is cropped and without origin', () => {
+  test('HexagonalGrid getCellsInRange range 2 but it is cropped and without origin', () => {
     //given
     const grid = new HexagonalGridStructure(5, 4);
     const origin = grid.getCellAt({ x: 1, y: 2, z: -3 });
     //when
-    const result = grid.getCellsInRadius(origin, 2, false).map(cell => cell.coordinates);
+    const result = grid.getCellsInRange(origin, 2, false).map(cell => cell.coordinates);
     const expected = [
       { x: 2, y: 0, z: -2 },
       { x: 3, y: 0, z: -3 },
@@ -248,6 +248,30 @@ describe('HexagonalGridStructure', () => {
     //then
     expect(result).toEqual(expect.arrayContaining(expected));
     expect(result).toHaveLength(expected.length);
+  });
+
+  test('HexagonalGrid isCellInRange true #1', () => {
+    const grid = produceCustomGrid();
+    const origin: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
+    const result = grid.isCellInRange(origin, 3, target);
+    expect(result).toBe(true);
+  });
+
+  test('HexagonalGrid isCellInRange true #2', () => {
+    const grid = produceCustomGrid();
+    const origin: HexagonalCellStructure<Weight> = grid.getCellAt({ x: -1, y: 1, z: 0 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 3, y: 1, z: -4 });
+    const result = grid.isCellInRange(origin, 4, target);
+    expect(result).toBe(true);
+  });
+
+  test('HexagonalGrid isCellInRange false', () => {
+    const grid = produceCustomGrid();
+    const origin: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
+    const result = grid.isCellInRange(origin, 2, target);
+    expect(result).toBe(false);
   });
 
   test('HexagonalGrid possiblePaths #1', () => {
