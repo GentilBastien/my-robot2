@@ -1,22 +1,19 @@
+import { Updatable } from '../updatable';
+import { AttributesRobotManager } from './attributes.robot-manager';
+import { StatisticsRobotManager } from './statistics.robot-manager';
+import { ResourcesRobotManager } from './resources.robot-manager';
 import { AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
-import { AttributesRobotManager } from '../managers/robot/attributes.robot-manager';
-import { StatisticsRobotManager } from '../managers/robot/statistics.robot-manager';
-import { EffectRobotManager } from '../managers/robot/effect.robot-manager';
-import { ResourcesRobotManager } from '../managers/robot/resources.robot-manager';
-import { Updatable } from '../managers/updatable';
-import { Effect } from '../entities/effects/effect';
+import { Effect } from '../../entities/effects/effect';
 
 export abstract class Robot implements Updatable {
   private readonly attributesManager: AttributesRobotManager;
   private readonly statisticsManager: StatisticsRobotManager;
   private readonly resourcesManager: ResourcesRobotManager;
-  private readonly effectManager: EffectRobotManager;
 
   protected constructor() {
     this.attributesManager = new AttributesRobotManager();
     this.statisticsManager = new StatisticsRobotManager();
     this.resourcesManager = new ResourcesRobotManager();
-    this.effectManager = new EffectRobotManager();
   }
 
   public update(): void {

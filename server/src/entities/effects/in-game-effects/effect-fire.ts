@@ -1,35 +1,39 @@
 import { Effect, EffectStackingConfig, EffectTickingConfig } from '../effect';
-import { DamageTypeEnum, EffectCategoryTypeEnum, GameEventTypeEnum } from 'shared';
+import { DamageTypeEnum, EffectCategoryTypeEnum, StateEventTypeEnum } from 'shared';
 import { EffectInstance } from '../effect-instance';
 import {
-  AddEffectRequestGameEvent,
-  DamageRequestGameEvent,
-  GameEvent,
-  RemoveEffectGameEvent,
-} from '../../../events/game-event';
+  AddEffectRequestStateEvent,
+  DamageRequestStateEvent,
+  RemoveEffectRequestStateEvent,
+  RequestStateEvent,
+} from '../../../events/request-state-event';
 
 export class EffectFire implements Effect {
-  type: EffectCategoryTypeEnum = EffectCategoryTypeEnum.NEGATIVE;
-  ticking: EffectTickingConfig = {
+  public type: EffectCategoryTypeEnum = EffectCategoryTypeEnum.NEGATIVE;
+
+  public ticking: EffectTickingConfig = {
+    totalTurns: 5,
     everyTurn: true,
     atApply: true,
   };
-  stacking: EffectStackingConfig = {
+
+  public stacking: EffectStackingConfig = {
     enabled: true,
     maxStacks: 5,
     refreshDuration: true,
   };
-  onApply(effectInstance: EffectInstance): GameEvent[] {
-    const addEffectRequest: AddEffectRequestGameEvent = {
-      eventType: GameEventTypeEnum.ADD_EFFECT_REQUEST,
-      effect: effectInstance,
+
+  public onApply(effectInstance: EffectInstance): RequestStateEvent[] {
+    const addEffectRequest: AddEffectRequestStateEvent = {
+      stateEventType: StateEventTypeEnum.ADD_EFFECT,
+      effectInstance: effectInstance,
     };
     return [addEffectRequest];
   }
 
-  onTurnStart(effectInstance: EffectInstance): GameEvent[] {
-    const damageIntent: DamageRequestGameEvent = {
-      eventType: GameEventTypeEnum.DAMAGE_REQUEST,
+  public onTurnStart(effectInstance: EffectInstance): RequestStateEvent[] {
+    const damageIntent: DamageRequestStateEvent = {
+      stateEventType: StateEventTypeEnum.DAMAGE,
       damageType: DamageTypeEnum.FIRE,
       source: effectInstance.source,
       target: effectInstance.target,
@@ -38,11 +42,15 @@ export class EffectFire implements Effect {
     return [damageIntent];
   }
 
-  onExpire(effectInstance: EffectInstance): GameEvent[] {
-    const removeEffect: RemoveEffectGameEvent = {
-      eventType: GameEventTypeEnum.REMOVE_EFFECT_REQUEST,
-      effectId: effectInstance.id,
+  public onTurnEnd(_: EffectInstance): RequestStateEvent[] {
+    return [];
+  }
+
+  public onExpire(effectInstance: EffectInstance): RequestStateEvent[] {
+    const addEffectRequest: RemoveEffectRequestStateEvent = {
+      stateEventType: StateEventTypeEnum.REMOVE_EFFECT,
+      effectInstance: effectInstance,
     };
-    return [removeEffect];
+    return [addEffectRequest];
   }
 }

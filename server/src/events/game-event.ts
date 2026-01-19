@@ -1,35 +1,53 @@
 import { DamageTypeEnum, GameEventTypeEnum } from 'shared';
 import { Robot } from '../states/robot';
-import { EffectInstance } from '../entities/effects/effect-instance';
+import { Tile } from '../tiles/tile';
 
 export interface GameEvent {
-  eventType: GameEventTypeEnum;
+  gameEventType: GameEventTypeEnum;
+  source: Robot;
 }
 
-export interface DamageRequestGameEvent extends GameEvent {
-  eventType: GameEventTypeEnum.DAMAGE_REQUEST;
-  damageType: DamageTypeEnum;
-  source: Robot;
+// --------
+// UNEXPORTED
+// --------
+
+interface TargetedGameEvent extends GameEvent {
   target: Robot;
+}
+
+interface AOEGameEvent extends GameEvent {
+  targetCell: Tile;
+  radius: number;
+}
+
+interface OverTimeGameEvent extends TargetedGameEvent {
+  totalTurns: number;
+}
+
+interface ThrowGrenadeGameEvent extends AOEGameEvent {
   baseDamage: number;
 }
 
-export interface DamageResponseGameEvent extends GameEvent {
-  eventType: GameEventTypeEnum.DAMAGE_RESPONSE;
-  source: Robot;
-  target: Robot;
-  damageDealt: number;
-  isDodged: boolean;
-  isCritical: boolean;
-  armorEfficiency: number;
+// --------
+// EXPORTED
+// --------
+
+export interface AutoAttackGameEvent extends TargetedGameEvent {
+  damageType: DamageTypeEnum.ENERGETIC;
+  baseDamage: number;
 }
 
-export interface AddEffectRequestGameEvent extends GameEvent {
-  eventType: GameEventTypeEnum.ADD_EFFECT_REQUEST;
-  effect: EffectInstance;
+export interface FireAutoAttackGameEvent extends AutoAttackGameEvent, OverTimeGameEvent {
+  fireDamage: number;
+  refreshDuration: boolean;
 }
 
-export interface RemoveEffectGameEvent extends GameEvent {
-  eventType: GameEventTypeEnum.REMOVE_EFFECT_REQUEST;
-  effectId: number;
+export interface ThrowPlasmaGrenadeGameEvent extends ThrowGrenadeGameEvent {
+  gameEventType: GameEventTypeEnum.THROW_PLASMA_GRENADE;
+  damageType: DamageTypeEnum.FIRE;
+}
+
+export interface ThrowEMPGrenadeGameEvent extends ThrowGrenadeGameEvent {
+  gameEventType: GameEventTypeEnum.THROW_PLASMA_GRENADE;
+  damageType: DamageTypeEnum.EMP;
 }

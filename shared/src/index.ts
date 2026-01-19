@@ -5,6 +5,7 @@ export { GameStateTypeEnum } from './enums/game-state-type.enum';
 export { EffectStateTypeEnum } from './enums/effect-state-type.enum';
 export { DamageTypeEnum } from './enums/damage-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
+export { StateEventTypeEnum } from './enums/state-event-type.enum';
 
 export { IRobot } from './types/IRobot';
 export { RobotData } from './types/robot-data';
