@@ -14,6 +14,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "rxjs": "^7.8.2",
     "shared": "file:../shared",
     "ws": "^8.18.3"
   },

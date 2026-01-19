@@ -40,9 +40,9 @@ Chaque robot possède des statistiques qui définissent ses performances en comb
 - Énergétique : dégâts de base
 - Ionique : dégâts qui ignorent les boucliers s'il y en a
 - EMP : dégâts qui bloquent les compétences du robot ennemi (silence)
-- Corrosion : dégâts qui réduisent l'armure du robot
+- Corrosion : dégâts qui ignorent une partie l'armure du robot
 - Surcharge : dégâts classiques qui ont une chance de faire de plus gros dégâts aléatoirement
-- Feu : dégâts sur la durée
+- Feu : applique des dégâts sur la durée
 
 ## Règles du jeu
 Les robots se déplacent sur une grille de cases héxagonales horizontales en mode tour par tour.

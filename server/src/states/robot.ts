@@ -1,19 +1,26 @@
-import { AttributesTypeEnum, StatisticsTypeEnum, Updatable } from 'shared';
-import { Effect } from '../temporal-states/effects/effect';
+import { AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
 import { AttributesRobotManager } from '../managers/robot/attributes.robot-manager';
 import { StatisticsRobotManager } from '../managers/robot/statistics.robot-manager';
 import { EffectRobotManager } from '../managers/robot/effect.robot-manager';
 import { ResourcesRobotManager } from '../managers/robot/resources.robot-manager';
-import { Action } from '../action/action';
+import { Updatable } from '../managers/updatable';
+import { Effect } from '../entities/effects/effect';
 
 export abstract class Robot implements Updatable {
-  private readonly attributesManager = new AttributesRobotManager();
-  private readonly statisticsManager = new StatisticsRobotManager();
-  private readonly effectManager = new EffectRobotManager();
-  private readonly resourcesManager = new ResourcesRobotManager();
+  private readonly attributesManager: AttributesRobotManager;
+  private readonly statisticsManager: StatisticsRobotManager;
+  private readonly resourcesManager: ResourcesRobotManager;
+  private readonly effectManager: EffectRobotManager;
+
+  protected constructor() {
+    this.attributesManager = new AttributesRobotManager();
+    this.statisticsManager = new StatisticsRobotManager();
+    this.resourcesManager = new ResourcesRobotManager();
+    this.effectManager = new EffectRobotManager();
+  }
 
   public update(): void {
-    this.effectManager.update();
+    // this.effectManager.update();
     this.resourcesManager.update();
   }
 
@@ -38,7 +45,7 @@ export abstract class Robot implements Updatable {
   // ---------
 
   public addEffect(effect: Effect): void {
-    this.effectManager.add(effect);
+    // this.effectManager.add(effect);
   }
 
   // ---------
@@ -63,9 +70,5 @@ export abstract class Robot implements Updatable {
 
   public cooling(value: number, enableWhileOverheating: boolean = true): void {
     this.resourcesManager.cooling(value, enableWhileOverheating);
-  }
-
-  public checkResourcesForAction(action: Action): boolean {
-    return this.resourcesManager.checkResourcesForAction(action);
   }
 }

@@ -6,5 +6,5 @@ import { Coordinates } from './coordinates';
  */
 export type PathCoordinate = {
   coordinatesPath: Coordinates[];
-  cost?: number;
+  cost: number;
 };

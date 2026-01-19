@@ -1,5 +1,5 @@
-import { Updatable } from 'shared';
-import { Action } from '../../action/action';
+import { Updatable } from '../updatable';
+import { Action } from '../../entities/action';
 
 export class ResourcesRobotManager implements Updatable {
   private _isAlive: boolean = true;

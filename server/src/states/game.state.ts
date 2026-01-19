@@ -1,13 +1,14 @@
-import { GameStateTypeEnum, Updatable } from 'shared';
+import { GameStateTypeEnum } from 'shared';
 import { ArenaManager } from '../managers/arena.manager';
-import { ActionManager } from '../managers/action.manager';
+import { GameEventManager } from '../managers/game-event.manager';
 import { TurnManager } from '../managers/turn.manager';
+import { Updatable } from '../managers/updatable';
 
-export class Game implements Updatable {
+export class GameState implements Updatable {
   private state: GameStateTypeEnum;
 
   private readonly arenaManager = new ArenaManager();
-  private readonly actionManager = new ActionManager();
+  private readonly actionManager = new GameEventManager();
   private readonly turnManager = new TurnManager();
 
   constructor() {

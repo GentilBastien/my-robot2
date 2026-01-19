@@ -1,7 +1,7 @@
 # MyRobot2
 MyRobot2 est un jeu de combats de robots tour par tour dans un univers de fiction (très vraisemblablement Star Wars car lore infini).
 
-## Game Specs
+## GameState Specs
 Les specs du jeu sont définies dans `GameSpecifications.md` à la racine du projet. 
 
 ## Installation

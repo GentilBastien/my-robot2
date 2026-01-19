@@ -1,4 +1,4 @@
-export enum EffectTypeEnum {
+export enum EffectCategoryTypeEnum {
   /**
    * A positive effect on the entity.
    */
