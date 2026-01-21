@@ -1,6 +1,6 @@
 import { DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { Robot } from '../states/robot';
 import { Tile } from '../tiles/tile';
+import { Robot } from '../states/robot/robot';
 
 export interface GameEvent {
   gameEventType: GameEventTypeEnum;

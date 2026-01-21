@@ -1,7 +1,7 @@
 import { StateEventTypeEnum } from 'shared';
 
 export interface ResponseStateEvent {
-  eventType: StateEventTypeEnum;
+  stateEventType: StateEventTypeEnum;
 }
 
 // export interface DamageResponseGameEvent extends GameEvent {

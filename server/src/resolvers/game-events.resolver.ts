@@ -1,22 +1,18 @@
-import { AddEffectRequestStateEvent, DamageRequestStateEvent, RequestStateEvent } from './request-state-event';
 import { Game } from '../states/game';
 import { DamageTypeEnum, GameEventTypeEnum, StateEventTypeEnum } from 'shared';
 import { EffectInstance } from '../entities/effects/effect-instance';
 import { EffectFire } from '../entities/effects/in-game-effects/effect-fire';
-import { FireAutoAttackGameEvent, GameEvent, ThrowPlasmaGrenadeGameEvent } from './game-event';
+import { FireAutoAttackGameEvent, GameEvent, ThrowPlasmaGrenadeGameEvent } from '../events/game-event';
+import { AddEffectRequestStateEvent, DamageRequestStateEvent, RequestStateEvent } from '../events/request-state-event';
 
 export function resolveGameEvent(game: Game, gameEvent: GameEvent): RequestStateEvent[] {
   switch (gameEvent.gameEventType) {
     case GameEventTypeEnum.THROW_PLASMA_GRENADE: {
-      const arrayGiadù: number[] = [1, 2, 3, 5, 74875, 2, 5, 2, 2, 5, 5, 3];
-      const concatGiadu: string = arrayGiadù.reduce((cumul, curr) => {
-        return cumul + curr.toString();
-      }, '');
-
       return resolveThrowFireGrenade(game, gameEvent as ThrowPlasmaGrenadeGameEvent);
     }
+    default:
+      return [];
   }
-  return [];
 }
 
 export function resolveFireAutoAttack(game: Game, action: FireAutoAttackGameEvent): RequestStateEvent[] {

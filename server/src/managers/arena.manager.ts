@@ -1,7 +1,8 @@
 import { HexagonalGridStructure } from '../structures/hexagonal-grid/hexagonal-grid.structure';
 import { Tile } from '../tiles/tile';
 import { Coordinates } from 'shared';
-import { Updatable } from './updatable';
+import { Updatable } from '../states/updatable';
+import { Robot } from '../states/robot/robot';
 
 export class ArenaManager implements Updatable {
   private arena: HexagonalGridStructure<Tile> | undefined;
@@ -14,7 +15,7 @@ export class ArenaManager implements Updatable {
     throw new Error('Method not implemented.');
   }
 
-  public location(): Coordinates {
+  public location(robot: Robot): Coordinates {
     return { x: 0, y: 0, z: 0 };
   }
 

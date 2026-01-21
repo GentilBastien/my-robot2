@@ -1,6 +1,6 @@
 import { DamageTypeEnum, StateEventTypeEnum } from 'shared';
-import { Robot } from '../states/robot';
 import { EffectInstance } from '../entities/effects/effect-instance';
+import { Robot } from '../states/robot/robot';
 
 export interface RequestStateEvent {
   stateEventType: StateEventTypeEnum;
