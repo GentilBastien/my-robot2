@@ -2,17 +2,29 @@ import { HexagonalGridStructure } from '../structures/hexagonal-grid/hexagonal-g
 import { Tile } from '../tiles/tile';
 import { Coordinates } from 'shared';
 import { Updatable } from '../states/updatable';
-import { Robot } from '../states/robot/robot';
+import { Robot } from '../entities/robot/robot';
+
+interface RobotLocation {
+  robot: Robot;
+  coordinates: Coordinates;
+}
 
 export class ArenaManager implements Updatable {
-  private arena: HexagonalGridStructure<Tile> | undefined;
+  private readonly arena: HexagonalGridStructure<Tile>;
+  private readonly robots: RobotLocation[];
 
-  public enterArena(arena: HexagonalGridStructure<Tile>): void {
-    this.arena = arena;
+  constructor(robots: Robot[]) {
+    this.arena = new HexagonalGridStructure<Tile>(10, 10);
+    this.robots = [];
   }
 
-  public update(): void {
-    throw new Error('Method not implemented.');
+  public update(): void {}
+
+  private mapToRobotLocation(robot: Robot): RobotLocation {
+    return {
+      robot,
+      coordinates: { x: 0, y: 0, z: 0 },
+    };
   }
 
   public location(robot: Robot): Coordinates {

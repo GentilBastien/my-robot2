@@ -1,9 +1,9 @@
-import { Updatable } from '../updatable';
 import { AttributesRobotManager } from './attributes.robot-manager';
 import { StatisticsRobotManager } from './statistics.robot-manager';
 import { ResourcesRobotManager } from './resources.robot-manager';
 import { AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
-import { Effect } from '../../entities/effects/effect';
+import { Effect } from '../effects/effect';
+import { Updatable } from '../../states/updatable';
 
 export abstract class Robot implements Updatable {
   private readonly attributesManager: AttributesRobotManager;
