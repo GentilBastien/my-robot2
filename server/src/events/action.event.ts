@@ -1,9 +1,11 @@
-import { DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { Tile } from '../tiles/tile';
-import { Robot } from '../states/robot/robot';
+import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
+import { Robot } from '@entities/robot/robot';
+import { TileState } from '@states/tile-state';
+import { GameEvent } from '@events/game.events';
 
-export interface GameEvent {
-  gameEventType: GameEventTypeEnum;
+export interface ActionEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.ACTION;
+  actionEventType: ActionEventTypeEnum;
   source: Robot;
 }
 
@@ -11,12 +13,12 @@ export interface GameEvent {
 // UNEXPORTED
 // --------
 
-interface TargetedGameEvent extends GameEvent {
+interface TargetedGameEvent extends ActionEvent {
   target: Robot;
 }
 
-interface AOEGameEvent extends GameEvent {
-  targetCell: Tile;
+interface AOEGameEvent extends ActionEvent {
+  targetCell: TileState;
   radius: number;
 }
 
@@ -43,11 +45,11 @@ export interface FireAutoAttackGameEvent extends AutoAttackGameEvent, OverTimeGa
 }
 
 export interface ThrowPlasmaGrenadeGameEvent extends ThrowGrenadeGameEvent {
-  gameEventType: GameEventTypeEnum.THROW_PLASMA_GRENADE;
+  actionEventType: ActionEventTypeEnum.THROW_PLASMA_GRENADE;
   damageType: DamageTypeEnum.FIRE;
 }
 
 export interface ThrowEMPGrenadeGameEvent extends ThrowGrenadeGameEvent {
-  gameEventType: GameEventTypeEnum.THROW_PLASMA_GRENADE;
+  actionEventType: ActionEventTypeEnum.THROW_PLASMA_GRENADE;
   damageType: DamageTypeEnum.EMP;
 }

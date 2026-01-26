@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsc && tsc-alias --project tsconfig.build.json",
     "start": "npx tsx src/index.ts"
   },
   "keywords": [],

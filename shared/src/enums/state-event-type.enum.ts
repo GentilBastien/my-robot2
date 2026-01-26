@@ -5,4 +5,5 @@ export enum StateEventTypeEnum {
   HEAL,
   SHIELD,
   MOVEMENT,
+  ROBOT_DESTROYED,
 }

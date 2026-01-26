@@ -1,5 +1,5 @@
 import { ActionInstance } from './action-instance';
-import { GameEvent } from '../../events/game-event';
+import { GameEvent } from '@events/game.events';
 
 export interface Action {
   manaCost: number;

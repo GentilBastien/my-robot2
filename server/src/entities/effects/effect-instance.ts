@@ -1,5 +1,5 @@
 import { Effect } from './effect';
-import { Robot } from '../../states/robot/robot';
+import { Robot } from '../robot/robot';
 
 export interface EffectInstance {
   id: string;

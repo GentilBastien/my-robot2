@@ -1,8 +1,10 @@
-import { DamageTypeEnum, StateEventTypeEnum } from 'shared';
-import { EffectInstance } from '../entities/effects/effect-instance';
-import { Robot } from '../states/robot/robot';
+import { DamageTypeEnum, GameEventTypeEnum, StateEventTypeEnum } from 'shared';
+import { EffectInstance } from '@entities/effects/effect-instance';
+import { Robot } from '@entities/robot/robot';
+import { GameEvent } from '@events/game.events';
 
-export interface RequestStateEvent {
+export interface RequestStateEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.REQUEST_STATE;
   stateEventType: StateEventTypeEnum;
 }
 

@@ -5,10 +5,10 @@ import { AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
 import { Effect } from '../effects/effect';
 import { Updatable } from '../../states/updatable';
 
-export abstract class Robot implements Updatable {
-  private readonly attributesManager: AttributesRobotManager;
-  private readonly statisticsManager: StatisticsRobotManager;
-  private readonly resourcesManager: ResourcesRobotManager;
+export abstract class Robot {
+  private readonly attributesManager: AttributesRobotManager; //should be events
+  private readonly statisticsManager: StatisticsRobotManager; //should be events
+  private readonly resourcesManager: ResourcesRobotManager; //should be events
 
   protected constructor() {
     this.attributesManager = new AttributesRobotManager();

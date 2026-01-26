@@ -1,5 +1,5 @@
 import { Action } from './action';
-import { Robot } from '../../states/robot/robot';
+import { Robot } from '../../entities/robot/robot';
 
 export interface ActionInstance {
   id: number;

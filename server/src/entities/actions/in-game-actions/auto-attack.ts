@@ -1,7 +1,8 @@
 import { Action } from '../action';
 import { ActionInstance } from '../action-instance';
-import { FireAutoAttackGameEvent, GameEvent } from '../../../events/game-event';
-import { DamageTypeEnum, GameEventTypeEnum } from 'shared';
+import { FireAutoAttackGameEvent } from '@events/action.event';
+import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
+import { GameEvent } from '@events/game.events';
 
 export class AutoAttack implements Action {
   public range: number = 2;
@@ -11,7 +12,8 @@ export class AutoAttack implements Action {
 
   public onApply(actionInstance: ActionInstance): GameEvent[] {
     const autoAttackTargetedGameEvent: FireAutoAttackGameEvent = {
-      gameEventType: GameEventTypeEnum.AUTO_ATTACK,
+      gameEventType: GameEventTypeEnum.ACTION,
+      actionEventType: ActionEventTypeEnum.AUTO_ATTACK,
       source: actionInstance.source,
       target: actionInstance.target,
       baseDamage: this.baseAmount,

@@ -1,5 +1,15 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@entities/*": ["entities/*"],
+      "@events/*": ["events/*"],
+      "@managers/*": ["managers/*"],
+      "@resolvers/*": ["event-resolvers/*"],
+      "@states/*": ["states/*"],
+      "@systems/*": ["systems/*"],
+      "@structures/*": ["structures/*"]
+    },
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",

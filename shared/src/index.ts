@@ -2,8 +2,8 @@ export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
 export { EffectCategoryTypeEnum } from './enums/effect-category-type.enum';
 export { GameStateTypeEnum } from './enums/game-state-type.enum';
-export { EffectStateTypeEnum } from './enums/effect-state-type.enum';
 export { DamageTypeEnum } from './enums/damage-type.enum';
+export { ActionEventTypeEnum } from './enums/action-event-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { StateEventTypeEnum } from './enums/state-event-type.enum';
 
