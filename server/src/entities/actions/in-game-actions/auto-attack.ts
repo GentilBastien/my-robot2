@@ -25,7 +25,7 @@ export class AutoAttack implements Action {
     return [autoAttackTargetedGameEvent];
   }
 
-  public onTurnEnd(_: ActionInstance): GameEvent[] {
+  public onTurnEndAfterApply(_: ActionInstance): GameEvent[] {
     return [];
   }
 }

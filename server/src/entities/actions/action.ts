@@ -7,5 +7,5 @@ export interface Action {
   range: number;
   baseAmount: number;
   onApply(actionInstance: ActionInstance): GameEvent[];
-  onTurnEnd(actionInstance: ActionInstance): GameEvent[];
+  onTurnEndAfterApply(actionInstance: ActionInstance): GameEvent[];
 }
