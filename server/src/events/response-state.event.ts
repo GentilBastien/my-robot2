@@ -1,5 +1,5 @@
 import { GameEventTypeEnum, StateEventTypeEnum } from 'shared';
-import { Robot } from '@entities/robot/robot';
+import { RobotState } from '@states/robot.state';
 import { GameEvent } from '@events/game.events';
 
 export interface ResponseStateEvent extends GameEvent {
@@ -9,8 +9,8 @@ export interface ResponseStateEvent extends GameEvent {
 
 export interface DamageResponseStateEvent extends ResponseStateEvent {
   stateEventType: StateEventTypeEnum.DAMAGE;
-  source: Robot;
-  target: Robot;
+  source: RobotState;
+  target: RobotState;
   damageDealt: number;
   isDodged: boolean;
   isCritical: boolean;
@@ -19,5 +19,5 @@ export interface DamageResponseStateEvent extends ResponseStateEvent {
 
 export interface RobotDestroyedResponseStateEvent extends ResponseStateEvent {
   stateEventType: StateEventTypeEnum.ROBOT_DESTROYED;
-  robot: Robot;
+  robot: RobotState;
 }

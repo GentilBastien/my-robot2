@@ -10,7 +10,7 @@ import { ResponseStateEventResolver } from '@resolvers/response-state.event-reso
 /**
  * Events are being reduced here.
  */
-export class EventPipeSystem {
+export class EventPipeEventHandler {
   public handleGameEvent(
     readonlyGameState: Readonly<GameState>,
     gameEvent: GameEvent,

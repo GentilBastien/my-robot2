@@ -108,23 +108,23 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     while (openList.elements.length > 0) {
       const currentNode: HexagonalCellStructure<T> = openList.poll()!;
       closedList.add(currentNode);
-      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNode, 1, false);
-      voisins = voisins.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
-      voisins.forEach(voisin => {
+      let adjacentCells: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNode, 1, false);
+      adjacentCells = adjacentCells.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
+      adjacentCells.forEach(voisin => {
         voisin.weightFromStart = currentNode.weightFromStart + voisin.weight();
         voisin.distanceFromTarget = voisin.euclideanDistanceFrom(target);
         voisin.travelSegments = currentNode.travelSegments + 1;
       });
-      openList.addAll(voisins);
+      openList.addAll(adjacentCells);
     }
     const shortestPath: HexagonalCellStructure<T>[] = [];
     let currentNodePath = target;
     while (!currentNodePath.hasSameLocationWith(start)) {
       shortestPath.push(currentNodePath);
-      let voisins: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNodePath, 1, false);
-      voisins = voisins.filter(voisin => closedList.has(voisin));
+      let adjacentCells: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNodePath, 1, false);
+      adjacentCells = adjacentCells.filter(voisin => closedList.has(voisin));
       const tempList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
-      tempList.addAll(voisins);
+      tempList.addAll(adjacentCells);
       currentNodePath = tempList.elements[0];
       if (currentNodePath === undefined) {
         return null;

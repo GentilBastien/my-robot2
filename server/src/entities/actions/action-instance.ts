@@ -1,10 +1,10 @@
 import { Action } from './action';
-import { Robot } from '../../entities/robot/robot';
+import { RobotState } from '@states/robot.state';
 
 export interface ActionInstance {
   id: number;
-  source: Robot;
-  target: Robot;
+  source: RobotState;
+  target: RobotState;
   action: Action;
   hasPowerSupply: boolean;
 }

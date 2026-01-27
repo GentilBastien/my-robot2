@@ -1,5 +1,5 @@
-import { GameEventTypeEnum } from 'shared';
-import { Robot } from '@entities/robot/robot';
+import { Coordinates, GameEventTypeEnum } from 'shared';
+import { RobotState } from '@states/robot.state';
 
 export interface GameEvent {
   gameEventType: GameEventTypeEnum;
@@ -9,21 +9,22 @@ export interface GameEvent {
 export interface TurnGameEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.TURN_START | GameEventTypeEnum.TURN_END;
   turnNumber: number;
-  turnRobot: Robot;
+  turnRobotId: string;
 }
 
-export interface NextTurnGameEvent extends GameEvent {
-  gameEventType: GameEventTypeEnum.NEXT_TURN;
-  nextTurnNumber: number;
-  nextTurnRobot: Robot;
+export interface AdvanceTurnGameEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.ADVANCE_TURN;
+  turnNumberAdvanced: number;
+  turnRobotIdAdvanced: string;
 }
 
 export interface RobotJoinedGameEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
-  robot: Robot;
+  coordinates: Coordinates;
+  robot: RobotState;
 }
 
 export interface RobotDestroyedGameEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.ROBOT_DESTROYED;
-  robot: Robot;
+  robot: RobotState;
 }

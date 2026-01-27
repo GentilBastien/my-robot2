@@ -1,10 +1,10 @@
 import { Effect } from './effect';
-import { Robot } from '../robot/robot';
 
 export interface EffectInstance {
   id: string;
-  source: Robot;
-  target: Robot;
+  sourceId: string;
+  targetId: string;
+  tileId: string;
   effect: Effect;
   stacks: number;
   remainingTurns: number;

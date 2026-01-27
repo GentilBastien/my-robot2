@@ -1,6 +1,5 @@
 import { DamageTypeEnum, GameEventTypeEnum, StateEventTypeEnum } from 'shared';
 import { EffectInstance } from '@entities/effects/effect-instance';
-import { Robot } from '@entities/robot/robot';
 import { GameEvent } from '@events/game.events';
 
 export interface RequestStateEvent extends GameEvent {
@@ -11,8 +10,16 @@ export interface RequestStateEvent extends GameEvent {
 export interface DamageRequestStateEvent extends RequestStateEvent {
   stateEventType: StateEventTypeEnum.DAMAGE;
   damageType: DamageTypeEnum;
-  source: Robot;
-  target: Robot;
+  sourceId: string;
+  targetId: string;
+  baseDamage: number;
+}
+
+export interface AOEDamageRequestStateEvent extends RequestStateEvent {
+  stateEventType: StateEventTypeEnum.DAMAGE;
+  damageType: DamageTypeEnum;
+  sourceId: string;
+  tilesId: string[];
   baseDamage: number;
 }
 

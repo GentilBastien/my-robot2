@@ -37,8 +37,8 @@ export class EffectFire implements Effect {
       gameEventType: GameEventTypeEnum.REQUEST_STATE,
       stateEventType: StateEventTypeEnum.DAMAGE,
       damageType: DamageTypeEnum.FIRE,
-      source: effectInstance.source,
-      target: effectInstance.target,
+      sourceId: effectInstance.sourceId,
+      targetId: effectInstance.targetId,
       baseDamage: 1,
     };
     return [damageIntent];

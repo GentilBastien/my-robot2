@@ -1,12 +1,12 @@
 import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { Robot } from '@entities/robot/robot';
+import { RobotState } from '@states/robot.state';
 import { TileState } from '@states/tile-state';
 import { GameEvent } from '@events/game.events';
 
 export interface ActionEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.ACTION;
   actionEventType: ActionEventTypeEnum;
-  source: Robot;
+  source: RobotState;
 }
 
 // --------
@@ -14,7 +14,7 @@ export interface ActionEvent extends GameEvent {
 // --------
 
 interface TargetedGameEvent extends ActionEvent {
-  target: Robot;
+  target: RobotState;
 }
 
 interface AOEGameEvent extends ActionEvent {

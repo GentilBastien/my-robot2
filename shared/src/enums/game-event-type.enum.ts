@@ -1,7 +1,7 @@
 export enum GameEventTypeEnum {
   TURN_START,
   TURN_END,
-  NEXT_TURN,
+  ADVANCE_TURN,
   ROBOT_DESTROYED,
   ROBOT_JOINED,
   ACTION,

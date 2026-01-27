@@ -1,25 +1,25 @@
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
-import { Robot } from '@entities/robot/robot';
+import { RobotState } from '@states/robot.state';
 import { Comparator } from 'shared';
 
 export class TurnManager {
-  private turns: CyclicListStructure<Robot>;
+  private turns: CyclicListStructure<RobotState>;
   private currentTurnNumber: number;
-  private currentTurnRobot: Robot | undefined;
+  private currentTurnRobot: RobotState | undefined;
 
-  constructor(robots: Robot[]) {
-    const orderToPlayComparator: Comparator<Robot> = {
-      compare(item1: Robot, item2: Robot): number {
+  constructor(robots: RobotState[]) {
+    const orderToPlayComparator: Comparator<RobotState> = {
+      compare(item1: RobotState, item2: RobotState): number {
         return 1;
       },
     };
-    this.turns = new CyclicListStructure<Robot>(orderToPlayComparator);
+    this.turns = new CyclicListStructure<RobotState>(orderToPlayComparator);
     this.addRobotsToCyclicList(robots);
     this.currentTurnNumber = 0;
     this.currentTurnRobot = this.turns.entryPoint;
   }
 
-  private addRobotsToCyclicList(robots: Robot[]): void {
+  private addRobotsToCyclicList(robots: RobotState[]): void {
     for (const robot of robots) {
       this.turns.insertItem(robot);
     }

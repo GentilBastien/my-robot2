@@ -7,7 +7,7 @@
       "@managers/*": ["managers/*"],
       "@resolvers/*": ["event-resolvers/*"],
       "@states/*": ["states/*"],
-      "@systems/*": ["systems/*"],
+      "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"]
     },
     "target": "ES2020",
