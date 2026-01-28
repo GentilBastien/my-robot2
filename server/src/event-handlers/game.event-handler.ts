@@ -4,7 +4,6 @@ import { PriorityListStructure } from '@structures/priority-list/priority-list.s
 import { TurnEventHandler } from '@handlers/turn.event-handler';
 import { EffectEventHandler } from '@handlers/effect.event-handler';
 import { EventPipeEventHandler } from '@handlers/event-pipe.event-handler';
-import { ArenaEventHandler } from '@handlers/arena.event-handler';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
@@ -16,7 +15,6 @@ export class GameEventHandler {
   private readonly turnEventHandler = new TurnEventHandler();
   private readonly effectEventHandler = new EffectEventHandler();
   private readonly eventPipeEventHandler = new EventPipeEventHandler();
-  private readonly arenaEventHandler = new ArenaEventHandler();
 
   constructor(initialState: GameState) {
     this.gameState = initialState;
@@ -28,15 +26,25 @@ export class GameEventHandler {
   }
 
   public receiveGameEventFromClient(gameEvent: GameEvent): void {
+    // more likely "empty" GameEvents like
+    // TurnGameEvent {
+    //   gameEventType: GameEventTypeEnum.TURN_START,
+    // }
+    // the goal is to have
+    // TurnGameEvent {
+    //   gameEventType: GameEventTypeEnum.TURN_START,
+    //   turnNumber: 5,
+    //   turnRobotId: 72,
+    // };
     this.dispatchGameEvent(gameEvent);
   }
 
   private dispatchGameEvent(event: GameEvent): void {
     // Systems can eventually trigger more GameEvents related to the dispatched GameEvent
     // For example a NEXT_TURN GameEvent will trigger all effects GameEvents that must be reapplied every turn.
+    // It can also populate more accurately an event since all GameEvent properties are optional
     const turnEvents = this.turnEventHandler.handleGameEvent(this.gameState, event);
     const effectEvents = this.effectEventHandler.handleGameEvent(this.gameState, event);
-    const arenaEvents = this.arenaEventHandler.handleGameEvent(this.gameState, event);
 
     // Reduce event -> new state
     this.gameState = this.eventPipeEventHandler.handleGameEvent(this.gameState, event, this.pendingGameEvents);

@@ -1,7 +1,6 @@
 import { Weight } from 'shared';
 
 export interface TileState extends Weight {
-  name: string;
+  id: string;
   weight: number;
-  robotId: string;
 }

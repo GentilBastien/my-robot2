@@ -7,6 +7,7 @@ export interface Effect {
   ticking: EffectTickingConfig;
   stacking: EffectStackingConfig;
   onApply(effectInstance: EffectInstance): GameEvent[];
+  onAction(effectInstance: EffectInstance): GameEvent[];
   onTurnStart(effectInstance: EffectInstance): GameEvent[];
   onTurnEnd(effectInstance: EffectInstance): GameEvent[];
   onEveryTurnStart(effectInstance: EffectInstance): GameEvent[];
