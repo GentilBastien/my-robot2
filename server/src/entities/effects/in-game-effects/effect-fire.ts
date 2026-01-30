@@ -1,12 +1,7 @@
 import { Effect, EffectStackingConfig, EffectTickingConfig } from '../effect';
-import { DamageTypeEnum, EffectCategoryTypeEnum, GameEventTypeEnum, StateEventTypeEnum } from 'shared';
+import { DamageTypeEnum, EffectCategoryTypeEnum, GameEventTypeEnum } from 'shared';
 import { EffectInstance } from '../effect-instance';
-import {
-  AddEffectRequestStateEvent,
-  DamageRequestStateEvent,
-  RemoveEffectRequestStateEvent,
-} from '@events/request-state.event';
-import { GameEvent } from '@events/game.events';
+import { RequestEvent } from '@events/request.event';
 
 export class EffectFire implements Effect {
   public type: EffectCategoryTypeEnum = EffectCategoryTypeEnum.NEGATIVE;
@@ -23,7 +18,7 @@ export class EffectFire implements Effect {
     refreshDuration: true,
   };
 
-  public onApply(effectInstance: EffectInstance): GameEvent[] {
+  public onApply(effectInstance: EffectInstance): RequestEvent[] {
     const addEffectRequest: AddEffectRequestStateEvent = {
       gameEventType: GameEventTypeEnum.REQUEST_STATE,
       stateEventType: StateEventTypeEnum.ADD_EFFECT,
@@ -32,9 +27,8 @@ export class EffectFire implements Effect {
     return [addEffectRequest];
   }
 
-  public onTurnStart(effectInstance: EffectInstance): GameEvent[] {
+  public onTurnStart(effectInstance: EffectInstance): RequestEvent[] {
     const damageIntent: DamageRequestStateEvent = {
-      gameEventType: GameEventTypeEnum.REQUEST_STATE,
       stateEventType: StateEventTypeEnum.DAMAGE,
       damageType: DamageTypeEnum.FIRE,
       sourceId: effectInstance.sourceId,
@@ -44,19 +38,19 @@ export class EffectFire implements Effect {
     return [damageIntent];
   }
 
-  public onTurnEnd(_: EffectInstance): GameEvent[] {
+  public onTurnEnd(_: EffectInstance): RequestEvent[] {
     return [];
   }
 
-  public onEveryTurnStart(effectInstance: EffectInstance): GameEvent[] {
+  public onEveryTurnStart(effectInstance: EffectInstance): RequestEvent[] {
     return [];
   }
 
-  public onEveryTurnEnd(effectInstance: EffectInstance): GameEvent[] {
+  public onEveryTurnEnd(effectInstance: EffectInstance): RequestEvent[] {
     return [];
   }
 
-  public onExpire(effectInstance: EffectInstance): GameEvent[] {
+  public onExpire(effectInstance: EffectInstance): RequestEvent[] {
     const addEffectRequest: RemoveEffectRequestStateEvent = {
       gameEventType: GameEventTypeEnum.REQUEST_STATE,
       stateEventType: StateEventTypeEnum.REMOVE_EFFECT,

@@ -1,12 +1,12 @@
 import { GameState } from '@states/game-state';
-import { AdvanceTurnGameEvent, GameEvent, TurnGameEvent } from '@events/game.events';
 import { GameEventTypeEnum } from 'shared';
+import { RequestEvent } from '@events/request.event';
 
 export class EffectEventHandler {
-  public handleGameEvent(state: GameState, event: GameEvent): GameEvent[] {
-    switch (event.gameEventType) {
+  public handleGameEvent(state: GameState, gameEventTypeEnum: GameEventTypeEnum): RequestEvent[] {
+    switch (gameEventTypeEnum) {
       case GameEventTypeEnum.TURN_START: {
-        return this.onTurnStart(state, event as TurnGameEvent);
+        return this.onTurnStart(state);
       }
       case GameEventTypeEnum.TURN_END: {
         return this.onTurnEnd(state, event as TurnGameEvent);

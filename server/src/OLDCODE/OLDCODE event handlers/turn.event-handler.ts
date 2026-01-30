@@ -1,11 +1,4 @@
 import { GameState } from '@states/game-state';
-import {
-  AdvanceTurnGameEvent,
-  GameEvent,
-  RobotDestroyedGameEvent,
-  RobotJoinedGameEvent,
-  TurnGameEvent,
-} from '@events/game.events';
 import { Comparator, GameEventTypeEnum } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 

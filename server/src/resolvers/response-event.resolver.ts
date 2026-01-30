@@ -1,13 +1,13 @@
 import { GameState } from '@states/game-state';
-import { ResponseStateEvent } from '@events/response-state.event';
-import { GameEvent } from '@events/game.events';
+import { ResponseEvent } from '@events/response.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
+import { RequestEvent } from '@events/request.event';
 
-export class ResponseStateEventResolver {
+export class ResponseEventResolver {
   public static resolve(
     readonlyGameState: GameState,
-    responseStateEvent: ResponseStateEvent,
-    pendingGameEvents: PriorityListStructure<GameEvent>
+    responseStateEvent: ResponseEvent,
+    pendingGameEvents: PriorityListStructure<RequestEvent>
   ): GameState {
     //return a NEW GameState
     //must not mutate the readonlyGameState

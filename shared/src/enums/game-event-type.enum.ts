@@ -5,6 +5,4 @@ export enum GameEventTypeEnum {
   ROBOT_DESTROYED,
   ROBOT_JOINED,
   ACTION,
-  REQUEST_STATE,
-  RESPONSE_STATE,
 }

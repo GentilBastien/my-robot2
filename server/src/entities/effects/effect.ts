@@ -1,18 +1,18 @@
 import { EffectCategoryTypeEnum } from 'shared';
 import { EffectInstance } from './effect-instance';
-import { GameEvent } from '@events/game.events';
+import { RequestEvent } from '@events/request.event';
 
 export interface Effect {
   type: EffectCategoryTypeEnum;
   ticking: EffectTickingConfig;
   stacking: EffectStackingConfig;
-  onApply(effectInstance: EffectInstance): GameEvent[];
-  onAction(effectInstance: EffectInstance): GameEvent[];
-  onTurnStart(effectInstance: EffectInstance): GameEvent[];
-  onTurnEnd(effectInstance: EffectInstance): GameEvent[];
-  onEveryTurnStart(effectInstance: EffectInstance): GameEvent[];
-  onEveryTurnEnd(effectInstance: EffectInstance): GameEvent[];
-  onExpire(effectInstance: EffectInstance): GameEvent[];
+  onApply(effectInstance: EffectInstance): RequestEvent[];
+  onAction(effectInstance: EffectInstance): RequestEvent[];
+  onTurnStart(effectInstance: EffectInstance): RequestEvent[];
+  onTurnEnd(effectInstance: EffectInstance): RequestEvent[];
+  onEveryTurnStart(effectInstance: EffectInstance): RequestEvent[];
+  onEveryTurnEnd(effectInstance: EffectInstance): RequestEvent[];
+  onExpire(effectInstance: EffectInstance): RequestEvent[];
 }
 
 export interface EffectTickingConfig {
