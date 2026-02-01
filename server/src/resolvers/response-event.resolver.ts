@@ -6,7 +6,7 @@ import { RequestEvent } from '@events/request.event';
 export class ResponseEventResolver {
   public static resolve(
     readonlyGameState: GameState,
-    responseStateEvent: ResponseEvent,
+    responseEvent: ResponseEvent,
     pendingGameEvents: PriorityListStructure<RequestEvent>
   ): GameState {
     //return a NEW GameState
