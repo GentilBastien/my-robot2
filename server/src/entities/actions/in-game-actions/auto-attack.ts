@@ -1,8 +1,7 @@
 import { Action } from '../action';
 import { ActionInstance } from '../action-instance';
-import { FireAutoAttackGameEvent } from '@events/action.event';
-import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { GameEvent } from '@events/game.events';
+import { RequestActionEvent } from '@events/request-action.event';
+import { RequestEvent } from '@events/request.event';
 
 export class AutoAttack implements Action {
   public range: number = 2;
@@ -10,22 +9,11 @@ export class AutoAttack implements Action {
   public manaCost: number = 0;
   public overheatingCost: number = 0;
 
-  public onApply(actionInstance: ActionInstance): GameEvent[] {
-    const autoAttackTargetedGameEvent: FireAutoAttackGameEvent = {
-      gameEventType: GameEventTypeEnum.ACTION,
-      actionEventType: ActionEventTypeEnum.AUTO_ATTACK,
-      source: actionInstance.source,
-      target: actionInstance.target,
-      baseDamage: this.baseAmount,
-      damageType: DamageTypeEnum.ENERGETIC,
-      totalTurns: 5,
-      refreshDuration: true,
-      fireDamage: 2,
-    };
-    return [autoAttackTargetedGameEvent];
+  public onApply(actionInstance: ActionInstance): RequestActionEvent {
+    return {} as RequestActionEvent;
   }
 
-  public onTurnEndAfterApply(_: ActionInstance): GameEvent[] {
+  public onTurnEndAfterApply(_: ActionInstance): RequestEvent[] {
     return [];
   }
 }

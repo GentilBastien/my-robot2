@@ -1,4 +1,4 @@
-import { GameState } from '@states/game-state';
+import { GameState } from '@states/game.state';
 import { Comparator, GameEventTypeEnum } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 

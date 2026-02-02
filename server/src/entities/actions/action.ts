@@ -1,11 +1,12 @@
 import { ActionInstance } from './action-instance';
-import { GameEvent } from '@events/game.events';
+import { RequestEvent } from '@events/request.event';
+import { RequestActionEvent } from '@events/request-action.event';
 
 export interface Action {
   manaCost: number;
   overheatingCost: number;
   range: number;
   baseAmount: number;
-  onApply(actionInstance: ActionInstance): GameEvent[];
-  onTurnEndAfterApply(actionInstance: ActionInstance): GameEvent[];
+  onApply(actionInstance: ActionInstance): RequestActionEvent;
+  onTurnEndAfterApply(actionInstance: ActionInstance): RequestEvent[];
 }

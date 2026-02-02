@@ -1,4 +1,4 @@
-import { GameState } from '@states/game-state';
+import { GameState } from '@states/game.state';
 import { RequestEvent } from '@events/request.event';
 import { DamageResponseEvent, ResponseEvent } from '@events/response.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';

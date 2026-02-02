@@ -1,4 +1,4 @@
-import { GameState } from '@states/game-state';
+import { GameState } from '@states/game.state';
 import { RequestEvent } from '@events/request.event';
 import { GameEventTypeEnum } from 'shared';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
