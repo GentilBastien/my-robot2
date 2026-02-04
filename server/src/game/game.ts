@@ -1,7 +1,7 @@
 import { GameState } from '@states/game.state';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestEvent } from '@events/request.event';
-import { GameEventTypeEnum } from 'shared';
+import { Comparator, GameEventTypeEnum } from 'shared';
 import { RequestEventResolver } from '@resolvers/request-event.resolver';
 import { ResponseEventResolver } from '@resolvers/response-event.resolver';
 import { GameEventResolver } from '@resolvers/game-event.resolver';
@@ -10,17 +10,18 @@ import { ResponseEvent } from '@events/response.event';
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
  */
-export class GameEventHandler {
+export class Game {
   private gameState: GameState;
-  private readonly pendingGameEvents: PriorityListStructure<RequestEvent>;
+  private readonly pendingRequestEvents: PriorityListStructure<RequestEvent>;
 
   constructor(initialState: GameState) {
     this.gameState = initialState;
-    this.pendingGameEvents = new PriorityListStructure({
+    const comparator: Comparator<RequestEvent> = {
       compare(item1: RequestEvent, item2: RequestEvent): number {
         return (item1.priority ?? 0) - (item2.priority ?? 0);
       },
-    });
+    };
+    this.pendingRequestEvents = new PriorityListStructure(comparator);
   }
 
   public receiveGameEventFromClient(gameEventTypeEnum: GameEventTypeEnum): void {
@@ -28,8 +29,8 @@ export class GameEventHandler {
   }
 
   private dispatchGameEvent(gameEventTypeEnum: GameEventTypeEnum): void {
-    const requestEvent = GameEventResolver.resolve(this.gameState, gameEventTypeEnum, this.pendingGameEvents);
-    this.pendingGameEvents.add(requestEvent);
+    const requestEvent = GameEventResolver.resolve(this.gameState, gameEventTypeEnum, this.pendingRequestEvents);
+    this.pendingRequestEvents.add(requestEvent);
 
     this.gameState = this.resolveAllPendingGameEvents(this.gameState);
   }
@@ -38,17 +39,17 @@ export class GameEventHandler {
     let updatedGameState: GameState = readonlyGameState;
     let currentRequestEvent: RequestEvent | undefined;
     do {
-      currentRequestEvent = this.pendingGameEvents.poll();
+      currentRequestEvent = this.pendingRequestEvents.poll();
       if (currentRequestEvent === undefined) {
         break;
       }
       const responseEvent: ResponseEvent = RequestEventResolver.resolve(
         updatedGameState,
         currentRequestEvent,
-        this.pendingGameEvents
+        this.pendingRequestEvents
       );
-      updatedGameState = ResponseEventResolver.resolve(updatedGameState, responseEvent, this.pendingGameEvents);
-    } while (this.pendingGameEvents.elements.length > 0);
+      updatedGameState = ResponseEventResolver.resolve(updatedGameState, responseEvent, this.pendingRequestEvents);
+    } while (this.pendingRequestEvents.elements.length > 0);
     return updatedGameState;
   }
 }
