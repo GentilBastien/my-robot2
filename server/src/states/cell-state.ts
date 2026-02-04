@@ -1,6 +1,6 @@
 import { Weight } from 'shared';
 
-export interface TileState extends Weight {
+export interface CellState extends Weight {
   id: string;
   weight: number;
 }

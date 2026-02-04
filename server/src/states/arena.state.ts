@@ -1,6 +1,7 @@
-import { TileState } from '@states/tile.state';
+import { CellState } from '@states/cell-state';
+import { Coordinates } from 'shared';
 
 export interface ArenaState {
-  tiles: TileState[];
-  robotPositions: Map<string, string>;
+  cells: CellState[];
+  robotPositions: Map<string, Coordinates>; // robotId linked to a coordinate
 }
