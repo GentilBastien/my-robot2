@@ -75,4 +75,9 @@ export interface CyclicListStructureInterface<T> {
    * if the list is empty.
    */
   entryPoint: T | undefined;
+
+  /**
+   * The item at the specified location of the internal cursor
+   */
+  currentItem: T | undefined;
 }

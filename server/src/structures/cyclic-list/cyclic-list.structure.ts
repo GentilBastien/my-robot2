@@ -69,6 +69,10 @@ export class CyclicListStructure<T> implements CyclicListStructureInterface<T> {
     return this._heaviestNode?.item;
   }
 
+  public get currentItem(): T | undefined {
+    return this._currentNode?.item;
+  }
+
   private insertNodeBefore(newNode: ItemNode<T>, nextNode: ItemNode<T>): void {
     newNode.next = nextNode;
     newNode.previous = nextNode.previous;

@@ -1,6 +1,9 @@
 export interface ResourcesState {
   isAlive: boolean;
 
+  totalMove: number;
+  remainingMove: number;
+
   hp: number;
   maxHp: number;
   regenHp: number;

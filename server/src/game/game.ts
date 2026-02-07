@@ -6,16 +6,20 @@ import { RequestEventResolver } from '@resolvers/request-event.resolver';
 import { ResponseEventResolver } from '@resolvers/response-event.resolver';
 import { GameEventResolver } from '@resolvers/game-event.resolver';
 import { ResponseEvent } from '@events/response.event';
+import { GameCalculator } from './game.calculator';
+import { GameConfig } from './game.config';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
  */
 export class Game {
   private gameState: GameState;
+  private readonly gameCalculator: GameCalculator;
   private readonly pendingRequestEvents: PriorityListStructure<RequestEvent>;
 
-  constructor(initialState: GameState) {
-    this.gameState = initialState;
+  constructor(gameConfig: GameConfig) {
+    this.gameState = gameConfig.gameState;
+    this.gameCalculator = new GameCalculator(gameConfig);
     const comparator: Comparator<RequestEvent> = {
       compare(item1: RequestEvent, item2: RequestEvent): number {
         return (item1.priority ?? 0) - (item2.priority ?? 0);
