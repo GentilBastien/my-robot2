@@ -13,6 +13,7 @@ type InitiativeRobot = {
 };
 
 export class GameCalculator implements GameCalculatorInterface {
+  //to think: maybe hexGrid and turnOrder should be in gameState
   private readonly hexGrid: HexagonalGridStructure<Weight>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
 
