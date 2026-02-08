@@ -1,5 +1,5 @@
 import { EffectInstance } from '@entities/effects/effect-instance';
 
 export interface EffectState {
-  activeEffects: EffectInstance[];
+  activeEffects: Record<string, EffectInstance>;
 }

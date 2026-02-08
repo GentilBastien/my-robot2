@@ -5,7 +5,7 @@ import { EffectState } from '@states/effect.state';
 import { RobotState } from '@states/robot.state';
 
 export interface GameState {
-  robots: RobotState[];
+  robots: Record<string, RobotState>;
   state: GameStateTypeEnum;
   arenaState: ArenaState;
   effectState: EffectState;

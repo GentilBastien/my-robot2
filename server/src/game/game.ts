@@ -6,8 +6,8 @@ import { RequestEventResolver } from '@resolvers/request-event.resolver';
 import { ResponseEventResolver } from '@resolvers/response-event.resolver';
 import { GameEventResolver } from '@resolvers/game-event.resolver';
 import { ResponseEvent } from '@events/response.event';
-import { GameCalculator } from './game.calculator';
 import { GameConfig } from './game.config';
+import { GameCalculator } from './game-calculator/game.calculator';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
@@ -33,7 +33,12 @@ export class Game {
   }
 
   private dispatchGameEvent(gameEventTypeEnum: GameEventTypeEnum): void {
-    const requestEvent = GameEventResolver.resolve(this.gameState, gameEventTypeEnum, this.pendingRequestEvents);
+    const requestEvent = GameEventResolver.resolve(
+      this.gameCalculator,
+      this.gameState,
+      gameEventTypeEnum,
+      this.pendingRequestEvents
+    );
     this.pendingRequestEvents.add(requestEvent);
 
     this.gameState = this.resolveAllPendingGameEvents(this.gameState);
@@ -48,11 +53,17 @@ export class Game {
         break;
       }
       const responseEvent: ResponseEvent = RequestEventResolver.resolve(
+        this.gameCalculator,
         updatedGameState,
         currentRequestEvent,
         this.pendingRequestEvents
       );
-      updatedGameState = ResponseEventResolver.resolve(updatedGameState, responseEvent, this.pendingRequestEvents);
+      updatedGameState = ResponseEventResolver.resolve(
+        this.gameCalculator,
+        updatedGameState,
+        responseEvent,
+        this.pendingRequestEvents
+      );
     } while (this.pendingRequestEvents.elements.length > 0);
     return updatedGameState;
   }

@@ -6,14 +6,15 @@ import { GameState } from '@states/game.state';
 import { RobotState } from '@states/robot.state';
 import { GameCalculatorInterface } from './game.calculator.interface';
 import { GameConfig } from '../game.config';
+import { changeRobotState, changeTurnState } from '../game-state.builder';
+import { TurnState } from '@states/turn.state';
 
 type InitiativeRobot = {
-  robotId: string;
+  id: string;
   initiative: number;
 };
 
 export class GameCalculator implements GameCalculatorInterface {
-  //to think: maybe hexGrid and turnOrder should be in gameState
   private readonly hexGrid: HexagonalGridStructure<Weight>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
 
@@ -27,6 +28,10 @@ export class GameCalculator implements GameCalculatorInterface {
     this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
   }
 
+  // -----------
+  // VALIDATORS
+  // -----------
+
   public actionInRange(gameState: Readonly<GameState>, actionInstance: ActionInstance): boolean {
     const source = this.getRobotCoordinates(gameState, actionInstance.sourceRobotId);
     const target = this.getRobotCoordinates(gameState, actionInstance.targetRobotId);
@@ -35,8 +40,28 @@ export class GameCalculator implements GameCalculatorInterface {
     return this.hexGrid.isCellInRange(hexCellSource, actionInstance.action.range, hexCellTarget);
   }
 
+  public isRobotTurnToPlay(robotId: string): boolean {
+    const robotToPlay = this.turnOrder.currentItem;
+    if (robotToPlay) {
+      return this.turnOrder.currentItem?.id === robotId;
+    }
+    throw 'Temp error';
+  }
+
+  public isValidMove(gameState: Readonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): boolean {
+    const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
+    const remainingMove = this.getRobotState(gameState, robotId).resources.remainingMove;
+    return (
+      pathCoordinate.cost <= remainingMove && this.coordinateEquals(pathCoordinate.coordinatesPath[0], robotCoordinates)
+    );
+  }
+
+  // -----------
+  // GETTERS
+  // -----------
+
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
-    const robotFound = gameState.robots.find(robot => robot.id === robotId);
+    const robotFound = gameState.robots[robotId];
     if (robotFound) {
       return robotFound;
     }
@@ -44,31 +69,38 @@ export class GameCalculator implements GameCalculatorInterface {
   }
 
   public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
-    const robotFound = gameState.arenaState.robotPositions.get(robotId);
-    if (robotFound) {
-      return robotFound;
-    }
-    throw 'Temp error';
+    return this.getRobotState(gameState, robotId).coordinates;
   }
 
-  public isRobotTurnToPlay(robotId: string): boolean {
-    const robotToPlay = this.turnOrder.currentItem;
-    if (robotToPlay) {
-      return this.turnOrder.currentItem?.robotId === robotId;
-    }
-    throw 'Temp error';
-  }
-
-  public advanceTurn(): void {
-    this.turnOrder.next();
-  }
-
-  public possibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
+  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
     const robotState = this.getRobotState(gameState, robotId);
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
     return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
   }
 
-  public robotTakeMove(gameState: Readonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): void {}
+  // -----------
+  // EXECUTORS
+  // -----------
+
+  public robotMoves(gameState: Readonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): GameState {
+    const targetCoordinates = pathCoordinate.coordinatesPath[pathCoordinate.coordinatesPath.length - 1];
+    const newRobotState = this.getRobotState(gameState, robotId);
+    newRobotState.resources.remainingMove -= pathCoordinate.cost;
+    newRobotState.coordinates = targetCoordinates;
+    return changeRobotState(gameState, newRobotState);
+  }
+
+  public advanceTurn(gameState: Readonly<GameState>): GameState {
+    const robotToPlay = this.turnOrder.next();
+    const newTurnState: TurnState = {
+      currentTurnNumber: gameState.turnState.currentTurnNumber + 1,
+      currentTurnRobot: this.getRobotState(gameState, robotToPlay.id),
+    };
+    return changeTurnState(gameState, newTurnState);
+  }
+
+  private coordinateEquals(coordinates1: Coordinates, coordinates2: Coordinates): boolean {
+    return coordinates1.x === coordinates2.x && coordinates1.y === coordinates2.y && coordinates1.z === coordinates2.z;
+  }
 }

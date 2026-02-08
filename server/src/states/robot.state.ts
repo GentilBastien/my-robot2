@@ -6,7 +6,7 @@ import { ResourcesState } from '@states/resources.state';
 export interface RobotState {
   id: string;
   name: string;
-  location: Coordinates;
+  coordinates: Coordinates;
   resources: ResourcesState;
   attributes: AttributesState;
   statistics: StatisticsState;
