@@ -1,34 +1,34 @@
 import { GameState } from '@states/game.state';
 import { ActionInstance } from '@entities/actions/action-instance';
 import { RobotState } from '@states/robot.state';
-import { Coordinates, DeepReadonly, PathCoordinate } from 'shared';
+import { Coordinates, PathCoordinate } from 'shared';
 
 export interface GameCalculatorInterface {
   // -----------
   // VALIDATORS
   // -----------
 
-  actionInRange(gameState: DeepReadonly<GameState>, actionInstance: ActionInstance): boolean;
+  actionInRange(gameState: Readonly<GameState>, actionInstance: ActionInstance): boolean;
 
   isRobotTurnToPlay(robotId: string): boolean;
 
-  isValidMove(gameState: DeepReadonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): boolean;
+  isValidMove(gameState: Readonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): boolean;
 
   // -----------
   // GETTERS
   // -----------
 
-  getRobotState(gameState: DeepReadonly<GameState>, robotId: string): RobotState;
+  getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState;
 
-  getRobotCoordinates(gameState: DeepReadonly<GameState>, robotId: string): Coordinates;
+  getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates;
 
-  getPossibleTargets(gameState: DeepReadonly<GameState>, robotId: string): PathCoordinate[];
+  getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[];
 
   // -----------
   // EXECUTORS
   // -----------
 
-  robotMoves(gameState: DeepReadonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): GameState;
+  robotMoves(gameState: Readonly<GameState>, robotId: string, pathCoordinate: PathCoordinate): GameState;
 
-  advanceTurn(gameState: DeepReadonly<GameState>): GameState;
+  advanceTurn(gameState: Readonly<GameState>): GameState;
 }
