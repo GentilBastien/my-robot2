@@ -7,8 +7,6 @@ export { ActionEventTypeEnum } from './enums/action-event-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { ResponseTypeEnum } from './enums/response-type.enum';
 
-export { IRobot } from './types/IRobot';
-export { RobotData } from './types/robot-data';
 export { Weight } from './types/weight';
 export { Coordinates } from './types/coordinates';
 export { PathCoordinate } from './types/path-coordinate';
