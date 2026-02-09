@@ -1,7 +1,7 @@
 import { Action } from './action';
 
 export interface ActionInstance {
-  id: number;
+  id: string;
   sourceRobotId: string;
   targetRobotId: string;
   action: Action;

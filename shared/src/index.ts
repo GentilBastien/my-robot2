@@ -7,6 +7,16 @@ export { ActionEventTypeEnum } from './enums/action-event-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { ResponseTypeEnum } from './enums/response-type.enum';
 
+export { ArenaState } from './states/arena.state';
+export { AttributesState } from './states/attributes.state';
+export { CellState } from './states/cell-state';
+export { EffectState } from './states/effect.state';
+export { GameState } from './states/game.state';
+export { ResourcesState } from './states/resources.state';
+export { RobotState } from './states/robot.state';
+export { StatisticsState } from './states/statistics.state';
+export { TurnState } from './states/turn.state';
+
 export { Weight } from './types/weight';
 export { Coordinates } from './types/coordinates';
 export { PathCoordinate } from './types/path-coordinate';

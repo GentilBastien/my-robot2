@@ -1,4 +1,4 @@
-import { RobotState } from '@states/robot.state';
+import { RobotState } from './robot.state';
 
 export interface TurnState {
   currentTurnNumber: number;
