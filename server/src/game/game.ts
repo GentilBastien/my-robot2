@@ -1,7 +1,6 @@
-import { GameState } from '@states/game.state';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestEvent } from '@events/request.event';
-import { Comparator, GameEventTypeEnum } from 'shared';
+import { Comparator, GameEventTypeEnum, GameState } from 'shared';
 import { RequestEventResolver } from '@resolvers/request-event.resolver';
 import { ResponseEventResolver } from '@resolvers/response-event.resolver';
 import { GameEventResolver } from '@resolvers/game-event.resolver';
