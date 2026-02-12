@@ -21,6 +21,7 @@ export { Weight } from './types/weight';
 export { Coordinates } from './types/coordinates';
 export { PathCoordinate } from './types/path-coordinate';
 export { Comparator } from './types/comparator';
+export { Reducer } from './types/reducer';
 
 export { EqualsUtils } from './utils/equals.utils';
 export { ArrayUtils } from './utils/array.utils';

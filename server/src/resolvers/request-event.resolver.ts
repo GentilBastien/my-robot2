@@ -1,8 +1,7 @@
-import { GameState } from '@states/game.state';
-import { RequestEvent } from '@events/request.event';
-import { DamageResponseEvent, ResponseEvent } from '@events/response.event';
+import { RequestAdvanceTurnEvent, RequestEvent } from '@events/request.event';
+import { AdvanceTurnResponseEvent, ResponseEvent } from '@events/response.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
-import { GameEventTypeEnum } from 'shared';
+import { GameEventTypeEnum, GameState, ResponseTypeEnum } from 'shared';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
 
 export class RequestEventResolver {
@@ -12,16 +11,21 @@ export class RequestEventResolver {
     requestEvent: RequestEvent,
     pendingRequestEvents: PriorityListStructure<RequestEvent>
   ): ResponseEvent {
-    // switch (requestEvent.gameEventType) {
-    //   case GameEventTypeEnum.ACTION: {
-    //     return null;
-    //   }
-    //   //...
-    //   default:
-    //     return null;
-    // }
-    return {
-      gameEventType: GameEventTypeEnum.ADVANCE_TURN,
-    } as DamageResponseEvent;
+    switch (requestEvent.gameEventType) {
+      case GameEventTypeEnum.ADVANCE_TURN: {
+        const requestAdvanceTurnEvent: RequestAdvanceTurnEvent = requestEvent as RequestAdvanceTurnEvent;
+        const allowed = gameCalculator.canAdvanceTurn(readonlyGameState, requestAdvanceTurnEvent.sourceRobotId);
+        const newTurnState = gameCalculator.newTurnState(readonlyGameState);
+        return {
+          gameEventType: GameEventTypeEnum.ADVANCE_TURN,
+          responseType: allowed ? ResponseTypeEnum.VALID : ResponseTypeEnum.INVALID,
+          turnNumber: newTurnState.currentTurnNumber,
+          turnRobotId: newTurnState.currentTurnRobot.id,
+        } as AdvanceTurnResponseEvent;
+      }
+      //...
+      default:
+        throw new Error('RequestEventResolver, unknown gameEventType');
+    }
   }
 }

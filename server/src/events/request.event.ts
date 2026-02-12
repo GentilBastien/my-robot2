@@ -1,44 +1,38 @@
-import { Coordinates, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { RobotState } from '@states/robot.state';
+import { Coordinates, DamageTypeEnum, GameEventTypeEnum, RobotState } from 'shared';
 
 export interface RequestEvent {
   gameEventType: GameEventTypeEnum;
+  sourceRobotId: string;
   priority?: number;
 }
 
 export interface RequestTurnEvent extends RequestEvent {
   gameEventType: GameEventTypeEnum.TURN_START | GameEventTypeEnum.TURN_END;
-  turnNumber?: number;
-  turnRobotId?: string;
 }
 
 export interface RequestAdvanceTurnEvent extends RequestEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
-  turnNumberAdvanced?: number;
-  turnRobotIdAdvanced?: string;
 }
 
 export interface RequestRobotJoinedEvent extends RequestEvent {
   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
-  coordinates?: Coordinates;
-  robot?: RobotState;
+  coordinates: Coordinates;
+  robot: RobotState;
 }
 
 export interface RequestRobotDestroyedEvent extends RequestEvent {
   gameEventType: GameEventTypeEnum.ROBOT_DESTROYED;
-  robot?: RobotState;
+  robot: RobotState;
 }
 
 export interface RequestDamageEvent extends RequestEvent {
   damageType: DamageTypeEnum;
-  sourceRobotId: string;
   targetRobotId: string;
   baseDamage: number;
 }
 
 export interface RequestAOEDamageEvent extends RequestEvent {
   damageType: DamageTypeEnum;
-  sourceRobotId: string;
   targetTilesId: string[];
   baseDamage: number;
 }

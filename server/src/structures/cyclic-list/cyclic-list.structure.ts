@@ -73,6 +73,10 @@ export class CyclicListStructure<T> implements CyclicListStructureInterface<T> {
     return this._currentNode?.item;
   }
 
+  public get nextItem(): T | undefined {
+    return this._currentNode?.next?.item;
+  }
+
   private insertNodeBefore(newNode: ItemNode<T>, nextNode: ItemNode<T>): void {
     newNode.next = nextNode;
     newNode.previous = nextNode.previous;

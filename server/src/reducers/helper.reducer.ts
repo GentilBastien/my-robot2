@@ -43,7 +43,7 @@ export function addEffectState(gameState: Readonly<GameState>, effectInstance: E
     ...gameState,
     effectState: {
       ...gameState.effectState,
-      activeEffects: {
+      activeEffectIds: {
         ...gameState.effectState.activeEffectIds,
         [effectInstance.id]: effectInstance,
       },
@@ -56,7 +56,7 @@ export function removeEffectState(gameState: Readonly<GameState>, effectInstance
     ...gameState,
     effectState: {
       ...gameState.effectState,
-      activeEffectIds: gameState.effectState.activeEffects.filter(e => e !== effectInstanceId),
+      activeEffectIds: gameState.effectState.activeEffectIds.filter(id => id !== effectInstanceId),
     },
   };
 }

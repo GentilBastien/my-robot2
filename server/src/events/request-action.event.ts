@@ -1,11 +1,10 @@
 import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { RobotState } from '@states/robot.state';
 import { RequestEvent } from '@events/request.event';
 
 export interface RequestActionEvent extends RequestEvent {
   gameEventType: GameEventTypeEnum.ACTION;
   actionEventType: ActionEventTypeEnum;
-  source: RobotState;
+  sourceRobotId: string;
 }
 
 // ----------
@@ -13,7 +12,7 @@ export interface RequestActionEvent extends RequestEvent {
 // ----------
 
 interface TargetedEvent {
-  target: RobotState;
+  targetRobotId: string;
 }
 
 interface ZoneEvent {

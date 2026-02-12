@@ -80,4 +80,9 @@ export interface CyclicListStructureInterface<T> {
    * The item at the specified location of the internal cursor
    */
   currentItem: T | undefined;
+
+  /**
+   * The item that comes if the internal cursor was to increment.
+   */
+  nextItem: T | undefined;
 }

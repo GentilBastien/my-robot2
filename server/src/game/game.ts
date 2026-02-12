@@ -1,6 +1,6 @@
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestEvent } from '@events/request.event';
-import { Comparator, GameEventTypeEnum, GameState } from 'shared';
+import { Comparator, GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { RequestEventResolver } from '@resolvers/request-event.resolver';
 import { ResponseEventResolver } from '@resolvers/response-event.resolver';
 import { GameEventResolver } from '@resolvers/game-event.resolver';
@@ -44,8 +44,10 @@ export class Game {
   }
 
   private resolveAllPendingGameEvents(readonlyGameState: Readonly<GameState>): GameState {
+    let reducers: Reducer[] = [];
     let updatedGameState: GameState = readonlyGameState;
     let currentRequestEvent: RequestEvent | undefined;
+    //fill reducers loop
     do {
       currentRequestEvent = this.pendingRequestEvents.poll();
       if (currentRequestEvent === undefined) {
@@ -57,13 +59,15 @@ export class Game {
         currentRequestEvent,
         this.pendingRequestEvents
       );
-      updatedGameState = ResponseEventResolver.resolve(
+      const reducer = ResponseEventResolver.resolve(
         this.gameCalculator,
         updatedGameState,
         responseEvent,
         this.pendingRequestEvents
       );
+      reducers.push(reducer); //Impl Note : always append to the end to preserve event priority
     } while (this.pendingRequestEvents.elements.length > 0);
-    return updatedGameState;
+    //once reducers are filled, apply all of them in order
+    return reducers.reduce((state, reducer) => reducer(state), updatedGameState);
   }
 }
