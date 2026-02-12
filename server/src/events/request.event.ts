@@ -1,5 +1,9 @@
 import { Coordinates, DamageTypeEnum, GameEventTypeEnum, RobotState } from 'shared';
 
+//requestEvent => gameEventype and source id
+//requestState
+//responseState
+
 export interface RequestEvent {
   gameEventType: GameEventTypeEnum;
   sourceRobotId: string;
