@@ -1,12 +1,12 @@
 import { ActionInstance } from './action-instance';
-import { RequestEvent } from '@events/request.event';
-import { RequestActionEvent } from '@events/request-action.event';
+import { RequestStateEvent } from '@events/request-state.event';
+import { ActionRequestStateEvent } from '@events/action-request-state.event';
 
 export interface Action {
   manaCost: number;
   overheatingCost: number;
   range: number;
   baseAmount: number;
-  onApply(actionInstance: ActionInstance): RequestActionEvent;
-  onTurnEndAfterApply(actionInstance: ActionInstance): RequestEvent[];
+  onApply(actionInstance: ActionInstance): ActionRequestStateEvent;
+  onTurnEndAfterApply(actionInstance: ActionInstance): RequestStateEvent[];
 }

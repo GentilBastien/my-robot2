@@ -1,18 +1,18 @@
 import { DamageTypeEnum, GameEventTypeEnum, ResponseTypeEnum, RobotState } from 'shared';
 
-export interface ResponseEvent {
+export interface ResponseStateEvent {
   gameEventType: GameEventTypeEnum;
   responseType: ResponseTypeEnum;
   priority?: number;
 }
 
-export interface AdvanceTurnResponseEvent extends ResponseEvent {
+export interface AdvanceTurnResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
   turnNumber: number;
   turnRobotId: string;
 }
 
-export interface DamageResponseEvent extends ResponseEvent {
+export interface DamageResponseStateEvent extends ResponseStateEvent {
   source: RobotState;
   target: RobotState;
   damageDealt: number;

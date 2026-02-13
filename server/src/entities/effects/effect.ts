@@ -1,18 +1,18 @@
 import { EffectCategoryTypeEnum } from 'shared';
 import { EffectInstance } from './effect-instance';
-import { RequestEvent } from '@events/request.event';
+import { RequestStateEvent } from '@events/request-state.event';
 
 export interface Effect {
   type: EffectCategoryTypeEnum;
   ticking: EffectTickingConfig;
   stacking: EffectStackingConfig;
-  onApply(effectInstance: EffectInstance): RequestEvent[];
-  onAction(effectInstance: EffectInstance): RequestEvent[];
-  onTurnStart(effectInstance: EffectInstance): RequestEvent[];
-  onTurnEnd(effectInstance: EffectInstance): RequestEvent[];
-  onEveryTurnStart(effectInstance: EffectInstance): RequestEvent[];
-  onEveryTurnEnd(effectInstance: EffectInstance): RequestEvent[];
-  onExpire(effectInstance: EffectInstance): RequestEvent[];
+  onApply(effectInstance: EffectInstance): RequestStateEvent[];
+  onAction(effectInstance: EffectInstance): RequestStateEvent[];
+  onTurnStart(effectInstance: EffectInstance): RequestStateEvent[];
+  onTurnEnd(effectInstance: EffectInstance): RequestStateEvent[];
+  onEveryTurnStart(effectInstance: EffectInstance): RequestStateEvent[];
+  onEveryTurnEnd(effectInstance: EffectInstance): RequestStateEvent[];
+  onExpire(effectInstance: EffectInstance): RequestStateEvent[];
 }
 
 export interface EffectTickingConfig {

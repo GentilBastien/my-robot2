@@ -1,20 +1,20 @@
-import { AdvanceTurnResponseEvent, ResponseEvent } from '@events/response.event';
+import { AdvanceTurnResponseStateEvent, ResponseStateEvent } from '@events/response-state.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
-import { RequestEvent } from '@events/request.event';
+import { RequestStateEvent } from '@events/request-state.event';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
 import { GameEventTypeEnum, GameState, Reducer, ResponseTypeEnum } from 'shared';
 import { turnAdvanceReducer } from '../reducers/turn.reducer';
 
-export class ResponseEventResolver {
+export class ResponseStateEventResolver {
   public static resolve(
     gameCalculator: GameCalculator,
     readonlyGameState: Readonly<GameState>,
-    responseEvent: ResponseEvent,
-    pendingGameEvents: PriorityListStructure<RequestEvent>
+    responseEvent: ResponseStateEvent,
+    pendingGameEvents: PriorityListStructure<RequestStateEvent>
   ): Reducer {
     switch (responseEvent.gameEventType) {
       case GameEventTypeEnum.ADVANCE_TURN: {
-        const responseAdvanceTurnEvent = responseEvent as AdvanceTurnResponseEvent;
+        const responseAdvanceTurnEvent = responseEvent as AdvanceTurnResponseStateEvent;
         if (responseAdvanceTurnEvent.responseType === ResponseTypeEnum.VALID) {
           gameCalculator.advanceTurn();
         }

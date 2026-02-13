@@ -1,10 +1,8 @@
-import { ActionEventTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { RequestEvent } from '@events/request.event';
+import { ActionEventTypeEnum, DamageTypeEnum } from 'shared';
+import { RequestStateEvent } from '@events/request-state.event';
 
-export interface RequestActionEvent extends RequestEvent {
-  gameEventType: GameEventTypeEnum.ACTION;
-  actionEventType: ActionEventTypeEnum;
-  sourceRobotId: string;
+export interface ActionRequestStateEvent extends RequestStateEvent {
+  actionEventTypeEnum: ActionEventTypeEnum;
 }
 
 // ----------
@@ -36,6 +34,6 @@ interface DamageEvent {
 // EXPORTED
 // --------
 
-export interface AutoAttackRequestActionEvent extends RequestEvent, DamageEvent, TargetedEvent {
+export interface AutoAttackRequestActionEvent extends RequestStateEvent, DamageEvent, TargetedEvent {
   damageType: DamageTypeEnum.ENERGETIC;
 }
