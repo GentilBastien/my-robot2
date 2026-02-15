@@ -6,6 +6,7 @@ export { DamageTypeEnum } from './enums/damage-type.enum';
 export { ActionEventTypeEnum } from './enums/action-event-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { ResponseTypeEnum } from './enums/response-type.enum';
+export { TurnStateTypeEnum } from './enums/turn-state-type.enum';
 
 export { ArenaState } from './states/arena.state';
 export { AttributesState } from './states/attributes.state';

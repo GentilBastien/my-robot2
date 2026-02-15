@@ -1,4 +1,8 @@
-import { RequestAdvanceTurnStateEvent, RequestStateEvent } from '@events/request-state.event';
+import {
+  RequestAdvanceTurnStateEvent,
+  RequestStateEvent,
+  RequestTurnStartStateEvent,
+} from '@events/request-state.event';
 import { ActionEventTypeEnum, GameEventTypeEnum, GameState } from 'shared';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
@@ -13,7 +17,14 @@ export class GameEventResolver {
     pendingRequestEvents: PriorityListStructure<RequestStateEvent>
   ): RequestStateEvent {
     switch (gameEvent.gameEventType) {
-      case GameEventTypeEnum.TURN_START:
+      case GameEventTypeEnum.TURN_START: {
+        const requestTurnStartStateEvent: RequestTurnStartStateEvent = {
+          gameEventType: GameEventTypeEnum.TURN_START,
+          sourceRobotId: gameEvent.sourceRobotId,
+          priority: 1,
+        };
+        return requestTurnStartStateEvent as RequestTurnStartStateEvent;
+      }
       case GameEventTypeEnum.TURN_END:
       case GameEventTypeEnum.ROBOT_DESTROYED:
       case GameEventTypeEnum.ROBOT_JOINED:

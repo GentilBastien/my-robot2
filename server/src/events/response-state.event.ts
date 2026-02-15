@@ -6,6 +6,12 @@ export interface ResponseStateEvent {
   priority?: number;
 }
 
+export interface StartTurnResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.TURN_START;
+  turnNumber: number;
+  turnRobotId: string;
+}
+
 export interface AdvanceTurnResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
   turnNumber: number;

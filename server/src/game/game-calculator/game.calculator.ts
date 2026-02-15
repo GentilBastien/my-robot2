@@ -2,6 +2,7 @@ import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-gri
 import { Comparator, GameState, RobotState, TurnState, Weight } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { GameConfig } from '../game.config';
+import { EffectInstance } from '@entities/effects/effect-instance';
 
 type InitiativeRobot = {
   id: string;
@@ -11,6 +12,7 @@ type InitiativeRobot = {
 export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<Weight>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
+  private readonly activeEffects: EffectInstance[];
 
   constructor(gameConfig: GameConfig) {
     this.hexGrid = new HexagonalGridStructure<Weight>(gameConfig.mapWidth, gameConfig.mapHeight);
@@ -20,6 +22,7 @@ export class GameCalculator {
       },
     };
     this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
+    this.activeEffects = [];
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
@@ -38,9 +41,17 @@ export class GameCalculator {
     throw 'Temp error';
   }
 
-  public canAdvanceTurn(gameState: Readonly<GameState>, sourceRobotId: string): boolean {
+  public getTurnNumber(gameState: Readonly<GameState>): number {
+    return gameState.turnState.currentTurnNumber;
+  }
+
+  public getActiveEffectInstances(gameState: Readonly<GameState>): EffectInstance[] {
+    return this.activeEffects.filter(activeEffect => gameState.effectState.activeEffectIds.includes(activeEffect.id));
+  }
+
+  public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
     const robotPlayingId = this.getRobotPlayingId();
-    return this.getRobotState(gameState, sourceRobotId).id === robotPlayingId;
+    return this.getRobotState(gameState, robotId).id === robotPlayingId;
   }
 
   public newTurnState(gameState: Readonly<GameState>): TurnState {
