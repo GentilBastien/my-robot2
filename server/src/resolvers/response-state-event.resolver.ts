@@ -6,8 +6,9 @@ import {
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
-import { GameEventTypeEnum, GameState, Reducer, ResponseTypeEnum, TurnStateTypeEnum } from 'shared';
-import { startTurnReducer, turnAdvanceReducer } from '../reducers/turn.reducer';
+import { GameEventTypeEnum, GameState, Reducer, ResponseTypeEnum } from 'shared';
+import { turnStartResponseStateCase } from '@resolvers/response-state-cases/turn-start.response-state-case';
+import { advanceTurnResponseStateCase } from '@resolvers/response-state-cases/advance-turn.response-state-case';
 
 export class ResponseStateEventResolver {
   public static resolve(
@@ -19,32 +20,22 @@ export class ResponseStateEventResolver {
     if (responseEvent.responseType === ResponseTypeEnum.VALID) {
       switch (responseEvent.gameEventType) {
         case GameEventTypeEnum.TURN_START: {
-          const startTurnResponseStateEvent = responseEvent as StartTurnResponseStateEvent;
-          const robotPlayingId = startTurnResponseStateEvent.turnRobotId;
-          const activeEffectInstances = gameCalculator.getActiveEffectInstances(readonlyGameState);
-          const newPendingGameEventsFromEffects = activeEffectInstances.flatMap(activeEffectInstance => {
-            let newPendingGameEvents: RequestStateEvent[] = [];
-            if (robotPlayingId === activeEffectInstance.sourceId) {
-              const onTurnStartGameEvents = activeEffectInstance.effect.onTurnStart(activeEffectInstance);
-              newPendingGameEvents = newPendingGameEvents.concat(onTurnStartGameEvents);
-            }
-            const onEveryTurnStartGameEvents = activeEffectInstance.effect.onEveryTurnStart(activeEffectInstance);
-            newPendingGameEvents = newPendingGameEvents.concat(onEveryTurnStartGameEvents);
-            return newPendingGameEvents;
-          });
-          pendingGameEvents.addAll(newPendingGameEventsFromEffects);
-          return startTurnReducer(TurnStateTypeEnum.STARTED);
+          return turnStartResponseStateCase(
+            gameCalculator,
+            readonlyGameState,
+            responseEvent as StartTurnResponseStateEvent,
+            pendingGameEvents
+          );
         }
         case GameEventTypeEnum.ADVANCE_TURN: {
-          const responseAdvanceTurnEvent = responseEvent as AdvanceTurnResponseStateEvent;
-          gameCalculator.advanceTurn();
-          return turnAdvanceReducer(responseAdvanceTurnEvent.turnNumber, responseAdvanceTurnEvent.turnRobotId);
+          return advanceTurnResponseStateCase(gameCalculator, responseEvent as AdvanceTurnResponseStateEvent);
         }
         default:
           throw new Error('ResponseEventResolver, unknown gameEventType');
       }
     } else {
       // response is invalid
+      return state => state;
     }
   }
 }
