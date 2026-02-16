@@ -1,5 +1,5 @@
 import { Effect, EffectStackingConfig, EffectTickingConfig } from '../effect';
-import { DamageTypeEnum, EffectCategoryTypeEnum, GameEventTypeEnum } from 'shared';
+import { EffectCategoryTypeEnum } from 'shared';
 import { EffectInstance } from '../effect-instance';
 import { RequestStateEvent } from '@events/request-state.event';
 
@@ -19,23 +19,25 @@ export class EffectFire implements Effect {
   };
 
   public onApply(effectInstance: EffectInstance): RequestStateEvent[] {
-    const addEffectRequest: AddEffectRequestStateEvent = {
-      gameEventType: GameEventTypeEnum.REQUEST_STATE,
-      stateEventType: StateEventTypeEnum.ADD_EFFECT,
-      effectInstance: effectInstance,
-    };
-    return [addEffectRequest];
+    // const addEffectRequest: AddEffectRequestStateEvent = {
+    //   gameEventType: GameEventTypeEnum.REQUEST_STATE,
+    //   stateEventType: StateEventTypeEnum.ADD_EFFECT,
+    //   effectInstance: effectInstance,
+    // };
+    // return [addEffectRequest];
+    return [];
   }
 
   public onTurnStart(effectInstance: EffectInstance): RequestStateEvent[] {
-    const damageIntent: DamageRequestStateEvent = {
-      stateEventType: StateEventTypeEnum.DAMAGE,
-      damageType: DamageTypeEnum.FIRE,
-      sourceId: effectInstance.sourceId,
-      targetId: effectInstance.targetId,
-      baseDamage: 1,
-    };
-    return [damageIntent];
+    // const damageIntent: DamageRequestStateEvent = {
+    //   stateEventType: StateEventTypeEnum.DAMAGE,
+    //   damageType: DamageTypeEnum.FIRE,
+    //   sourceId: effectInstance.sourceId,
+    //   targetId: effectInstance.targetId,
+    //   baseDamage: 1,
+    // };
+    // return [damageIntent];
+    return [];
   }
 
   public onTurnEnd(_: EffectInstance): RequestStateEvent[] {
@@ -51,11 +53,15 @@ export class EffectFire implements Effect {
   }
 
   public onExpire(effectInstance: EffectInstance): RequestStateEvent[] {
-    const addEffectRequest: RemoveEffectRequestStateEvent = {
-      gameEventType: GameEventTypeEnum.REQUEST_STATE,
-      stateEventType: StateEventTypeEnum.REMOVE_EFFECT,
-      effectInstance: effectInstance,
-    };
-    return [addEffectRequest];
+    // const addEffectRequest: RemoveEffectRequestStateEvent = {
+    //   gameEventType: GameEventTypeEnum.REQUEST_STATE,
+    //   stateEventType: StateEventTypeEnum.REMOVE_EFFECT,
+    //   effectInstance: effectInstance,
+    // };
+    return [];
+  }
+
+  onAction(effectInstance: EffectInstance): RequestStateEvent[] {
+    return [];
   }
 }

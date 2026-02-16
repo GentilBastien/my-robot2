@@ -1,4 +1,4 @@
-import { GameState } from '@states/game.state';
+import { GameState } from 'shared';
 
 export interface GameConfig {
   gameState: GameState;

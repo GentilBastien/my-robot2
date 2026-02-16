@@ -7,14 +7,17 @@ export interface RequestStateEvent extends GameEvent {
 
 export interface RequestTurnStartStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.TURN_START;
+  priority: 3;
 }
 
 export interface RequestTurnEndStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.TURN_END;
+  priority: 1;
 }
 
 export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
+  priority: 2;
 }
 
 // export interface RequestDamageEvent extends RequestStateEvent {
