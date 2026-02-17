@@ -31,6 +31,9 @@ export function requestStateEventResolver(
         requestEvent as RequestAdvanceTurnStateEvent
       );
     }
+    case GameEventTypeEnum.MOVEMENT: {
+      return;
+    }
     //...
     default:
       throw new Error('RequestEventResolver, unknown gameEventType');

@@ -53,7 +53,7 @@ export function gameEventResolver(
         gameEventType: GameEventTypeEnum.MOVEMENT,
         priority: 100,
         sourceRobotId: gameEvent.sourceRobotId,
-        path,
+        path: gameCalculator.path,
       };
     }
     case GameEventTypeEnum.ROBOT_DESTROYED:

@@ -1,4 +1,4 @@
-import { ActionEventTypeEnum, GameEventTypeEnum } from 'shared';
+import { ActionEventTypeEnum, Coordinates, GameEventTypeEnum } from 'shared';
 
 export interface GameEvent {
   gameEventType: GameEventTypeEnum;
@@ -6,4 +6,7 @@ export interface GameEvent {
   sourceRobotId: string;
 }
 
-export interface MovementGameEvent extends GameEvent {}
+export interface MovementGameEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.MOVEMENT;
+  target: Coordinates;
+}

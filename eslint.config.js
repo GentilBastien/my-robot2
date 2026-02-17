@@ -6,7 +6,7 @@ import Recommended from 'eslint-plugin-prettier/recommended';
 export default defineConfig([
   {
     files: ['**/*.ts'],
-    extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.stylistic, Recommended],
+    extends: [eslint.configs.recommended, tseslint.configs.recommended, tseslint.configs.stylistic, ...Recommended],
     linterOptions: {
       reportUnusedDisableDirectives: 'error',
     },
