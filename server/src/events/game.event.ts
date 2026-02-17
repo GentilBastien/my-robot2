@@ -5,3 +5,5 @@ export interface GameEvent {
   actionEventTypeEnum?: ActionEventTypeEnum;
   sourceRobotId: string;
 }
+
+export interface MovementGameEvent extends GameEvent {}

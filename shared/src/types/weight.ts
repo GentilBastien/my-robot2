@@ -1,3 +1,3 @@
-export type Weight = {
+export interface Weight {
   weight: number;
-};
+}

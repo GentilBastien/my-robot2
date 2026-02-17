@@ -1,4 +1,4 @@
-import { GameEventTypeEnum } from 'shared';
+import { GameEventTypeEnum, PathCoordinate, RobotState } from 'shared';
 import { GameEvent } from '@events/game.event';
 
 export interface RequestStateEvent extends GameEvent {
@@ -18,6 +18,18 @@ export interface RequestTurnEndStateEvent extends RequestStateEvent {
 export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
   priority: 2;
+}
+
+export interface RequestMoveStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.MOVEMENT;
+  path: PathCoordinate;
+}
+
+export interface RequestRobotJoinStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.ROBOT_JOINED;
+  robotState: RobotState;
+  lifeTurns: number;
+  priority: 50;
 }
 
 // export interface RequestDamageEvent extends RequestStateEvent {

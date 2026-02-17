@@ -1,13 +1,13 @@
 import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-grid.structure';
-import { Comparator, GameState, RobotState, TurnState, Weight } from 'shared';
+import { Comparator, GameState, RobotState, TurnState, TurnStateTypeEnum, Weight } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { GameConfig } from '../game.config';
 import { EffectInstance } from '@entities/effects/effect-instance';
 
-type InitiativeRobot = {
+interface InitiativeRobot {
   id: string;
   initiative: number;
-};
+}
 
 export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<Weight>;
@@ -58,6 +58,7 @@ export class GameCalculator {
     const robotToPlay = this.turnOrder.nextItem;
     if (robotToPlay) {
       return {
+        turnStateTypeEnum: TurnStateTypeEnum.PENDING,
         currentTurnNumber: gameState.turnState.currentTurnNumber + 1,
         currentTurnRobot: this.getRobotState(gameState, robotToPlay.id),
       };

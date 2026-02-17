@@ -7,13 +7,14 @@ export function advanceTurnRequestStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent
-) {
+): AdvanceTurnResponseStateEvent {
   const allowed = gameCalculator.isRobotTurn(readonlyGameState, requestAdvanceTurnEvent.sourceRobotId);
   const newTurnState = gameCalculator.newTurnState(readonlyGameState);
   return {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,
     responseType: allowed ? ResponseTypeEnum.VALID : ResponseTypeEnum.INVALID,
+    sourceRobotId: requestAdvanceTurnEvent.sourceRobotId,
     turnNumber: newTurnState.currentTurnNumber,
     turnRobotId: newTurnState.currentTurnRobot.id,
-  } as AdvanceTurnResponseStateEvent;
+  };
 }

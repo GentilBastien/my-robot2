@@ -57,8 +57,7 @@ export class Game {
       const responseEvent: ResponseStateEvent = requestStateEventResolver(
         this.gameCalculator,
         readonlyGameState,
-        currentRequestEvent,
-        this.pendingRequestEvents
+        currentRequestEvent
       );
       const reducer: Reducer = responseStateEventResolver(
         this.gameCalculator,

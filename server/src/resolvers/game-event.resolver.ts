@@ -1,5 +1,6 @@
 import {
   RequestAdvanceTurnStateEvent,
+  RequestMoveStateEvent,
   RequestStateEvent,
   RequestTurnEndStateEvent,
   RequestTurnStartStateEvent,
@@ -34,10 +35,6 @@ export function gameEventResolver(
       };
       return [requestTurnEndStateEvent, requestAdvanceTurnEvent];
     }
-    case GameEventTypeEnum.ROBOT_DESTROYED:
-      return [];
-    case GameEventTypeEnum.ROBOT_JOINED:
-      return [];
     case GameEventTypeEnum.ADVANCE_TURN: {
       const requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent = {
         gameEventType: GameEventTypeEnum.ADVANCE_TURN,
@@ -51,7 +48,18 @@ export function gameEventResolver(
       };
       return [requestAdvanceTurnEvent, requestTurnStartStateEvent];
     }
-
+    case GameEventTypeEnum.MOVEMENT: {
+      const requestMoveStateEvent: RequestMoveStateEvent = {
+        gameEventType: GameEventTypeEnum.MOVEMENT,
+        priority: 100,
+        sourceRobotId: gameEvent.sourceRobotId,
+        path,
+      };
+    }
+    case GameEventTypeEnum.ROBOT_DESTROYED:
+      return [];
+    case GameEventTypeEnum.ROBOT_JOINED:
+      return [];
     case GameEventTypeEnum.ACTION: {
       const actionEventTypeEnum: ActionEventTypeEnum | undefined = gameEvent.actionEventTypeEnum;
       if (actionEventTypeEnum === undefined) {
