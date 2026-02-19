@@ -1,5 +1,5 @@
 import { RequestAdvanceTurnStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum, GameState, ResponseTypeEnum } from 'shared';
+import { GameEventTypeEnum, GameState } from 'shared';
 import { AdvanceTurnResponseStateEvent } from '@events/response-state.event';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 
@@ -12,7 +12,7 @@ export function advanceTurnRequestStateCase(
   const newTurnState = gameCalculator.newTurnState(readonlyGameState);
   return {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,
-    responseType: allowed ? ResponseTypeEnum.VALID : ResponseTypeEnum.INVALID,
+    responseType: allowed,
     sourceRobotId: requestAdvanceTurnEvent.sourceRobotId,
     turnNumber: newTurnState.currentTurnNumber,
     turnRobotId: newTurnState.currentTurnRobot.id,

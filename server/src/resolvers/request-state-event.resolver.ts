@@ -1,5 +1,6 @@
 import {
   RequestAdvanceTurnStateEvent,
+  RequestMoveStateEvent,
   RequestStateEvent,
   RequestTurnEndStateEvent,
   RequestTurnStartStateEvent,
@@ -10,6 +11,7 @@ import { GameCalculator } from '../game/game-calculator/game.calculator';
 import { turnStartRequestStateCase } from '@resolvers/request-state-cases/turn-start.request-state-case';
 import { advanceTurnRequestStateCase } from '@resolvers/request-state-cases/advance-turn.request-state-case';
 import { turnEndRequestStateCase } from '@resolvers/request-state-cases/turn-end.request-state-case';
+import { movementRequestStateCase } from '@resolvers/request-state-cases/movement.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -32,8 +34,9 @@ export function requestStateEventResolver(
       );
     }
     case GameEventTypeEnum.MOVEMENT: {
-      return;
+      return movementRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestMoveStateEvent);
     }
+
     //...
     default:
       throw new Error('RequestEventResolver, unknown gameEventType');

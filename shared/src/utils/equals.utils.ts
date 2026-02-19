@@ -1,3 +1,5 @@
+import { Coordinates } from '../types/coordinates';
+
 export class EqualsUtils {
   /**
    * Returns true if both parameters have/share the same value.
@@ -23,5 +25,9 @@ export class EqualsUtils {
       //object case
       return Object.entries(item1).every(([key, value]) => EqualsUtils.deepEquals(item2[key as keyof T], value));
     }
+  }
+
+  public static coordinateEquals(coordinates1: Coordinates, coordinates2: Coordinates): boolean {
+    return coordinates1.x === coordinates2.x && coordinates1.y === coordinates2.y && coordinates1.z === coordinates2.z;
   }
 }

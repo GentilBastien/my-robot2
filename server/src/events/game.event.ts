@@ -1,4 +1,4 @@
-import { ActionEventTypeEnum, Coordinates, GameEventTypeEnum } from 'shared';
+import { ActionEventTypeEnum, GameEventTypeEnum, PathCoordinate } from 'shared';
 
 export interface GameEvent {
   gameEventType: GameEventTypeEnum;
@@ -8,5 +8,5 @@ export interface GameEvent {
 
 export interface MovementGameEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.MOVEMENT;
-  target: Coordinates;
+  path: PathCoordinate;
 }

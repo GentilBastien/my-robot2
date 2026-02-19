@@ -1,5 +1,16 @@
 import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-grid.structure';
-import { Comparator, GameState, RobotState, TurnState, TurnStateTypeEnum, Weight } from 'shared';
+import {
+  CellState,
+  Comparator,
+  Coordinates,
+  EqualsUtils,
+  GameState,
+  PathCoordinate,
+  RobotState,
+  TurnState,
+  TurnStateTypeEnum,
+  Weight,
+} from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { GameConfig } from '../game.config';
 import { EffectInstance } from '@entities/effects/effect-instance';
@@ -26,11 +37,22 @@ export class GameCalculator {
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
-    const robotFound = gameState.robots[robotId];
-    if (robotFound) {
-      return robotFound;
+    return gameState.robots[robotId];
+  }
+
+  public getCellState(gameState: Readonly<GameState>, cellId: string): CellState {
+    return gameState.arenaState.cells[cellId];
+  }
+
+  public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates) {
+    const cellObj = gameState.arenaState.cells;
+    const key = Object.keys(cellObj).find(cellId =>
+      EqualsUtils.coordinateEquals(cellObj[cellId].coordinates, coordinates)
+    );
+    if (key) {
+      return cellObj[key];
     }
-    throw 'Temp error';
+    throw 'temp error';
   }
 
   public getRobotPlayingId(): string {
@@ -47,6 +69,13 @@ export class GameCalculator {
 
   public getActiveEffectInstances(gameState: Readonly<GameState>): EffectInstance[] {
     return this.activeEffects.filter(activeEffect => gameState.effectState.activeEffectIds.includes(activeEffect.id));
+  }
+
+  public getActiveEffectInstancesInPath(gameState: Readonly<GameState>, pathCoordinate: PathCoordinate) {
+    const cellIds = this.getActiveEffectInstances(gameState).map(activeEffect => {
+      return gameState.arenaState.cells[activeEffect.tileId].id;
+    });
+    return this.getActiveEffectInstances(gameState).filter(activeEffect => cellIds.includes(activeEffect.id));
   }
 
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
@@ -70,14 +99,25 @@ export class GameCalculator {
     this.turnOrder.next();
   }
 
-  // public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
-  //   return this.getRobotState(gameState, robotId).coordinates;
-  // }
+  public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
+    const robotCellId = this.getRobotState(gameState, robotId).cellId;
+    return gameState.arenaState.cells[robotCellId].coordinates;
+  }
 
-  // public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
-  //   const robotState = this.getRobotState(gameState, robotId);
-  //   const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
-  //   const robotCell = this.hexGrid.getCellAt(robotCoordinates);
-  //   return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
-  // }
+  public getPathCoordinateToTarget(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    target: Coordinates
+  ): PathCoordinate | null {
+    const startCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
+    const targetCell = this.hexGrid.getCellAt(target);
+    return this.hexGrid.shortestPathTo(startCell, targetCell);
+  }
+
+  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
+    const robotState = this.getRobotState(gameState, robotId);
+    const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
+    const robotCell = this.hexGrid.getCellAt(robotCoordinates);
+    return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
+  }
 }

@@ -1,16 +1,18 @@
 import {
   AdvanceTurnResponseStateEvent,
   EndTurnResponseStateEvent,
+  MoveResponseStateEvent,
   ResponseStateEvent,
   StartTurnResponseStateEvent,
 } from '@events/response-state.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
-import { GameEventTypeEnum, GameState, Reducer, ResponseTypeEnum } from 'shared';
+import { GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { turnStartResponseStateCase } from '@resolvers/response-state-cases/turn-start.response-state-case';
 import { advanceTurnResponseStateCase } from '@resolvers/response-state-cases/advance-turn.response-state-case';
 import { turnEndResponseStateCase } from '@resolvers/response-state-cases/turn-end.response-state-case';
+import { movementResponseStateCase } from '@resolvers/response-state-cases/movement.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -18,7 +20,7 @@ export function responseStateEventResolver(
   responseEvent: ResponseStateEvent,
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  if (responseEvent.responseType === ResponseTypeEnum.VALID) {
+  if (responseEvent.responseType) {
     switch (responseEvent.gameEventType) {
       case GameEventTypeEnum.TURN_START: {
         return turnStartResponseStateCase(
@@ -38,6 +40,14 @@ export function responseStateEventResolver(
       }
       case GameEventTypeEnum.ADVANCE_TURN: {
         return advanceTurnResponseStateCase(gameCalculator, responseEvent as AdvanceTurnResponseStateEvent);
+      }
+      case GameEventTypeEnum.MOVEMENT: {
+        return movementResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as MoveResponseStateEvent,
+          pendingGameEvents
+        );
       }
       default:
         throw new Error('ResponseEventResolver, unknown gameEventType');
