@@ -12,6 +12,7 @@ export function movementRequestStateCase(
   const enoughRemainingMovement =
     gameCalculator.getRobotState(readonlyGameState, requestMoveStateEvent.sourceRobotId).resources.remainingMove >=
     requestMoveStateEvent.path.cost;
+  //TODO make a move divided by each movement cell so they may been cancelled
   return {
     gameEventType: GameEventTypeEnum.MOVEMENT,
     responseValidated: isRobotTurn && enoughRemainingMovement,
