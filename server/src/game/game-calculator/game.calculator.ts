@@ -44,13 +44,13 @@ export class GameCalculator {
     return gameState.arenaState.cells[cellId];
   }
 
-  public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates) {
-    const cellObj = gameState.arenaState.cells;
-    const key = Object.keys(cellObj).find(cellId =>
-      EqualsUtils.coordinateEquals(cellObj[cellId].coordinates, coordinates)
+  public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates): CellState {
+    const cells = gameState.arenaState.cells;
+    const cellIdFound = Object.keys(cells).find(cellId =>
+      EqualsUtils.coordinateEquals(cells[cellId].coordinates, coordinates)
     );
-    if (key) {
-      return cellObj[key];
+    if (cellIdFound) {
+      return cells[cellIdFound];
     }
     throw 'temp error';
   }
@@ -71,11 +71,15 @@ export class GameCalculator {
     return this.activeEffects.filter(activeEffect => gameState.effectState.activeEffectIds.includes(activeEffect.id));
   }
 
-  public getActiveEffectInstancesInPath(gameState: Readonly<GameState>, pathCoordinate: PathCoordinate) {
-    const cellIds = this.getActiveEffectInstances(gameState).map(activeEffect => {
-      return gameState.arenaState.cells[activeEffect.tileId].id;
-    });
-    return this.getActiveEffectInstances(gameState).filter(activeEffect => cellIds.includes(activeEffect.id));
+  public getActiveEffectInstancesInPath(
+    gameState: Readonly<GameState>,
+    pathCoordinate: PathCoordinate
+  ): EffectInstance[] {
+    const cellIdsInPath = pathCoordinate.coordinatesPath.map(
+      coordinates => this.getCellStateByCoordinate(gameState, coordinates).id
+    );
+    const activeEffectInstances = this.getActiveEffectInstances(gameState);
+    return activeEffectInstances.filter(activeEffectInstance => cellIdsInPath.includes(activeEffectInstance.tileId));
   }
 
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {

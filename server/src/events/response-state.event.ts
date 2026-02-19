@@ -2,7 +2,7 @@ import { DamageTypeEnum, GameEventTypeEnum, PathCoordinate, RobotState } from 's
 import { GameEvent } from '@events/game.event';
 
 export interface ResponseStateEvent extends GameEvent {
-  responseType: boolean;
+  responseValidated: boolean;
 }
 
 export interface StartTurnResponseStateEvent extends ResponseStateEvent {

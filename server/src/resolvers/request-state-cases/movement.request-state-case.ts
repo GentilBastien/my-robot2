@@ -14,7 +14,7 @@ export function movementRequestStateCase(
     requestMoveStateEvent.path.cost;
   return {
     gameEventType: GameEventTypeEnum.MOVEMENT,
-    responseType: isRobotTurn && enoughRemainingMovement,
+    responseValidated: isRobotTurn && enoughRemainingMovement,
     sourceRobotId: requestMoveStateEvent.sourceRobotId,
     path: requestMoveStateEvent.path,
   };

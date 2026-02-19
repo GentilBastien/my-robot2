@@ -1,9 +1,9 @@
 import { MoveResponseStateEvent } from '@events/response-state.event';
 import { RequestStateEvent } from '@events/request-state.event';
-import { startTurnReducer } from '../../reducers/turn.reducer';
-import { GameState, Reducer, TurnStateTypeEnum } from 'shared';
+import { GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
+import { remainingMovementReducer } from '../../reducers/movement.reducer';
 
 export function movementResponseStateCase(
   gameCalculator: GameCalculator,
@@ -11,18 +11,16 @@ export function movementResponseStateCase(
   moveResponseStateEvent: MoveResponseStateEvent,
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  const pathCoordinate = moveResponseStateEvent.path;
-  const activeEffectInstances = gameCalculator.getActiveEffectInstances(readonlyGameState);
-  const newPendingGameEventsFromEffects = activeEffectInstances.flatMap(activeEffectInstance => {
-    let newPendingGameEvents: RequestStateEvent[] = [];
-    if (robotPlayingId === activeEffectInstance.sourceId) {
-      const onTurnEndGameEvents = activeEffectInstance.effect.onTurnEnd(activeEffectInstance);
-      newPendingGameEvents = newPendingGameEvents.concat(onTurnEndGameEvents);
-    }
-    const onEveryTurnEndGameEvents = activeEffectInstance.effect.onEveryTurnEnd(activeEffectInstance);
-    newPendingGameEvents = newPendingGameEvents.concat(onEveryTurnEndGameEvents);
-    return newPendingGameEvents;
+  const newRemainingMove =
+    readonlyGameState.robots[moveResponseStateEvent.sourceRobotId].resources.remainingMove -
+    moveResponseStateEvent.path.cost;
+  const activeEffectInstances = gameCalculator.getActiveEffectInstancesInPath(
+    readonlyGameState,
+    moveResponseStateEvent.path
+  );
+  const newPendingRequestStateEvents = activeEffectInstances.flatMap(effectInstance => {
+    return effectInstance.effect.onApply(effectInstance);
   });
-  pendingGameEvents.addAll(newPendingGameEventsFromEffects);
-  return startTurnReducer(TurnStateTypeEnum.FINISHED);
+  pendingGameEvents.addAll(newPendingRequestStateEvents);
+  return remainingMovementReducer(moveResponseStateEvent.sourceRobotId, newRemainingMove);
 }

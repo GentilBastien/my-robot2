@@ -1,5 +1,5 @@
 import { EffectInstance } from '@entities/effects/effect-instance';
-import { CellState, GameState, GameStateTypeEnum, RobotState, TurnState } from 'shared';
+import { CellState, GameState, GameStateTypeEnum, ResourcesState, RobotState, TurnState } from 'shared';
 
 export function changeGameStateType(gameState: Readonly<GameState>, gameStateTypeEnum: GameStateTypeEnum): GameState {
   return {
@@ -14,6 +14,23 @@ export function changeRobotState(gameState: Readonly<GameState>, robotState: Rob
     robots: {
       ...gameState.robots,
       [robotState.id]: robotState,
+    },
+  };
+}
+
+export function changesResourcesState(
+  gameState: Readonly<GameState>,
+  robotId: string,
+  resourcesState: ResourcesState
+): GameState {
+  return {
+    ...gameState,
+    robots: {
+      ...gameState.robots,
+      [robotId]: {
+        ...gameState.robots[robotId],
+        resources: resourcesState,
+      },
     },
   };
 }

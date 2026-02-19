@@ -12,7 +12,7 @@ export function advanceTurnRequestStateCase(
   const newTurnState = gameCalculator.newTurnState(readonlyGameState);
   return {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,
-    responseType: allowed,
+    responseValidated: allowed,
     sourceRobotId: requestAdvanceTurnEvent.sourceRobotId,
     turnNumber: newTurnState.currentTurnNumber,
     turnRobotId: newTurnState.currentTurnRobot.id,

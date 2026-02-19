@@ -1,5 +1,5 @@
 import { GameState, Reducer, TurnState, TurnStateTypeEnum } from 'shared';
-import { changeTurnState } from './helper.reducer';
+import { changeTurnState } from './state-helper.reducer';
 
 export const startTurnReducer =
   (turnStateTypeEnum: TurnStateTypeEnum): Reducer =>

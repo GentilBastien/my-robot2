@@ -13,7 +13,7 @@ export function turnStartRequestStateCase(
   const turnRobotId = gameCalculator.getRobotPlayingId();
   return {
     gameEventType: GameEventTypeEnum.TURN_START,
-    responseType: allowed,
+    responseValidated: allowed,
     sourceRobotId: requestTurnStartStateEvent.sourceRobotId,
     turnNumber,
     turnRobotId,

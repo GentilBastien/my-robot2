@@ -13,16 +13,16 @@ export function turnStartResponseStateCase(
 ): Reducer {
   const robotPlayingId = startTurnResponseStateEvent.turnRobotId;
   const activeEffectInstances = gameCalculator.getActiveEffectInstances(readonlyGameState);
-  const newPendingGameEventsFromEffects = activeEffectInstances.flatMap(activeEffectInstance => {
-    let newPendingGameEvents: RequestStateEvent[] = [];
-    if (robotPlayingId === activeEffectInstance.sourceId) {
-      const onTurnStartGameEvents = activeEffectInstance.effect.onTurnStart(activeEffectInstance);
-      newPendingGameEvents = newPendingGameEvents.concat(onTurnStartGameEvents);
+  const newPendingRequestStateEvents = activeEffectInstances.flatMap(effectInstance => {
+    let newEffects: RequestStateEvent[] = [];
+    if (robotPlayingId === effectInstance.sourceId) {
+      const onTurnStartGameEvents = effectInstance.effect.onTurnStart(effectInstance);
+      newEffects = newEffects.concat(onTurnStartGameEvents);
     }
-    const onEveryTurnStartGameEvents = activeEffectInstance.effect.onEveryTurnStart(activeEffectInstance);
-    newPendingGameEvents = newPendingGameEvents.concat(onEveryTurnStartGameEvents);
-    return newPendingGameEvents;
+    const onEveryTurnStartGameEvents = effectInstance.effect.onEveryTurnStart(effectInstance);
+    newEffects = newEffects.concat(onEveryTurnStartGameEvents);
+    return newEffects;
   });
-  pendingGameEvents.addAll(newPendingGameEventsFromEffects);
+  pendingGameEvents.addAll(newPendingRequestStateEvents);
   return startTurnReducer(TurnStateTypeEnum.STARTED);
 }

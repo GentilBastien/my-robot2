@@ -20,7 +20,7 @@ export function responseStateEventResolver(
   responseEvent: ResponseStateEvent,
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  if (responseEvent.responseType) {
+  if (responseEvent.responseValidated) {
     switch (responseEvent.gameEventType) {
       case GameEventTypeEnum.TURN_START: {
         return turnStartResponseStateCase(

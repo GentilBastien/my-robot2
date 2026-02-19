@@ -23,6 +23,12 @@ export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
 export interface RequestMoveStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.MOVEMENT;
   path: PathCoordinate;
+  priority: 10;
+}
+
+export interface RequestRobotResourcesStateEvent extends RequestStateEvent {
+  priority: 10;
+  //TODO
 }
 
 export interface RequestRobotJoinStateEvent extends RequestStateEvent {
