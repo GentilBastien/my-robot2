@@ -5,8 +5,8 @@ import { Coordinates, EqualsUtils, Weight } from 'shared';
 
 export class HexagonalCellStructure<T extends Weight> implements HexagonalCellStructureInterface<T> {
   private _item: T | null;
-  private _x: number = 0;
-  private _y: number = 0;
+  private _x = 0;
+  private _y = 0;
   // z = -x - y, no need to define it
 
   public weightFromStart = 0;
@@ -37,7 +37,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     };
   }
 
-  public weight(): number {
+  public get weight(): number {
     return this._item?.weight ?? 0;
   }
 

@@ -6,5 +6,11 @@ import { Coordinates } from './coordinates';
  */
 export interface PathCoordinate {
   coordinatesPath: Coordinates[];
+  costs: number[];
+}
+
+export interface StepPathCoordinate {
+  startCoordinates: Coordinates;
+  endCoordinates: Coordinates;
   cost: number;
 }

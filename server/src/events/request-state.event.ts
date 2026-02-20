@@ -1,4 +1,4 @@
-import { GameEventTypeEnum, MovementTypeEnum, PathCoordinate, RobotState } from 'shared';
+import { GameEventTypeEnum, MovementTypeEnum, RobotState, StepPathCoordinate } from 'shared';
 import { GameEvent } from '@events/game.event';
 
 export interface RequestStateEvent extends GameEvent {
@@ -23,13 +23,13 @@ export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
 export interface RequestMoveStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.MOVEMENT;
   movementType: MovementTypeEnum;
-  path: PathCoordinate;
-  priority: 10;
+  stepPath: StepPathCoordinate;
 }
 
 export interface RequestRobotResourcesStateEvent extends RequestStateEvent {
   priority: 10;
-  //TODO
+  //TODO Make the resources at the end of the turn
+  //TODO fix tests in hexagonal grids
 }
 
 export interface RequestRobotJoinStateEvent extends RequestStateEvent {

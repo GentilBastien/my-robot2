@@ -5,7 +5,7 @@ import {
   RequestTurnEndStateEvent,
   RequestTurnStartStateEvent,
 } from '@events/request-state.event';
-import { ActionEventTypeEnum, GameEventTypeEnum } from 'shared';
+import { ActionEventTypeEnum, GameEventTypeEnum, MovementTypeEnum, StepPathCoordinate } from 'shared';
 import { GameEvent, MovementGameEvent } from '@events/game.event';
 
 export function gameEventResolver(
@@ -50,15 +50,37 @@ export function gameEventResolver(
     }
     case GameEventTypeEnum.MOVEMENT: {
       const movementGameEvent: MovementGameEvent = gameEvent as MovementGameEvent;
-      const requestMoveStateEvent: RequestMoveStateEvent = {
-        gameEventType: GameEventTypeEnum.MOVEMENT,
-        movementType: movementGameEvent.movementType,
-        priority: 10,
-        sourceRobotId: movementGameEvent.sourceRobotId,
-        path: movementGameEvent.path,
-      };
-      //TODO make a move divided by each movement cell so they may been cancelled
-      return [requestMoveStateEvent];
+      const basePriorityMovement = 10;
+
+      switch (movementGameEvent.movementType) {
+        case MovementTypeEnum.JUMPED:
+          return [];
+        case MovementTypeEnum.HOVERED:
+        case MovementTypeEnum.WALKED:
+        default: {
+          const requestStepMoveStateEvents: RequestMoveStateEvent[] = [];
+          const path = movementGameEvent.path;
+          for (let i = 0; i < path.coordinatesPath.length - 1; i++) {
+            const startCoordinates = path.coordinatesPath[i];
+            const endCoordinates = path.coordinatesPath[i + 1];
+            const stepCost = path.costs[i + 1];
+            const stepPathCoordinate: StepPathCoordinate = {
+              startCoordinates,
+              endCoordinates,
+              cost: stepCost,
+            };
+            const requestStepMoveStateEvent: RequestMoveStateEvent = {
+              gameEventType: GameEventTypeEnum.MOVEMENT,
+              movementType: movementGameEvent.movementType,
+              priority: basePriorityMovement + i,
+              sourceRobotId: movementGameEvent.sourceRobotId,
+              stepPath: stepPathCoordinate,
+            };
+            requestStepMoveStateEvents.push(requestStepMoveStateEvent);
+          }
+          return requestStepMoveStateEvents;
+        }
+      }
     }
     case GameEventTypeEnum.ROBOT_DESTROYED:
       return [];

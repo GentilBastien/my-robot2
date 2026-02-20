@@ -65,7 +65,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   public getCellsInRange(
     origin: HexagonalCellStructure<T>,
     radius: number,
-    includeOrigin: boolean = true
+    includeOrigin = true
   ): HexagonalCellStructure<T>[] {
     if (radius === 0) {
       return includeOrigin ? [origin] : [];
@@ -90,7 +90,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
 
   public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[] {
     const visitedPaths: PathCoordinate[] = [];
-    this.possibleTargets_NewMove(start, visitedPaths, -start.weight(), maxCost);
+    this.possibleTargets_NewMove(start, visitedPaths, -start.weight, maxCost);
     return visitedPaths.filter(
       path => !ArrayUtils.arrayHasDuplicates(path.coordinatesPath, cell => `${cell.x}.${cell.y}.${cell.z}`)
     );
@@ -111,13 +111,13 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
       let adjacentCells: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNode, 1, false);
       adjacentCells = adjacentCells.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
       adjacentCells.forEach(voisin => {
-        voisin.weightFromStart = currentNode.weightFromStart + voisin.weight();
+        voisin.weightFromStart = currentNode.weightFromStart + voisin.weight;
         voisin.distanceFromTarget = voisin.euclideanDistanceFrom(target);
         voisin.travelSegments = currentNode.travelSegments + 1;
       });
       openList.addAll(adjacentCells);
     }
-    const shortestPath: HexagonalCellStructure<T>[] = [];
+    let shortestPath: HexagonalCellStructure<T>[] = [];
     let currentNodePath = target;
     while (!currentNodePath.hasSameLocationWith(start)) {
       shortestPath.push(currentNodePath);
@@ -134,9 +134,10 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
         break;
       }
     }
+    shortestPath = shortestPath.reverse();
     return {
-      coordinatesPath: shortestPath.reverse().map(cell => cell.coordinates),
-      cost: target.weightFromStart,
+      coordinatesPath: shortestPath.map(cell => cell.coordinates),
+      costs: shortestPath.map(cell => cell.weight),
     };
   }
 
@@ -147,13 +148,14 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     maxCostFromStart: number,
     pathToCandidate?: PathCoordinate
   ): void {
-    const costCandidate: number = costFromStart + cellCandidate.weight();
+    const costCandidate: number = costFromStart + cellCandidate.weight;
     if (costCandidate <= maxCostFromStart) {
       //candidate is valid, add it in the valid cells and check its adjacent cells.
       const basePath: Coordinates[] = pathToCandidate?.coordinatesPath ?? [];
+      const baseCost: number[] = pathToCandidate?.costs ?? [];
       const path: PathCoordinate = {
         coordinatesPath: [...basePath, cellCandidate.coordinates],
-        cost: costCandidate,
+        costs: [...baseCost, cellCandidate.weight],
       };
       visitedPaths.push(path);
       this.getCellsInRange(cellCandidate, 1, false).forEach(adjacentCell =>

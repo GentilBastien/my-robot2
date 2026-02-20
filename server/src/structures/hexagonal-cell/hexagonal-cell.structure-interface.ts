@@ -30,7 +30,7 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   /**
    * The weight hold by the cell.
    */
-  weight(): number;
+  weight: number;
 
   weightFromStart: number;
   distanceFromTarget: number;

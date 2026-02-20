@@ -21,7 +21,7 @@ export { TurnState } from './states/turn.state';
 
 export { Weight } from './types/weight';
 export { Coordinates } from './types/coordinates';
-export { PathCoordinate } from './types/path-coordinate';
+export { PathCoordinate, StepPathCoordinate } from './types/path-coordinate';
 export { Comparator } from './types/comparator';
 export { Reducer } from './types/reducer';
 export { MaybeArray, MaybeFunction } from './types/maybe';

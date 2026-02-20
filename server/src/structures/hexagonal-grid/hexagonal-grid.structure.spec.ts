@@ -81,7 +81,7 @@ describe('HexagonalGridStructure', () => {
     //when
     grid.setCellAt(specifiedCoordinates, { weight: 80 });
     //then
-    expect(grid.getCellAt(specifiedCoordinates).weight()).toBe(80);
+    expect(grid.getCellAt(specifiedCoordinates).weight).toBe(80);
   });
 
   test('HexagonalGrid set cells throws if coordinates are invalid', () => {
