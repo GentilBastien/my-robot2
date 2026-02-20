@@ -5,7 +5,8 @@ export { GameStateTypeEnum } from './enums/game-state-type.enum';
 export { DamageTypeEnum } from './enums/damage-type.enum';
 export { ActionEventTypeEnum } from './enums/action-event-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
-export { ResponseTypeEnum } from './enums/response-type.enum';
+export { MovementTypeEnum } from './enums/movement-type.enum';
+
 export { TurnStateTypeEnum } from './enums/turn-state-type.enum';
 
 export { ArenaState } from './states/arena.state';
@@ -23,7 +24,7 @@ export { Coordinates } from './types/coordinates';
 export { PathCoordinate } from './types/path-coordinate';
 export { Comparator } from './types/comparator';
 export { Reducer } from './types/reducer';
-export { MaybeArray, MaybeFunction, MaybePartial } from './types/maybe';
+export { MaybeArray, MaybeFunction } from './types/maybe';
 
 export { EqualsUtils } from './utils/equals.utils';
 export { ArrayUtils } from './utils/array.utils';

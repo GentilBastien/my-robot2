@@ -52,10 +52,12 @@ export function gameEventResolver(
       const movementGameEvent: MovementGameEvent = gameEvent as MovementGameEvent;
       const requestMoveStateEvent: RequestMoveStateEvent = {
         gameEventType: GameEventTypeEnum.MOVEMENT,
-        priority: 100,
-        sourceRobotId: gameEvent.sourceRobotId,
+        movementType: movementGameEvent.movementType,
+        priority: 10,
+        sourceRobotId: movementGameEvent.sourceRobotId,
         path: movementGameEvent.path,
       };
+      //TODO make a move divided by each movement cell so they may been cancelled
       return [requestMoveStateEvent];
     }
     case GameEventTypeEnum.ROBOT_DESTROYED:
