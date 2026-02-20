@@ -547,7 +547,7 @@ describe('HexagonalGridStructure', () => {
         { x: 0, y: 3, z: -3 },
         { x: 1, y: 3, z: -4 },
       ],
-      cost: 5,
+      costs: [1, 2, 1, 1, 1],
     };
     expect(result).toStrictEqual(expected);
   });
@@ -567,7 +567,7 @@ describe('HexagonalGridStructure', () => {
         { x: -1, y: 1, z: 0 },
         { x: -1, y: 2, z: -1 },
       ],
-      cost: 6,
+      costs: [2, 1, 1, 1, 1, 1, 1],
     };
     expect(result).toStrictEqual(expected);
   });
@@ -584,7 +584,7 @@ describe('HexagonalGridStructure', () => {
         { x: 0, y: 3, z: -3 },
         { x: 1, y: 3, z: -4 },
       ],
-      cost: 3,
+      costs: [2, 1, 1, 1],
     };
     expect(result).toStrictEqual(expected);
   });
