@@ -10,11 +10,12 @@ export function movementRequestStateCase(
 ): MoveResponseStateEvent {
   const isRobotTurn = gameCalculator.isRobotTurn(readonlyGameState, requestMoveStateEvent.sourceRobotId);
   const enoughRemainingMovement =
-    gameCalculator.getRobotState(readonlyGameState, requestMoveStateEvent.sourceRobotId).resources.remainingMove >= 1;
+    gameCalculator.getRobotState(readonlyGameState, requestMoveStateEvent.sourceRobotId).resources.remainingMove >=
+    requestMoveStateEvent.stepPath.cost;
   return {
     gameEventType: GameEventTypeEnum.MOVEMENT,
     responseValidated: isRobotTurn && enoughRemainingMovement,
     sourceRobotId: requestMoveStateEvent.sourceRobotId,
-    path: requestMoveStateEvent.path,
+    stepPath: requestMoveStateEvent.stepPath,
   };
 }

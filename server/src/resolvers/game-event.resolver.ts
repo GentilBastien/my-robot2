@@ -55,6 +55,8 @@ export function gameEventResolver(
       switch (movementGameEvent.movementType) {
         case MovementTypeEnum.JUMPED:
           return [];
+        case MovementTypeEnum.TELEPORTED:
+          return [];
         case MovementTypeEnum.HOVERED:
         case MovementTypeEnum.WALKED:
         default: {

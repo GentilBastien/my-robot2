@@ -13,10 +13,10 @@ export function movementResponseStateCase(
 ): Reducer {
   const newRemainingMove =
     readonlyGameState.robots[moveResponseStateEvent.sourceRobotId].resources.remainingMove -
-    moveResponseStateEvent.path.cost;
-  const activeEffectInstances = gameCalculator.getActiveEffectInstancesInPath(
+    moveResponseStateEvent.stepPath.cost;
+  const activeEffectInstances = gameCalculator.getActiveEffectInstancesAtCoordinates(
     readonlyGameState,
-    moveResponseStateEvent.path
+    moveResponseStateEvent.stepPath.endCoordinates
   );
   const newPendingRequestStateEvents = activeEffectInstances.flatMap(effectInstance => {
     return effectInstance.effect.onApply(effectInstance);

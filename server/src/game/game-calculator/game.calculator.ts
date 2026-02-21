@@ -71,15 +71,13 @@ export class GameCalculator {
     return this.activeEffects.filter(activeEffect => gameState.effectState.activeEffectIds.includes(activeEffect.id));
   }
 
-  public getActiveEffectInstancesInPath(
+  public getActiveEffectInstancesAtCoordinates(
     gameState: Readonly<GameState>,
-    pathCoordinate: PathCoordinate
+    coordinates: Coordinates
   ): EffectInstance[] {
-    const cellIdsInPath = pathCoordinate.coordinatesPath.map(
-      coordinates => this.getCellStateByCoordinate(gameState, coordinates).id
-    );
+    const cellIdInPath = this.getCellStateByCoordinate(gameState, coordinates).id;
     const activeEffectInstances = this.getActiveEffectInstances(gameState);
-    return activeEffectInstances.filter(activeEffectInstance => cellIdsInPath.includes(activeEffectInstance.tileId));
+    return activeEffectInstances.filter(activeEffectInstance => activeEffectInstance.tileId === cellIdInPath);
   }
 
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {

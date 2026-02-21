@@ -1,4 +1,4 @@
-import { DamageTypeEnum, GameEventTypeEnum, PathCoordinate, RobotState } from 'shared';
+import { DamageTypeEnum, GameEventTypeEnum, RobotState, StepPathCoordinate } from 'shared';
 import { GameEvent } from '@events/game.event';
 
 export interface ResponseStateEvent extends GameEvent {
@@ -25,7 +25,7 @@ export interface AdvanceTurnResponseStateEvent extends ResponseStateEvent {
 
 export interface MoveResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.MOVEMENT;
-  path: PathCoordinate;
+  stepPath: StepPathCoordinate;
 }
 
 export interface DamageResponseStateEvent extends ResponseStateEvent {
