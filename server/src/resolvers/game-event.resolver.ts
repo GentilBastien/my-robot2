@@ -6,11 +6,7 @@ import { turnEndGameCase } from '@resolvers/game-cases/turn-end.game-case';
 import { advanceTurnGameCase } from '@resolvers/game-cases/advance-turn.game-case';
 import { movementGameCase } from '@resolvers/game-cases/movement.game-case';
 
-export function gameEventResolver(
-  // gameCalculator: GameCalculator,
-  // readonlyGameState: Readonly<GameState>,
-  gameEvent: GameEvent
-): RequestStateEvent[] {
+export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
   switch (gameEvent.gameEventType) {
     case GameEventTypeEnum.TURN_START: {
       return turnStartGameCase(gameEvent);

@@ -1,4 +1,4 @@
-import { GameEventTypeEnum, MovementTypeEnum, RobotState, StepPathCoordinate } from 'shared';
+import { GameEventTypeEnum, MovementTypeEnum, StepPathCoordinate } from 'shared';
 import { GameEvent } from '@events/game.event';
 
 export interface RequestStateEvent extends GameEvent {
@@ -17,7 +17,7 @@ export interface RequestTurnEndStateEvent extends RequestStateEvent {
 
 export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
-  priority: 2;
+  priority: 3;
 }
 
 export interface RequestMoveStateEvent extends RequestStateEvent {
@@ -26,18 +26,18 @@ export interface RequestMoveStateEvent extends RequestStateEvent {
   stepPath: StepPathCoordinate;
 }
 
-export interface RequestRobotResourcesStateEvent extends RequestStateEvent {
-  priority: 10;
-  //TODO Make the resources at the end of the turn
-  //TODO fix tests in hexagonal grids
+export interface RequestEndTurnResourcesStateEvent extends RequestStateEvent {
+  priority: 2;
+  // TODO game resolvers must not return arrays
+  // TODO reponses resolvers are the only one that should retriggers events
 }
 
-export interface RequestRobotJoinStateEvent extends RequestStateEvent {
-  gameEventType: GameEventTypeEnum.ROBOT_JOINED;
-  robotState: RobotState;
-  lifeTurns: number;
-  priority: 50;
-}
+// export interface RequestRobotJoinStateEvent extends RequestStateEvent {
+//   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
+//   robotState: RobotState;
+//   lifeTurns: number;
+//   priority: 50;
+// }
 
 // export interface RequestDamageEvent extends RequestStateEvent {
 //   damageType: DamageTypeEnum;

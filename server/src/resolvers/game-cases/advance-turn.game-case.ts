@@ -6,7 +6,7 @@ import {
 import { GameEventTypeEnum } from 'shared';
 import { GameEvent } from '@events/game.event';
 
-export function advanceTurnGameCase(gameEvent: GameEvent): RequestStateEvent[] {
+export function advanceTurnGameCase(gameEvent: GameEvent): RequestStateEvent {
   const requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent = {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,
     sourceRobotId: gameEvent.sourceRobotId,

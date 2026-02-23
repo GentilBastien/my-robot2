@@ -2,13 +2,24 @@ import { RequestMoveStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
 import { MovementGameEvent } from '@events/game.event';
 
-export function movementGameCase(movementGameEvent: MovementGameEvent): RequestMoveStateEvent[] {
+export function movementGameCase(movementGameEvent: MovementGameEvent): RequestMoveStateEvent {
   const basePriorityMovement = 10;
   switch (movementGameEvent.movementType) {
     case MovementTypeEnum.JUMPED:
-      return [];
-    case MovementTypeEnum.TELEPORTED:
-      return [];
+    case MovementTypeEnum.TELEPORTED: {
+      const requestStepMoveStateEvent: RequestMoveStateEvent = {
+        gameEventType: GameEventTypeEnum.MOVEMENT,
+        movementType: movementGameEvent.movementType,
+        sourceRobotId: movementGameEvent.sourceRobotId,
+        priority: basePriorityMovement,
+        stepPath: {
+          startCoordinates: movementGameEvent.path.coordinatesPath[0],
+          endCoordinates: movementGameEvent.path.coordinatesPath[1],
+          cost: movementGameEvent.path.costs[1],
+        },
+      };
+      return [requestStepMoveStateEvent];
+    }
     case MovementTypeEnum.HOVERED:
     case MovementTypeEnum.WALKED:
     default: {
