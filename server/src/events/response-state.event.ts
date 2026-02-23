@@ -5,13 +5,13 @@ export interface ResponseStateEvent extends GameEvent {
   responseValidated: boolean;
 }
 
-export interface StartTurnResponseStateEvent extends ResponseStateEvent {
+export interface TurnStartResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.TURN_START;
   turnNumber: number;
   turnRobotId: string;
 }
 
-export interface EndTurnResponseStateEvent extends ResponseStateEvent {
+export interface TurnEndResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.TURN_END;
   turnNumber: number;
   turnRobotId: string;

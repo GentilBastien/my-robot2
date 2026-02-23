@@ -1,9 +1,9 @@
 import {
   AdvanceTurnResponseStateEvent,
-  EndTurnResponseStateEvent,
   MoveResponseStateEvent,
   ResponseStateEvent,
-  StartTurnResponseStateEvent,
+  TurnEndResponseStateEvent,
+  TurnStartResponseStateEvent,
 } from '@events/response-state.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
@@ -26,7 +26,7 @@ export function responseStateEventResolver(
         return turnStartResponseStateCase(
           gameCalculator,
           readonlyGameState,
-          responseEvent as StartTurnResponseStateEvent,
+          responseEvent as TurnStartResponseStateEvent,
           pendingGameEvents
         );
       }
@@ -34,7 +34,7 @@ export function responseStateEventResolver(
         return turnEndResponseStateCase(
           gameCalculator,
           readonlyGameState,
-          responseEvent as EndTurnResponseStateEvent,
+          responseEvent as TurnEndResponseStateEvent,
           pendingGameEvents
         );
       }

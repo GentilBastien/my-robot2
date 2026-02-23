@@ -1,6 +1,6 @@
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
-import { Comparator, GameEventTypeEnum, GameState, Reducer } from 'shared';
+import { Comparator, GameState, Reducer } from 'shared';
 import { requestStateEventResolver } from '@resolvers/request-state-event.resolver';
 import { responseStateEventResolver } from '@resolvers/response-state-event.resolver';
 import { gameEventResolver } from '@resolvers/game-event.resolver';
@@ -28,27 +28,24 @@ export class Game {
     this.pendingRequestEvents = new PriorityListStructure(comparator);
   }
 
-  public clientTurnEnded(robotId: string): void {
-    const endTurnGameEvent: GameEvent = {
-      gameEventType: GameEventTypeEnum.TURN_END,
-      sourceRobotId: robotId,
-    };
-  }
-
   public receiveGameEventFromClient(gameRequestEvent: GameEvent): void {
-    this.dispatchGameEvent(gameRequestEvent);
+    this.resolveGameEvent(gameRequestEvent);
   }
 
-  private dispatchGameEvent(gameRequestEvent: GameEvent): void {
-    const requestEvent = gameEventResolver(gameRequestEvent);
+  private resolveGameEvent(gameRequestEvent: GameEvent): void {
+    const requestEvent: RequestStateEvent[] = gameEventResolver(gameRequestEvent);
     this.pendingRequestEvents.addAll(requestEvent);
-    this.gameState = this.resolveAllPendingGameEvents(this.gameState);
+    const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
+    this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
   }
 
-  private resolveAllPendingGameEvents(readonlyGameState: Readonly<GameState>): GameState {
-    const reducers: Reducer[] = [];
-    let currentRequestEvent: RequestStateEvent | undefined;
+  // private dispatchGameEvent(gameEvent: GameEvent): void {
+  // // dispatch the game event to other clients
+  // }
 
+  private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>) {
+    const responseEvents: ResponseStateEvent[] = [];
+    let currentRequestEvent: RequestStateEvent | undefined;
     do {
       currentRequestEvent = this.pendingRequestEvents.poll();
       if (currentRequestEvent === undefined) {
@@ -59,14 +56,19 @@ export class Game {
         readonlyGameState,
         currentRequestEvent
       );
-      const reducer: Reducer = responseStateEventResolver(
-        this.gameCalculator,
-        readonlyGameState,
-        responseEvent,
-        this.pendingRequestEvents
-      );
-      reducers.push(reducer); //Impl Note : always append to the end to preserve event priority
+      responseEvents.push(responseEvent);
     } while (this.pendingRequestEvents.elements.length > 0);
+    return responseEvents;
+  }
+
+  private consumeAllResponseEvents(
+    readonlyGameState: Readonly<GameState>,
+    responseEvents: ResponseStateEvent[]
+  ): GameState {
+    //Impl Note : responseEvents are mapped to reduces keeping its ordering.
+    const reducers: Reducer[] = responseEvents.map(responseEvent =>
+      responseStateEventResolver(this.gameCalculator, readonlyGameState, responseEvent, this.pendingRequestEvents)
+    );
     //once reducers are filled and pendingEvents consumed, apply all of them in order
     return reducers.reduce((state, reducer) => reducer(state), readonlyGameState);
   }

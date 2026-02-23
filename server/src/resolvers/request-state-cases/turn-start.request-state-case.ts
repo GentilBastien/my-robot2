@@ -1,13 +1,13 @@
 import { RequestTurnStartStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum, GameState } from 'shared';
-import { StartTurnResponseStateEvent } from '@events/response-state.event';
+import { TurnStartResponseStateEvent } from '@events/response-state.event';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 
 export function turnStartRequestStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   requestTurnStartStateEvent: RequestTurnStartStateEvent
-): StartTurnResponseStateEvent {
+): TurnStartResponseStateEvent {
   const allowed =
     gameCalculator.newTurnState(readonlyGameState).currentTurnRobot.id === requestTurnStartStateEvent.sourceRobotId;
   const turnNumber = gameCalculator.getTurnNumber(readonlyGameState);

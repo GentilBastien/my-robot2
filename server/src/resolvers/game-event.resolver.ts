@@ -1,12 +1,10 @@
-import {
-  RequestAdvanceTurnStateEvent,
-  RequestMoveStateEvent,
-  RequestStateEvent,
-  RequestTurnEndStateEvent,
-  RequestTurnStartStateEvent,
-} from '@events/request-state.event';
-import { ActionEventTypeEnum, GameEventTypeEnum, MovementTypeEnum, StepPathCoordinate } from 'shared';
+import { RequestStateEvent } from '@events/request-state.event';
+import { ActionEventTypeEnum, GameEventTypeEnum } from 'shared';
 import { GameEvent, MovementGameEvent } from '@events/game.event';
+import { turnStartGameCase } from '@resolvers/game-cases/turn-start.game-case';
+import { turnEndGameCase } from '@resolvers/game-cases/turn-end.game-case';
+import { advanceTurnGameCase } from '@resolvers/game-cases/advance-turn.game-case';
+import { movementGameCase } from '@resolvers/game-cases/movement.game-case';
 
 export function gameEventResolver(
   // gameCalculator: GameCalculator,
@@ -15,79 +13,17 @@ export function gameEventResolver(
 ): RequestStateEvent[] {
   switch (gameEvent.gameEventType) {
     case GameEventTypeEnum.TURN_START: {
-      const requestTurnStartStateEvent: RequestTurnStartStateEvent = {
-        gameEventType: GameEventTypeEnum.TURN_START,
-        sourceRobotId: gameEvent.sourceRobotId,
-        priority: 3,
-      };
-      return [requestTurnStartStateEvent];
+      return turnStartGameCase(gameEvent);
     }
     case GameEventTypeEnum.TURN_END: {
-      const requestTurnEndStateEvent: RequestTurnEndStateEvent = {
-        gameEventType: GameEventTypeEnum.TURN_END,
-        sourceRobotId: gameEvent.sourceRobotId,
-        priority: 1,
-      };
-      const requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent = {
-        gameEventType: GameEventTypeEnum.ADVANCE_TURN,
-        sourceRobotId: gameEvent.sourceRobotId,
-        priority: 2,
-      };
-      return [requestTurnEndStateEvent, requestAdvanceTurnEvent];
+      return turnEndGameCase(gameEvent);
     }
     case GameEventTypeEnum.ADVANCE_TURN: {
-      const requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent = {
-        gameEventType: GameEventTypeEnum.ADVANCE_TURN,
-        sourceRobotId: gameEvent.sourceRobotId,
-        priority: 2,
-      };
-      const requestTurnStartStateEvent: RequestTurnStartStateEvent = {
-        gameEventType: GameEventTypeEnum.TURN_START,
-        sourceRobotId: gameEvent.sourceRobotId,
-        priority: 3,
-      };
-      return [requestAdvanceTurnEvent, requestTurnStartStateEvent];
+      return advanceTurnGameCase(gameEvent);
     }
     case GameEventTypeEnum.MOVEMENT: {
-      const movementGameEvent: MovementGameEvent = gameEvent as MovementGameEvent;
-      const basePriorityMovement = 10;
-
-      switch (movementGameEvent.movementType) {
-        case MovementTypeEnum.JUMPED:
-          return [];
-        case MovementTypeEnum.TELEPORTED:
-          return [];
-        case MovementTypeEnum.HOVERED:
-        case MovementTypeEnum.WALKED:
-        default: {
-          const requestStepMoveStateEvents: RequestMoveStateEvent[] = [];
-          const path = movementGameEvent.path;
-          for (let i = 0; i < path.coordinatesPath.length - 1; i++) {
-            const startCoordinates = path.coordinatesPath[i];
-            const endCoordinates = path.coordinatesPath[i + 1];
-            const stepCost = path.costs[i + 1];
-            const stepPathCoordinate: StepPathCoordinate = {
-              startCoordinates,
-              endCoordinates,
-              cost: stepCost,
-            };
-            const requestStepMoveStateEvent: RequestMoveStateEvent = {
-              gameEventType: GameEventTypeEnum.MOVEMENT,
-              movementType: movementGameEvent.movementType,
-              priority: basePriorityMovement + i,
-              sourceRobotId: movementGameEvent.sourceRobotId,
-              stepPath: stepPathCoordinate,
-            };
-            requestStepMoveStateEvents.push(requestStepMoveStateEvent);
-          }
-          return requestStepMoveStateEvents;
-        }
-      }
+      return movementGameCase(gameEvent as MovementGameEvent);
     }
-    case GameEventTypeEnum.ROBOT_DESTROYED:
-      return [];
-    case GameEventTypeEnum.ROBOT_JOINED:
-      return [];
     case GameEventTypeEnum.ACTION: {
       const actionEventTypeEnum: ActionEventTypeEnum | undefined = gameEvent.actionEventTypeEnum;
       if (actionEventTypeEnum === undefined) {

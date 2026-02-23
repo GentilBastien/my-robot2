@@ -1,23 +1,22 @@
-import { Updatable } from '../updatable';
 import { Action } from '@entities/actions/action';
 
-export class ResourcesRobotManager implements Updatable {
-  private _isAlive: boolean = true;
+export class ResourcesRobotManager {
+  private _isAlive = true;
 
-  private _hp: number = 0;
-  private _maxHp: number = 0;
-  private _regenHp: number = 0;
+  private _hp = 0;
+  private _maxHp = 0;
+  private _regenHp = 0;
 
-  private _mana: number = 0;
-  private _maxMana: number = 0;
-  private _regenMana: number = 0;
+  private _mana = 0;
+  private _maxMana = 0;
+  private _regenMana = 0;
 
-  private _overheating: number = 0;
-  private _maxOverheating: number = 100;
-  private _coolingDown: number = 0;
-  private _isOverheating: boolean = false;
+  private _overheating = 0;
+  private _maxOverheating = 100;
+  private _coolingDown = 0;
+  private _isOverheating = false;
 
-  private _energyModules: number = 0;
+  private _energyModules = 0;
 
   public update(): void {
     if (this._isAlive) {
@@ -55,7 +54,7 @@ export class ResourcesRobotManager implements Updatable {
     this.incrementsManaByValue(value);
   }
 
-  public cooling(value: number, enableWhileOverheating: boolean = true): void {
+  public cooling(value: number, enableWhileOverheating = true): void {
     if (enableWhileOverheating || !this._isOverheating) {
       this.decrementsOverheatingByValue(value);
     }

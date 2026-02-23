@@ -1,6 +1,6 @@
-import { AttributesTypeEnum, RobotData } from 'shared';
+import { AttributesTypeEnum } from 'shared';
 
-export class AttributesRobotManager implements RobotData<AttributesTypeEnum> {
+export class AttributesRobotManager {
   public map = new Map<AttributesTypeEnum, number>([
     [AttributesTypeEnum.POW, 0],
     [AttributesTypeEnum.MOB, 0],
