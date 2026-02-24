@@ -14,6 +14,7 @@ export function pathRequestStateCase(
     gameCalculator.getPathCoordinateCost(requestPathStateEvent.path);
   return {
     gameEventType: GameEventTypeEnum.PATH,
+    movementType: requestPathStateEvent.movementType,
     responseValidated: isRobotTurn && enoughRemainingMovement,
     sourceRobotId: requestPathStateEvent.sourceRobotId,
     path: requestPathStateEvent.path,

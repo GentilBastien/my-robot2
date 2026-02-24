@@ -13,6 +13,7 @@ import { turnStartRequestStateCase } from '@resolvers/request-state-cases/turn-s
 import { advanceTurnRequestStateCase } from '@resolvers/request-state-cases/advance-turn.request-state-case';
 import { turnEndRequestStateCase } from '@resolvers/request-state-cases/turn-end.request-state-case';
 import { pathRequestStateCase } from '@resolvers/request-state-cases/path.request-state-case';
+import { stepPathRequestStateCase } from '@resolvers/request-state-cases/step-path.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,

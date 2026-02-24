@@ -2,6 +2,7 @@ import {
   AdvanceTurnResponseStateEvent,
   PathResponseStateEvent,
   ResponseStateEvent,
+  StepPathResponseStateEvent,
   TurnEndResponseStateEvent,
   TurnStartResponseStateEvent,
 } from '@events/response-state.event';
@@ -12,7 +13,8 @@ import { GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { turnStartResponseStateCase } from '@resolvers/response-state-cases/turn-start.response-state-case';
 import { advanceTurnResponseStateCase } from '@resolvers/response-state-cases/advance-turn.response-state-case';
 import { turnEndResponseStateCase } from '@resolvers/response-state-cases/turn-end.response-state-case';
-import { movementResponseStateCase } from '@resolvers/response-state-cases/movement.response-state-case';
+import { pathResponseStateCase } from '@resolvers/response-state-cases/path.response-state-case';
+import { stepPathResponseStateCase } from '@resolvers/response-state-cases/step-path.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -45,11 +47,19 @@ export function responseStateEventResolver(
           pendingGameEvents
         );
       }
-      case GameEventTypeEnum.MOVEMENT: {
-        return movementResponseStateCase(
+      case GameEventTypeEnum.PATH: {
+        return pathResponseStateCase(
           gameCalculator,
           readonlyGameState,
           responseEvent as PathResponseStateEvent,
+          pendingGameEvents
+        );
+      }
+      case GameEventTypeEnum.STEP_PATH: {
+        return stepPathResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as StepPathResponseStateEvent,
           pendingGameEvents
         );
       }
