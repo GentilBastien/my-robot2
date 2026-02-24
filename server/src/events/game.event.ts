@@ -6,8 +6,8 @@ export interface GameEvent {
   sourceRobotId: string;
 }
 
-export interface MovementGameEvent extends GameEvent {
-  gameEventType: GameEventTypeEnum.MOVEMENT;
+export interface PathGameEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.PATH;
   movementType: MovementTypeEnum;
   path: PathCoordinate;
 }

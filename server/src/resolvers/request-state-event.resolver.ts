@@ -1,7 +1,8 @@
 import {
   RequestAdvanceTurnStateEvent,
-  RequestMoveStateEvent,
+  RequestPathStateEvent,
   RequestStateEvent,
+  RequestStepPathStateEvent,
   RequestTurnEndStateEvent,
   RequestTurnStartStateEvent,
 } from '@events/request-state.event';
@@ -11,7 +12,7 @@ import { GameCalculator } from '../game/game-calculator/game.calculator';
 import { turnStartRequestStateCase } from '@resolvers/request-state-cases/turn-start.request-state-case';
 import { advanceTurnRequestStateCase } from '@resolvers/request-state-cases/advance-turn.request-state-case';
 import { turnEndRequestStateCase } from '@resolvers/request-state-cases/turn-end.request-state-case';
-import { movementRequestStateCase } from '@resolvers/request-state-cases/movement.request-state-case';
+import { pathRequestStateCase } from '@resolvers/request-state-cases/path.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -33,8 +34,11 @@ export function requestStateEventResolver(
         requestEvent as RequestAdvanceTurnStateEvent
       );
     }
-    case GameEventTypeEnum.MOVEMENT: {
-      return movementRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestMoveStateEvent);
+    case GameEventTypeEnum.PATH: {
+      return pathRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestPathStateEvent);
+    }
+    case GameEventTypeEnum.STEP_PATH: {
+      return stepPathRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestStepPathStateEvent);
     }
 
     //...

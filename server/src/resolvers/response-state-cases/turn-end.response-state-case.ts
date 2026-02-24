@@ -1,7 +1,11 @@
 import { TurnEndResponseStateEvent } from '@events/response-state.event';
-import { RequestStateEvent } from '@events/request-state.event';
+import {
+  RequestAdvanceTurnStateEvent,
+  RequestResourcesStateEvent,
+  RequestStateEvent,
+} from '@events/request-state.event';
 import { startTurnReducer } from '../../reducers/turn.reducer';
-import { GameState, Reducer, TurnStateTypeEnum } from 'shared';
+import { GameEventTypeEnum, GameState, Reducer, TurnStateTypeEnum } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -35,5 +39,18 @@ export function turnEndResponseStateCase(
     return newPendingGameEvents;
   });
   pendingGameEvents.addAll(newPendingGameEventsFromEffects);
+
+  const requestEndTurnResourcesStateEvent: RequestResourcesStateEvent = {
+    gameEventType: GameEventTypeEnum.RESOURCES,
+    sourceRobotId: endTurnResponseStateEvent.turnRobotId,
+  };
+  pendingGameEvents.add(requestEndTurnResourcesStateEvent);
+
+  const requestAdvanceTurnStateEvent: RequestAdvanceTurnStateEvent = {
+    gameEventType: GameEventTypeEnum.ADVANCE_TURN,
+    sourceRobotId: endTurnResponseStateEvent.turnRobotId,
+  };
+  pendingGameEvents.add(requestAdvanceTurnStateEvent);
+
   return startTurnReducer(TurnStateTypeEnum.FINISHED);
 }

@@ -1,6 +1,6 @@
 import {
   AdvanceTurnResponseStateEvent,
-  MoveResponseStateEvent,
+  PathResponseStateEvent,
   ResponseStateEvent,
   TurnEndResponseStateEvent,
   TurnStartResponseStateEvent,
@@ -39,13 +39,17 @@ export function responseStateEventResolver(
         );
       }
       case GameEventTypeEnum.ADVANCE_TURN: {
-        return advanceTurnResponseStateCase(gameCalculator, responseEvent as AdvanceTurnResponseStateEvent);
+        return advanceTurnResponseStateCase(
+          gameCalculator,
+          responseEvent as AdvanceTurnResponseStateEvent,
+          pendingGameEvents
+        );
       }
       case GameEventTypeEnum.MOVEMENT: {
         return movementResponseStateCase(
           gameCalculator,
           readonlyGameState,
-          responseEvent as MoveResponseStateEvent,
+          responseEvent as PathResponseStateEvent,
           pendingGameEvents
         );
       }

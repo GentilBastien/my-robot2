@@ -6,6 +6,5 @@ export function turnStartGameCase(gameEvent: GameEvent): RequestTurnStartStateEv
   return {
     gameEventType: GameEventTypeEnum.TURN_START,
     sourceRobotId: gameEvent.sourceRobotId,
-    priority: 3,
   };
 }

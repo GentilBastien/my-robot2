@@ -1,10 +1,10 @@
 import { RequestStateEvent } from '@events/request-state.event';
 import { ActionEventTypeEnum, GameEventTypeEnum } from 'shared';
-import { GameEvent, MovementGameEvent } from '@events/game.event';
+import { GameEvent, PathGameEvent } from '@events/game.event';
 import { turnStartGameCase } from '@resolvers/game-cases/turn-start.game-case';
 import { turnEndGameCase } from '@resolvers/game-cases/turn-end.game-case';
 import { advanceTurnGameCase } from '@resolvers/game-cases/advance-turn.game-case';
-import { movementGameCase } from '@resolvers/game-cases/movement.game-case';
+import { pathGameCase } from '@resolvers/game-cases/path.game-case';
 
 export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
   switch (gameEvent.gameEventType) {
@@ -17,8 +17,9 @@ export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
     case GameEventTypeEnum.ADVANCE_TURN: {
       return advanceTurnGameCase(gameEvent);
     }
-    case GameEventTypeEnum.MOVEMENT: {
-      return movementGameCase(gameEvent as MovementGameEvent);
+    case GameEventTypeEnum.PATH:
+    case GameEventTypeEnum.STEP_PATH: {
+      return pathGameCase(gameEvent as PathGameEvent);
     }
     case GameEventTypeEnum.ACTION: {
       const actionEventTypeEnum: ActionEventTypeEnum | undefined = gameEvent.actionEventTypeEnum;
@@ -32,11 +33,8 @@ export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
       // };
       switch (actionEventTypeEnum) {
         case ActionEventTypeEnum.AUTO_ATTACK:
-          return [];
         case ActionEventTypeEnum.THROW_PLASMA_GRENADE:
-          return [];
         case ActionEventTypeEnum.THROW_EMP_GRENADE:
-          return [];
         default:
           throw 'Temp error, invalid actionEventTypeEnum';
       }

@@ -116,6 +116,14 @@ export class GameCalculator {
     return this.hexGrid.shortestPathTo(startCell, targetCell);
   }
 
+  public getPathCoordinateCost(pathCoordinate: PathCoordinate): number {
+    let cumul = 0;
+    for (let i = 1; i < pathCoordinate.costs.length; i++) {
+      cumul += pathCoordinate.costs[i];
+    }
+    return cumul;
+  }
+
   public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
     const robotState = this.getRobotState(gameState, robotId);
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);

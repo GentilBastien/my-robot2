@@ -1,4 +1,4 @@
-import { GameEventTypeEnum, MovementTypeEnum, StepPathCoordinate } from 'shared';
+import { GameEventTypeEnum, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
 import { GameEvent } from '@events/game.event';
 
 export interface RequestStateEvent extends GameEvent {
@@ -7,27 +7,30 @@ export interface RequestStateEvent extends GameEvent {
 
 export interface RequestTurnStartStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.TURN_START;
-  priority: 3;
 }
 
 export interface RequestTurnEndStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.TURN_END;
-  priority: 1;
 }
 
 export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.ADVANCE_TURN;
-  priority: 3;
 }
 
-export interface RequestMoveStateEvent extends RequestStateEvent {
-  gameEventType: GameEventTypeEnum.MOVEMENT;
+export interface RequestPathStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.PATH;
+  movementType: MovementTypeEnum;
+  path: PathCoordinate;
+}
+
+export interface RequestStepPathStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.STEP_PATH;
   movementType: MovementTypeEnum;
   stepPath: StepPathCoordinate;
 }
 
-export interface RequestEndTurnResourcesStateEvent extends RequestStateEvent {
-  priority: 2;
+export interface RequestResourcesStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.RESOURCES;
   // TODO game resolvers must not return arrays
   // TODO reponses resolvers are the only one that should retriggers events
 }
