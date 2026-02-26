@@ -5,6 +5,7 @@ import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { remainingMovementReducer } from '../../reducers/movement.reducer';
+import { EffectState } from '../../../../shared/src/states/effect.state';
 
 export function stepPathResponseStateCase(
   gameCalculator: GameCalculator,
@@ -13,9 +14,9 @@ export function stepPathResponseStateCase(
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const newRemainingMove =
-    readonlyGameState.robots[stepPathResponseStateEvent.sourceRobotId].resources.remainingMove -
+    gameCalculator.getResourcesState(readonlyGameState, stepPathResponseStateEvent.sourceRobotId).remainingMove -
     stepPathResponseStateEvent.stepPath.cost;
-  const activeEffectInstances = gameCalculator.getActiveEffectInstancesAtCoordinates(
+  const activeEffectInstances: EffectState[] = gameCalculator.getEffectStatesAtCoordinates(
     readonlyGameState,
     stepPathResponseStateEvent.stepPath.endCoordinates
   );

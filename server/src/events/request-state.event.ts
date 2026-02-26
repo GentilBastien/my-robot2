@@ -56,10 +56,10 @@ export interface RequestResourcesStateEvent extends RequestStateEvent {
 
 // export interface AddEffectRequestStateEvent extends RequestStateEvent {
 //   stateEventType: StateEventTypeEnum.ADD_EFFECT;
-//   effectInstance: EffectInstance;
+//   effectInstance: EffectState;
 // }
 //
 // export interface RemoveEffectRequestStateEvent extends RequestStateEvent {
 //   stateEventType: StateEventTypeEnum.REMOVE_EFFECT;
-//   effectInstance: EffectInstance;
+//   effectInstance: EffectState;
 // }

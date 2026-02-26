@@ -29,8 +29,9 @@ export class PriorityListStructure<T> implements PriorityListStructureInterface<
   }
 
   public addAll(elems: T[]): void {
-    this._elems.push(...elems);
-    this._elems.sort((a, b) => this._comparator.compare(a, b));
+    for (const elem of elems) {
+      this.add(elem);
+    }
   }
 
   public poll(): T | undefined {

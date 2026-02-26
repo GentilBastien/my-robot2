@@ -1,5 +1,4 @@
-import { EffectInstance } from '@entities/effects/effect-instance';
-import { CellState, GameState, GameStateTypeEnum, ResourcesState, RobotState, TurnState } from 'shared';
+import { CellState, EffectState, GameState, GameStateTypeEnum, ResourcesState, RobotState, TurnState } from 'shared';
 
 export function changeGameStateType(gameState: Readonly<GameState>, gameStateTypeEnum: GameStateTypeEnum): GameState {
   return {
@@ -55,25 +54,16 @@ export function changeTurnState(gameState: Readonly<GameState>, turnState: TurnS
   };
 }
 
-export function addEffectState(gameState: Readonly<GameState>, effectInstance: EffectInstance): GameState {
+export function addEffectState(gameState: Readonly<GameState>, effectState: EffectState): GameState {
   return {
     ...gameState,
-    effectState: {
-      ...gameState.effectState,
-      activeEffectIds: {
-        ...gameState.effectState.activeEffectIds,
-        [effectInstance.id]: effectInstance,
-      },
-    },
+    effects: [...gameState.effects, effectState],
   };
 }
 
-export function removeEffectState(gameState: Readonly<GameState>, effectInstanceId: string): GameState {
+export function removeEffectState(gameState: Readonly<GameState>, effectStateId: string): GameState {
   return {
     ...gameState,
-    effectState: {
-      ...gameState.effectState,
-      activeEffectIds: gameState.effectState.activeEffectIds.filter(id => id !== effectInstanceId),
-    },
+    effects: gameState.effects.filter(effectState => effectState.id !== effectStateId),
   };
 }

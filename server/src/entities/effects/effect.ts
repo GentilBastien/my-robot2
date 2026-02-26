@@ -3,6 +3,7 @@ import { RequestStateEvent } from '@events/request-state.event';
 import { EffectContext } from '@entities/effects/effect-context';
 
 export interface Effect {
+  id: string;
   type: EffectCategoryTypeEnum;
   ticking: EffectTickingConfig;
   stacking: EffectStackingConfig;

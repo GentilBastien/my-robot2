@@ -14,7 +14,7 @@ interface TargetedEvent {
 }
 
 interface ZoneEvent {
-  targetTileId: string;
+  targetCellId: string;
   radius: number;
 }
 

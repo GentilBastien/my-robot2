@@ -33,8 +33,8 @@ export class Game {
   }
 
   private resolveGameEvent(gameRequestEvent: GameEvent): void {
-    const requestEvent: RequestStateEvent[] = gameEventResolver(gameRequestEvent);
-    this.pendingRequestEvents.addAll(requestEvent);
+    const requestEvent: RequestStateEvent = gameEventResolver(gameRequestEvent);
+    this.pendingRequestEvents.add(requestEvent);
     const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
     this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
   }
@@ -66,10 +66,10 @@ export class Game {
     responseEvents: ResponseStateEvent[]
   ): GameState {
     //Impl Note : responseEvents are mapped to reduces keeping its ordering.
-    const reducers: Reducer[] = responseEvents.map(responseEvent =>
+    const reducers: (Reducer | null)[] = responseEvents.map(responseEvent =>
       responseStateEventResolver(this.gameCalculator, readonlyGameState, responseEvent, this.pendingRequestEvents)
     );
     //once reducers are filled and pendingEvents consumed, apply all of them in order
-    return reducers.reduce((state, reducer) => reducer(state), readonlyGameState);
+    return reducers.reduce((state, reducer) => (reducer ? reducer(state) : state), readonlyGameState);
   }
 }

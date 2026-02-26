@@ -3,7 +3,5 @@ export enum EffectTrigger {
   ON_ACTION,
   ON_TURN_START,
   ON_TURN_END,
-  ON_EVERY_TURN_START,
-  ON_EVERY_TURN_END,
   ON_EXPIRE,
 }

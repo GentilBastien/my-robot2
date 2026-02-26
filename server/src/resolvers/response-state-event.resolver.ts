@@ -21,7 +21,7 @@ export function responseStateEventResolver(
   readonlyGameState: Readonly<GameState>,
   responseEvent: ResponseStateEvent,
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
-): Reducer {
+): Reducer | null {
   if (responseEvent.responseValidated) {
     switch (responseEvent.gameEventType) {
       case GameEventTypeEnum.TURN_START: {
@@ -48,12 +48,13 @@ export function responseStateEventResolver(
         );
       }
       case GameEventTypeEnum.PATH: {
-        return pathResponseStateCase(
+        pathResponseStateCase(
           gameCalculator,
           readonlyGameState,
           responseEvent as PathResponseStateEvent,
           pendingGameEvents
         );
+        return null;
       }
       case GameEventTypeEnum.STEP_PATH: {
         return stepPathResponseStateCase(

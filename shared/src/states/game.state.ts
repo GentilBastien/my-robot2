@@ -8,6 +8,6 @@ export interface GameState {
   robots: Record<string, RobotState>;
   state: GameStateTypeEnum;
   arenaState: ArenaState;
-  effectState: EffectState;
+  effects: EffectState[];
   turnState: TurnState;
 }
