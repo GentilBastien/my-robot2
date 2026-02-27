@@ -42,6 +42,10 @@ export interface StepPathResponseStateEvent extends ResponseStateEvent {
   stepPath: StepPathCoordinate;
 }
 
+export interface ResourcesResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.RESOURCES;
+}
+
 export interface DamageResponseStateEvent extends ResponseStateEvent {
   source: RobotState;
   target: RobotState;

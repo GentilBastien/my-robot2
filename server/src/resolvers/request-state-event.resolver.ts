@@ -1,6 +1,7 @@
 import {
   RequestAdvanceTurnStateEvent,
   RequestPathStateEvent,
+  RequestResourcesStateEvent,
   RequestStateEvent,
   RequestStepPathStateEvent,
   RequestTurnEndStateEvent,
@@ -14,6 +15,7 @@ import { advanceTurnRequestStateCase } from '@resolvers/request-state-cases/adva
 import { turnEndRequestStateCase } from '@resolvers/request-state-cases/turn-end.request-state-case';
 import { pathRequestStateCase } from '@resolvers/request-state-cases/path.request-state-case';
 import { stepPathRequestStateCase } from '@resolvers/request-state-cases/step-path.request-state-case';
+import { resourcesRequestStateCase } from '@resolvers/request-state-cases/resources.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -40,6 +42,9 @@ export function requestStateEventResolver(
     }
     case GameEventTypeEnum.STEP_PATH: {
       return stepPathRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestStepPathStateEvent);
+    }
+    case GameEventTypeEnum.RESOURCES: {
+      return resourcesRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestResourcesStateEvent);
     }
 
     //...

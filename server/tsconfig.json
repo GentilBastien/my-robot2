@@ -8,7 +8,8 @@
       "@resolvers/*": ["resolvers/*"],
       "@states/*": ["states/*"],
       "@handlers/*": ["event-handlers/*"],
-      "@structures/*": ["structures/*"]
+      "@structures/*": ["structures/*"],
+      "@reducers/*": ["reducers/*"]
     },
     "target": "ES2020",
     "module": "ESNext",
