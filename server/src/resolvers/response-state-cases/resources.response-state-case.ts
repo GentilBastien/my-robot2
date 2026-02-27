@@ -1,7 +1,7 @@
 import { ResourcesResponseStateEvent } from '@events/response-state.event';
-import { GameState, Reducer } from 'shared';
+import { GameState, Reducer, ResourcesState } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
-import { healthPointReducer } from '@reducers/resources.reducer';
+import { updateResourcesState } from '@reducers/resources.reducer';
 
 export function resourcesResponseStateCase(
   gameCalculator: GameCalculator,
@@ -9,7 +9,13 @@ export function resourcesResponseStateCase(
   resourcesResponseStateEvent: ResourcesResponseStateEvent
   // pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  console.log(resourcesResponseStateEvent);
-  //TODO: resources state
-  return healthPointReducer(resourcesResponseStateEvent.sourceRobotId, 2);
+  const resourcesState: ResourcesState = gameCalculator.getResourcesState(
+    readonlyGameState,
+    resourcesResponseStateEvent.sourceRobotId
+  );
+
+  const newResourcesState: ResourcesState = {
+    ...resourcesState,
+  };
+  return updateResourcesState(resourcesResponseStateEvent.sourceRobotId, newResourcesState);
 }

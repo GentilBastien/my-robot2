@@ -1,13 +1,13 @@
-import { CellState, EffectState, GameState, GameStateTypeEnum, ResourcesState, RobotState, TurnState } from 'shared';
+import { CellState, EffectState, GameState, GameStateTypeEnum, RobotState, TurnState } from 'shared';
 
-export function changeGameStateType(gameState: Readonly<GameState>, gameStateTypeEnum: GameStateTypeEnum): GameState {
+export function updateGameStateType(gameState: Readonly<GameState>, gameStateTypeEnum: GameStateTypeEnum): GameState {
   return {
     ...gameState,
     state: gameStateTypeEnum,
   };
 }
 
-export function changeRobotState(gameState: Readonly<GameState>, robotState: RobotState): GameState {
+export function updateRobotState(gameState: Readonly<GameState>, robotState: RobotState): GameState {
   return {
     ...gameState,
     robots: {
@@ -17,24 +17,7 @@ export function changeRobotState(gameState: Readonly<GameState>, robotState: Rob
   };
 }
 
-export function changesResourcesState(
-  gameState: Readonly<GameState>,
-  robotId: string,
-  resourcesState: ResourcesState
-): GameState {
-  return {
-    ...gameState,
-    robots: {
-      ...gameState.robots,
-      [robotId]: {
-        ...gameState.robots[robotId],
-        resources: resourcesState,
-      },
-    },
-  };
-}
-
-export function changeCellState(gameState: Readonly<GameState>, cellState: CellState): GameState {
+export function updateCellState(gameState: Readonly<GameState>, cellState: CellState): GameState {
   return {
     ...gameState,
     arenaState: {
@@ -47,7 +30,7 @@ export function changeCellState(gameState: Readonly<GameState>, cellState: CellS
   };
 }
 
-export function changeTurnState(gameState: Readonly<GameState>, turnState: TurnState): GameState {
+export function updateTurnState(gameState: Readonly<GameState>, turnState: TurnState): GameState {
   return {
     ...gameState,
     turnState,

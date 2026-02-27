@@ -1,6 +1,7 @@
 import {
   AdvanceTurnResponseStateEvent,
   PathResponseStateEvent,
+  ResourcesResponseStateEvent,
   ResponseStateEvent,
   StepPathResponseStateEvent,
   TurnEndResponseStateEvent,
@@ -15,6 +16,7 @@ import { advanceTurnResponseStateCase } from '@resolvers/response-state-cases/ad
 import { turnEndResponseStateCase } from '@resolvers/response-state-cases/turn-end.response-state-case';
 import { pathResponseStateCase } from '@resolvers/response-state-cases/path.response-state-case';
 import { stepPathResponseStateCase } from '@resolvers/response-state-cases/step-path.response-state-case';
+import { resourcesResponseStateCase } from '@resolvers/response-state-cases/resources.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -62,6 +64,13 @@ export function responseStateEventResolver(
           readonlyGameState,
           responseEvent as StepPathResponseStateEvent,
           pendingGameEvents
+        );
+      }
+      case GameEventTypeEnum.RESOURCES: {
+        return resourcesResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as ResourcesResponseStateEvent
         );
       }
       default:

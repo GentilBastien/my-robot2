@@ -4,8 +4,8 @@ import { EffectState, GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
-import { remainingMovementReducer } from '@reducers/movement.reducer';
 import { Effect } from '@entities/effects/effect';
+import { remainingMovementReducer } from '@reducers/resources.reducer';
 
 export function stepPathResponseStateCase(
   gameCalculator: GameCalculator,

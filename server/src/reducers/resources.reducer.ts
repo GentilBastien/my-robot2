@@ -1,13 +1,34 @@
 import { GameState, Reducer, ResourcesState } from 'shared';
-import { changesResourcesState } from './state-helper.reducer';
 
-export const healthPointReducer =
-  (robotId: string, hpRegen: number): Reducer =>
+export const updateResourcesState =
+  (robotId: string, resourcesState: ResourcesState): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
-    const current: ResourcesState = gameState.robots[robotId].resources;
-    const newTurnState: ResourcesState = {
-      ...current,
-      hp: current.hp + hpRegen,
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: resourcesState,
+        },
+      },
     };
-    return changesResourcesState(gameState, robotId, newTurnState);
+  };
+
+export const remainingMovementReducer =
+  (robotId: string, newRemainingMovement: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            remainingMove: newRemainingMovement,
+          },
+        },
+      },
+    };
   };

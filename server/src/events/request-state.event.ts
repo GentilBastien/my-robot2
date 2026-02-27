@@ -31,8 +31,6 @@ export interface RequestStepPathStateEvent extends RequestStateEvent {
 
 export interface RequestResourcesStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.RESOURCES;
-  // TODO game resolvers must not return arrays
-  // TODO reponses resolvers are the only one that should retriggers events
 }
 
 // export interface RequestRobotJoinStateEvent extends RequestStateEvent {
