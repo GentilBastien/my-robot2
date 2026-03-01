@@ -3,6 +3,7 @@ import {
   CellState,
   Comparator,
   Coordinates,
+  EffectState,
   EqualsUtils,
   GameState,
   PathCoordinate,
@@ -15,7 +16,6 @@ import {
 } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { GameConfig } from '../game.config';
-import { EffectState } from '../../../../shared/src/states/effect.state';
 import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 
