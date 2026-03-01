@@ -5,7 +5,7 @@ import { Action } from '@entities/actions/action';
 
 export interface EffectContext {
   trigger: EffectTrigger;
-  effectInstance: EffectState;
+  effectState: EffectState;
   readonlyGameState: Readonly<GameState>;
   gameCalculator: GameCalculator;
   action?: Action;

@@ -1,4 +1,5 @@
 import {
+  AddEffectResponseStateEvent,
   AdvanceTurnResponseStateEvent,
   PathResponseStateEvent,
   ResourcesResponseStateEvent,
@@ -11,12 +12,13 @@ import { PriorityListStructure } from '@structures/priority-list/priority-list.s
 import { RequestStateEvent } from '@events/request-state.event';
 import { GameCalculator } from '../game/game-calculator/game.calculator';
 import { GameEventTypeEnum, GameState, Reducer } from 'shared';
-import { turnStartResponseStateCase } from '@resolvers/response-state-cases/turn-start.response-state-case';
-import { advanceTurnResponseStateCase } from '@resolvers/response-state-cases/advance-turn.response-state-case';
-import { turnEndResponseStateCase } from '@resolvers/response-state-cases/turn-end.response-state-case';
-import { pathResponseStateCase } from '@resolvers/response-state-cases/path.response-state-case';
-import { stepPathResponseStateCase } from '@resolvers/response-state-cases/step-path.response-state-case';
-import { resourcesResponseStateCase } from '@resolvers/response-state-cases/resources.response-state-case';
+import { turnStartResponseStateCase } from '@resolvers-response/turn-start.response-state-case';
+import { turnEndResponseStateCase } from '@resolvers-response/turn-end.response-state-case';
+import { advanceTurnResponseStateCase } from '@resolvers-response/advance-turn.response-state-case';
+import { pathResponseStateCase } from '@resolvers-response/path.response-state-case';
+import { stepPathResponseStateCase } from '@resolvers-response/step-path.response-state-case';
+import { resourcesResponseStateCase } from '@resolvers-response/resources.response-state-case';
+import { addEffectResponseStateCase } from '@resolvers-response/add-effect.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -71,6 +73,14 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as ResourcesResponseStateEvent
+        );
+      }
+      case GameEventTypeEnum.ADD_EFFECT: {
+        return addEffectResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as AddEffectResponseStateEvent,
+          pendingGameEvents
         );
       }
       default:

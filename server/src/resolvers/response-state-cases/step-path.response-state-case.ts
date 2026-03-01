@@ -24,7 +24,7 @@ export function stepPathResponseStateCase(
     const effect: Effect = gameCalculator.getEffect(effectState);
     return effect.handle({
       trigger: EffectTrigger.ON_APPLY,
-      effectInstance: effectState,
+      effectState,
       readonlyGameState,
       gameCalculator,
     });

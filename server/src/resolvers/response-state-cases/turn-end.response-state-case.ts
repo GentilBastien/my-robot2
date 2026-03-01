@@ -34,7 +34,7 @@ export function turnEndResponseStateCase(
     const effect: Effect = gameCalculator.getEffect(effectState);
     return effect.handle({
       trigger: EffectTrigger.ON_TURN_END,
-      effectInstance: effectState,
+      effectState,
       readonlyGameState,
       gameCalculator,
     });

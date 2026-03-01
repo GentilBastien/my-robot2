@@ -30,7 +30,7 @@ export function turnStartResponseStateCase(
     const effect: Effect = gameCalculator.getEffect(effectState);
     return effect.handle({
       trigger: EffectTrigger.ON_TURN_START,
-      effectInstance: effectState,
+      effectState,
       readonlyGameState,
       gameCalculator,
     });

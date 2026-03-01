@@ -6,6 +6,8 @@
       "@events/*": ["events/*"],
       "@managers/*": ["managers/*"],
       "@resolvers/*": ["resolvers/*"],
+      "@resolvers-request/*": ["resolvers/request-state-cases/*"],
+      "@resolvers-response/*": ["resolvers/response-state-cases/*"],
       "@states/*": ["states/*"],
       "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],

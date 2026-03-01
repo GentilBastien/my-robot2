@@ -1,4 +1,4 @@
-import { CellState, EffectState, GameState, GameStateTypeEnum, RobotState, TurnState } from 'shared';
+import { CellState, GameState, GameStateTypeEnum, RobotState, TurnState } from 'shared';
 
 export function updateGameStateType(gameState: Readonly<GameState>, gameStateTypeEnum: GameStateTypeEnum): GameState {
   return {
@@ -34,19 +34,5 @@ export function updateTurnState(gameState: Readonly<GameState>, turnState: TurnS
   return {
     ...gameState,
     turnState,
-  };
-}
-
-export function addEffectState(gameState: Readonly<GameState>, effectState: EffectState): GameState {
-  return {
-    ...gameState,
-    effects: [...gameState.effects, effectState],
-  };
-}
-
-export function removeEffectState(gameState: Readonly<GameState>, effectStateId: string): GameState {
-  return {
-    ...gameState,
-    effects: gameState.effects.filter(effectState => effectState.id !== effectStateId),
   };
 }
