@@ -2,6 +2,7 @@ import {
   RequestAddEffectStateEvent,
   RequestAdvanceTurnStateEvent,
   RequestPathStateEvent,
+  RequestRemoveEffectStateEvent,
   RequestResourcesStateEvent,
   RequestStateEvent,
   RequestStepPathStateEvent,
@@ -18,6 +19,7 @@ import { pathRequestStateCase } from '@resolvers-request/path.request-state-case
 import { stepPathRequestStateCase } from '@resolvers-request/step-path.request-state-case';
 import { resourcesRequestStateCase } from '@resolvers-request/resources.request-state-case';
 import { addEffectRequestStateCase } from '@resolvers-request/add-effect.request-state-case';
+import { removeEffectRequestStateCase } from '@resolvers-request/remove-effect.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -50,6 +52,9 @@ export function requestStateEventResolver(
     }
     case GameEventTypeEnum.ADD_EFFECT: {
       return addEffectRequestStateCase(requestEvent as RequestAddEffectStateEvent);
+    }
+    case GameEventTypeEnum.REMOVE_EFFECT: {
+      return removeEffectRequestStateCase(requestEvent as RequestRemoveEffectStateEvent);
     }
 
     //...

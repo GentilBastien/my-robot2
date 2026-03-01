@@ -52,6 +52,11 @@ export interface AddEffectResponseStateEvent extends ResponseStateEvent {
   effectState: EffectState;
 }
 
+export interface RemoveEffectResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.REMOVE_EFFECT;
+  effectStateId: string;
+}
+
 export interface DamageResponseStateEvent extends ResponseStateEvent {
   source: RobotState;
   target: RobotState;

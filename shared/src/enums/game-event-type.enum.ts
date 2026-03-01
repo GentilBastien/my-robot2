@@ -7,4 +7,5 @@ export enum GameEventTypeEnum {
   STEP_PATH,
   ACTION,
   ADD_EFFECT,
+  REMOVE_EFFECT,
 }

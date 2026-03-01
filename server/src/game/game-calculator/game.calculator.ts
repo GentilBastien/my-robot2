@@ -79,6 +79,14 @@ export class GameCalculator {
     return allEffects[effectState.effectId];
   }
 
+  public getEffectStateById(gameState: Readonly<GameState>, effectStateId: string): EffectState {
+    const effectStateFound: EffectState | undefined = gameState.effects.find(eff => eff.id === effectStateId);
+    if (effectStateFound) {
+      return effectStateFound;
+    }
+    throw 'temp error';
+  }
+
   public getEffectStatesFromRobot(gameState: Readonly<GameState>, robotId: string): EffectState[] {
     return gameState.effects.filter(effect => effect.sourceId === robotId);
   }
@@ -96,6 +104,17 @@ export class GameCalculator {
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
     const robotPlayingId = this.getRobotPlayingId();
     return this.getRobotState(gameState, robotId).id === robotPlayingId;
+  }
+
+  public getEffectStateIfTargetAlreadyAffectedBy(
+    gameState: Readonly<GameState>,
+    newEffectState: EffectState
+  ): EffectState | undefined {
+    return gameState.effects.find(
+      effectState =>
+        effectState.effectId === newEffectState.effectId &&
+        (effectState.targetId === newEffectState.targetId || effectState.cellId === newEffectState.cellId)
+    );
   }
 
   public newTurnState(gameState: Readonly<GameState>): TurnState {

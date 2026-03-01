@@ -1,36 +1,29 @@
-import { AddEffectResponseStateEvent } from '@events/response-state.event';
+import { RemoveEffectResponseStateEvent } from '@events/response-state.event';
 import { EffectState, GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
-import { addEffectState, updateEffectState } from '@reducers/effect.reducer';
+import { removeEffectState } from '@reducers/effect.reducer';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 
-export function addEffectResponseStateCase(
+export function removeEffectResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
-  addEffectResponseStateEvent: AddEffectResponseStateEvent,
+  removeEffectResponseStateEvent: RemoveEffectResponseStateEvent,
   pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  const effectState: EffectState = addEffectResponseStateEvent.effectState;
-  const alreadyAffected: EffectState | undefined = gameCalculator.getEffectStateIfTargetAlreadyAffectedBy(
-    readonlyGameState,
-    effectState
-  );
-
+  const effectStateId: string = removeEffectResponseStateEvent.effectStateId;
+  const effectState: EffectState = gameCalculator.getEffectStateById(readonlyGameState, effectStateId);
   const effect: Effect = gameCalculator.getEffect(effectState);
+
   const newEffectsFromApply: RequestStateEvent[] = effect.handle({
-    trigger: EffectTrigger.ON_APPLY,
-    effectState: alreadyAffected ?? effectState,
+    trigger: EffectTrigger.ON_EXPIRE,
+    effectState,
     readonlyGameState,
     gameCalculator,
   });
 
   pendingGameEvents.addAll(newEffectsFromApply);
-  if (alreadyAffected) {
-    return updateEffectState(alreadyAffected);
-  } else {
-    return addEffectState(effectState);
-  }
+  return removeEffectState(effectStateId);
 }

@@ -2,6 +2,7 @@ import {
   AddEffectResponseStateEvent,
   AdvanceTurnResponseStateEvent,
   PathResponseStateEvent,
+  RemoveEffectResponseStateEvent,
   ResourcesResponseStateEvent,
   ResponseStateEvent,
   StepPathResponseStateEvent,
@@ -19,6 +20,7 @@ import { pathResponseStateCase } from '@resolvers-response/path.response-state-c
 import { stepPathResponseStateCase } from '@resolvers-response/step-path.response-state-case';
 import { resourcesResponseStateCase } from '@resolvers-response/resources.response-state-case';
 import { addEffectResponseStateCase } from '@resolvers-response/add-effect.response-state-case';
+import { removeEffectResponseStateCase } from '@resolvers-response/remove-effect.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -80,6 +82,14 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as AddEffectResponseStateEvent,
+          pendingGameEvents
+        );
+      }
+      case GameEventTypeEnum.REMOVE_EFFECT: {
+        return removeEffectResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as RemoveEffectResponseStateEvent,
           pendingGameEvents
         );
       }

@@ -38,6 +38,11 @@ export interface RequestAddEffectStateEvent extends RequestStateEvent {
   effectState: EffectState;
 }
 
+export interface RequestRemoveEffectStateEvent extends RequestStateEvent {
+  stateEventType: GameEventTypeEnum.REMOVE_EFFECT;
+  effectStateId: string;
+}
+
 // export interface RequestRobotJoinStateEvent extends RequestStateEvent {
 //   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
 //   robotState: RobotState;
