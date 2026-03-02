@@ -19,7 +19,7 @@ export function addEffectResponseStateCase(
     effectState
   );
 
-  const effect: Effect = gameCalculator.getEffect(effectState);
+  const effect: Effect = gameCalculator.getEffect(alreadyAffected ?? effectState);
   const newEffectsFromApply: RequestStateEvent[] = effect.handle({
     trigger: EffectTrigger.ON_APPLY,
     effectState: alreadyAffected ?? effectState,
