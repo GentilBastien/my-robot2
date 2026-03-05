@@ -13,14 +13,14 @@ export function resourcesResponseStateCase(
     resourcesResponseStateEvent.sourceRobotId
   );
 
-  const newHp = incrementsHpByValue(resourcesState, resourcesState.regenHp);
-  const newMana = incrementsManaByValue(resourcesState, resourcesState.regenMana);
-  const cooling = resourcesState.isOverheating ? Math.ceil(resourcesState.coolingDown / 2) : resourcesState.coolingDown;
+  const { regenHp, regenMana, coolingDown, isOverheating, maxOverheating, totalMove } = resourcesState;
+
+  const newHp = incrementsHpByValue(resourcesState, regenHp);
+  const newMana = incrementsManaByValue(resourcesState, regenMana);
+  const cooling = computeCooling(isOverheating, coolingDown);
   const newOverheating = decrementsOverheatingByValue(resourcesState, cooling);
   const newIsOverheating =
-    (resourcesState.isOverheating && newOverheating === 0) ||
-    (!resourcesState.isOverheating && newOverheating === resourcesState.maxOverheating);
-  const newRemainingMove = resourcesState.totalMove;
+    (isOverheating && newOverheating === 0) || (!isOverheating && newOverheating === maxOverheating);
 
   const newResourcesState: ResourcesState = {
     ...resourcesState,
@@ -28,7 +28,7 @@ export function resourcesResponseStateCase(
     mana: newMana,
     overheating: newOverheating,
     isOverheating: newIsOverheating,
-    remainingMove: newRemainingMove,
+    remainingMove: totalMove,
   };
   return updateResourcesState(resourcesResponseStateEvent.sourceRobotId, newResourcesState);
 }
@@ -43,6 +43,10 @@ function incrementsManaByValue(resourcesState: ResourcesState, value: number): n
 
 function decrementsOverheatingByValue(resourcesState: ResourcesState, value: number): number {
   return incrementsValue(0, resourcesState.maxOverheating, resourcesState.overheating, value);
+}
+
+function computeCooling(isOverheating: boolean, coolingDown: number) {
+  return isOverheating ? Math.ceil(coolingDown / 2) : coolingDown;
 }
 
 /**
