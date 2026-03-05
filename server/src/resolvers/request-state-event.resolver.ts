@@ -1,6 +1,7 @@
 import {
   RequestAddEffectStateEvent,
   RequestAdvanceTurnStateEvent,
+  RequestHpStateEvent,
   RequestManaStateEvent,
   RequestPathStateEvent,
   RequestRemoveEffectStateEvent,
@@ -33,6 +34,7 @@ import { removeEffectRequestStateCase } from '@resolvers-request/remove-effect.r
 import { actionRequestStateCase } from '@resolvers-request/action.request-state-case';
 import { RequestActionStateEvent } from '@events/request-action-state.event';
 import { manaRequestStateCase } from '@resolvers-request/mana.request-state-case';
+import { hpRequestStateCase } from '@resolvers-request/hp.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -99,6 +101,10 @@ export function requestStateEventResolver(
         requestEvent as RequestRemoveEffectStateEvent
       );
       return [removeEffectResponseStateEvent];
+    }
+    case GameEventTypeEnum.HP: {
+      const mana = hpRequestStateCase(requestEvent as RequestHpStateEvent);
+      return [mana];
     }
     case GameEventTypeEnum.MANA: {
       const mana = manaRequestStateCase(requestEvent as RequestManaStateEvent);

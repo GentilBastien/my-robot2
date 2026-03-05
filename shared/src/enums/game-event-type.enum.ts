@@ -8,5 +8,6 @@ export enum GameEventTypeEnum {
   ACTION,
   ADD_EFFECT,
   REMOVE_EFFECT,
+  HP,
   MANA,
 }

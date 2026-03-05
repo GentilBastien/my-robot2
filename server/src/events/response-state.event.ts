@@ -57,6 +57,11 @@ export interface RemoveEffectResponseStateEvent extends ResponseStateEvent {
   effectStateId: string;
 }
 
+export interface HpResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.HP;
+  value: number;
+}
+
 export interface ManaResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.MANA;
   value: number;

@@ -1,6 +1,7 @@
 import {
   AddEffectResponseStateEvent,
   AdvanceTurnResponseStateEvent,
+  HpResponseStateEvent,
   ManaResponseStateEvent,
   PathResponseStateEvent,
   RemoveEffectResponseStateEvent,
@@ -23,6 +24,7 @@ import { resourcesResponseStateCase } from '@resolvers-response/resources.respon
 import { addEffectResponseStateCase } from '@resolvers-response/add-effect.response-state-case';
 import { removeEffectResponseStateCase } from '@resolvers-response/remove-effect.response-state-case';
 import { manaResponseStateCase } from '@resolvers-response/mana.response-state-case';
+import { hpResponseStateCase } from '@resolvers-response/hp.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -94,6 +96,9 @@ export function responseStateEventResolver(
           responseEvent as RemoveEffectResponseStateEvent,
           pendingRequestEvents
         );
+      }
+      case GameEventTypeEnum.HP: {
+        return hpResponseStateCase(gameCalculator, readonlyGameState, responseEvent as HpResponseStateEvent);
       }
       case GameEventTypeEnum.MANA: {
         return manaResponseStateCase(gameCalculator, readonlyGameState, responseEvent as ManaResponseStateEvent);

@@ -33,6 +33,24 @@ export const remainingMovementReducer =
     };
   };
 
+export const hpReducer =
+  (robotId: string, newHp: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            hp: newHp,
+          },
+        },
+      },
+    };
+  };
+
 export const manaReducer =
   (robotId: string, newMana: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {

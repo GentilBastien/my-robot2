@@ -43,6 +43,11 @@ export interface RequestRemoveEffectStateEvent extends RequestStateEvent {
   effectStateId: string;
 }
 
+export interface RequestHpStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.HP;
+  value: number;
+}
+
 export interface RequestManaStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.MANA;
   value: number;
