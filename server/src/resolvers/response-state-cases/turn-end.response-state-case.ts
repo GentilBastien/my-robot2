@@ -4,7 +4,7 @@ import {
   RequestResourcesStateEvent,
   RequestStateEvent,
 } from '@events/request-state.event';
-import { startTurnReducer } from '../../reducers/turn.reducer';
+import { startTurnReducer } from '@reducers/turn.reducer';
 import { EffectState, GameEventTypeEnum, GameState, Reducer, TurnStateTypeEnum } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';

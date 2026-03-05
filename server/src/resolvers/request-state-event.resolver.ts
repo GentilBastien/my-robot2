@@ -32,14 +32,12 @@ import { addEffectRequestStateCase } from '@resolvers-request/add-effect.request
 import { removeEffectRequestStateCase } from '@resolvers-request/remove-effect.request-state-case';
 import { actionRequestStateCase } from '@resolvers-request/action.request-state-case';
 import { RequestActionStateEvent } from '@events/request-action-state.event';
-import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { manaRequestStateCase } from '@resolvers-request/mana.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
-  requestEvent: RequestStateEvent,
-  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
+  requestEvent: RequestStateEvent
 ): ResponseStateEvent[] {
   switch (requestEvent.gameEventType) {
     case GameEventTypeEnum.TURN_START: {

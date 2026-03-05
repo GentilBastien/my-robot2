@@ -5,5 +5,4 @@ export interface TurnState {
   currentTurnNumber: number;
   currentTurnRobot: RobotState;
   turnStateTypeEnum: TurnStateTypeEnum;
-  test: string;
 }
