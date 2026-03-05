@@ -68,3 +68,21 @@ export const manaReducer =
       },
     };
   };
+
+export const heatReducer =
+  (robotId: string, newOverheating: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            overheating: newOverheating,
+          },
+        },
+      },
+    };
+  };

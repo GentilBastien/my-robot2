@@ -67,6 +67,11 @@ export interface ManaResponseStateEvent extends ResponseStateEvent {
   value: number;
 }
 
+export interface HeatResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.HEAT;
+  value: number;
+}
+
 export interface DamageResponseStateEvent extends ResponseStateEvent {
   source: RobotState;
   target: RobotState;

@@ -53,6 +53,11 @@ export interface RequestManaStateEvent extends RequestStateEvent {
   value: number;
 }
 
+export interface RequestHeatStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.HEAT;
+  value: number;
+}
+
 // export interface RequestRobotJoinStateEvent extends RequestStateEvent {
 //   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
 //   robotState: RobotState;

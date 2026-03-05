@@ -10,4 +10,5 @@ export enum GameEventTypeEnum {
   REMOVE_EFFECT,
   HP,
   MANA,
+  HEAT,
 }

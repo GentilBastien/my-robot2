@@ -1,6 +1,7 @@
 import {
   AddEffectResponseStateEvent,
   AdvanceTurnResponseStateEvent,
+  HeatResponseStateEvent,
   HpResponseStateEvent,
   ManaResponseStateEvent,
   PathResponseStateEvent,
@@ -25,6 +26,7 @@ import { addEffectResponseStateCase } from '@resolvers-response/add-effect.respo
 import { removeEffectResponseStateCase } from '@resolvers-response/remove-effect.response-state-case';
 import { manaResponseStateCase } from '@resolvers-response/mana.response-state-case';
 import { hpResponseStateCase } from '@resolvers-response/hp.response-state-case';
+import { heatResponseStateCase } from '@resolvers-response/heat.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -102,6 +104,9 @@ export function responseStateEventResolver(
       }
       case GameEventTypeEnum.MANA: {
         return manaResponseStateCase(gameCalculator, readonlyGameState, responseEvent as ManaResponseStateEvent);
+      }
+      case GameEventTypeEnum.HEAT: {
+        return heatResponseStateCase(gameCalculator, readonlyGameState, responseEvent as HeatResponseStateEvent);
       }
       default:
         throw new Error('ResponseEventResolver, unknown gameEventType');
