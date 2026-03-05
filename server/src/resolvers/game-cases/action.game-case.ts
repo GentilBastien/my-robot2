@@ -1,17 +1,21 @@
-import { ActionRequestStateEvent } from '@events/action-request-state.event';
-import { ActionEventTypeEnum } from 'shared/dist';
-import { GameEvent } from '@events/game.event';
+import { RequestActionStateEvent, RequestAutoAttackActionEvent } from '@events/request-action-state.event';
+import { ActionTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
+import { ActionGameEvent } from '@events/game.event';
 
-export function actionGameCase(gameEvent: GameEvent): ActionRequestStateEvent {
-  const actionEventTypeEnum: ActionEventTypeEnum | undefined = gameEvent.actionEventTypeEnum;
-  if (actionEventTypeEnum === undefined) {
-    throw 'Temp error, actionEventTypeEnum must be defined if GameEventTypeEnum is ACTION';
-  }
-  switch (actionEventTypeEnum) {
-    case ActionEventTypeEnum.AUTO_ATTACK:
-    case ActionEventTypeEnum.THROW_PLASMA_GRENADE:
-    case ActionEventTypeEnum.THROW_EMP_GRENADE:
+export function actionGameCase(actionGameEvent: ActionGameEvent): RequestActionStateEvent {
+  const actionTypeEnum: ActionTypeEnum = actionGameEvent.actionTypeEnum;
+  switch (actionTypeEnum) {
+    case ActionTypeEnum.AUTO_ATTACK: {
+      return {
+        gameEventType: GameEventTypeEnum.ACTION,
+        actionTypeEnum: ActionTypeEnum.AUTO_ATTACK,
+        damageType: DamageTypeEnum.ENERGETIC,
+        sourceRobotId: actionGameEvent.sourceRobotId,
+        targetRobotId: actionGameEvent.data['targetRobotId'],
+        damage: Number(actionGameEvent.data['damage']),
+      } as RequestAutoAttackActionEvent;
+    }
     default:
-      throw 'Temp error, invalid actionEventTypeEnum';
+      throw 'Temp error, invalid actionTypeEnum';
   }
 }

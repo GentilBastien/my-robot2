@@ -11,7 +11,7 @@ export function turnStartResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   turnStartResponseStateEvent: TurnStartResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const robotPlayingId: string = turnStartResponseStateEvent.turnRobotId;
   const effectStatesFromRobot: EffectState[] = gameCalculator.getEffectStatesFromRobot(
@@ -38,6 +38,6 @@ export function turnStartResponseStateCase(
     });
   });
 
-  pendingGameEvents.addAll(requestStateEventsFromEffects);
+  pendingRequestEvents.addAll(requestStateEventsFromEffects);
   return startTurnReducer(TurnStateTypeEnum.STARTED);
 }

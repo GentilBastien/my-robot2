@@ -7,13 +7,13 @@ export function resourcesResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   resourcesResponseStateEvent: ResourcesResponseStateEvent
-  // pendingGameEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  const resourcesState: ResourcesState = gameCalculator.getResourcesState(
+  const resourcesState: ResourcesState = gameCalculator.getRobotResourcesState(
     readonlyGameState,
     resourcesResponseStateEvent.sourceRobotId
   );
 
+  //TODO resources at turn end
   const newResourcesState: ResourcesState = {
     ...resourcesState,
   };

@@ -8,7 +8,7 @@ export function pathResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   pathResponseStateEvent: PathResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): void {
   const basePriorityMovement = 10;
   switch (pathResponseStateEvent.movementType) {
@@ -25,7 +25,7 @@ export function pathResponseStateCase(
           priority: basePriorityMovement,
           stepPath: pathCoordsAsOneStep,
         };
-        pendingGameEvents.add(stepPath);
+        pendingRequestEvents.add(stepPath);
       }
       break;
     }
@@ -42,7 +42,7 @@ export function pathResponseStateCase(
           stepPath,
         })
       );
-      pendingGameEvents.addAll(requestStepPathStateEvents);
+      pendingRequestEvents.addAll(requestStepPathStateEvents);
     }
   }
 }

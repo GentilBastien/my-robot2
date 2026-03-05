@@ -1,8 +1,8 @@
 export interface EffectState {
   id: string;
-  sourceId: string;
-  targetId?: string;
-  cellId?: string;
+  sourceRobotId: string;
+  targetRobotId?: string;
+  targetCellId?: string;
   effectId: string;
   stacks: number;
   lastedTurns: number;

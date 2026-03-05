@@ -1,6 +1,6 @@
 import { RequestStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum } from 'shared';
-import { GameEvent, PathGameEvent } from '@events/game.event';
+import { ActionGameEvent, GameEvent, PathGameEvent } from '@events/game.event';
 import { turnStartGameCase } from '@resolvers/game-cases/turn-start.game-case';
 import { turnEndGameCase } from '@resolvers/game-cases/turn-end.game-case';
 import { advanceTurnGameCase } from '@resolvers/game-cases/advance-turn.game-case';
@@ -23,7 +23,7 @@ export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
       return pathGameCase(gameEvent as PathGameEvent);
     }
     case GameEventTypeEnum.ACTION: {
-      return actionGameCase(gameEvent);
+      return actionGameCase(gameEvent as ActionGameEvent);
     }
     default:
       throw new Error('GameEventResolver, unknown gameEventType');

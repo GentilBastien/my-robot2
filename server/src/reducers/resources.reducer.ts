@@ -32,3 +32,21 @@ export const remainingMovementReducer =
       },
     };
   };
+
+export const manaReducer =
+  (robotId: string, newMana: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            mana: newMana,
+          },
+        },
+      },
+    };
+  };

@@ -5,10 +5,14 @@
   "types": "src/index.ts",
   "type": "module",
   "scripts": {
+    "test": "vitest run",
     "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "vitest": "^4.0.16"
+  }
 }

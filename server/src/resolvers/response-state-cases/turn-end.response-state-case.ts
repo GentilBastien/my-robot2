@@ -15,7 +15,7 @@ export function turnEndResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   endTurnResponseStateEvent: TurnEndResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const robotPlayingId: string = endTurnResponseStateEvent.turnRobotId;
   const effectStatesFromRobot: EffectState[] = gameCalculator.getEffectStatesFromRobot(
@@ -41,19 +41,19 @@ export function turnEndResponseStateCase(
       gameCalculator,
     });
   });
-  pendingGameEvents.addAll(requestStateEventsFromEffects);
+  pendingRequestEvents.addAll(requestStateEventsFromEffects);
 
   const requestEndTurnResourcesStateEvent: RequestResourcesStateEvent = {
     gameEventType: GameEventTypeEnum.RESOURCES,
     sourceRobotId: endTurnResponseStateEvent.turnRobotId,
   };
-  pendingGameEvents.add(requestEndTurnResourcesStateEvent);
+  pendingRequestEvents.add(requestEndTurnResourcesStateEvent);
 
   const requestAdvanceTurnStateEvent: RequestAdvanceTurnStateEvent = {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,
     sourceRobotId: endTurnResponseStateEvent.turnRobotId,
   };
-  pendingGameEvents.add(requestAdvanceTurnStateEvent);
+  pendingRequestEvents.add(requestAdvanceTurnStateEvent);
 
   return startTurnReducer(TurnStateTypeEnum.FINISHED);
 }

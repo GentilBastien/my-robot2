@@ -1,5 +1,6 @@
 import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-grid.structure';
 import {
+  ActionTypeEnum,
   CellState,
   Comparator,
   Coordinates,
@@ -18,6 +19,8 @@ import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structu
 import { GameConfig } from '../game.config';
 import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
+import { Action } from '@entities/actions/action';
+import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
 
 interface InitiativeRobot {
   id: string;
@@ -27,7 +30,6 @@ interface InitiativeRobot {
 export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<Weight>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
-  private readonly activeEffects: EffectState[];
 
   constructor(gameConfig: GameConfig) {
     this.hexGrid = new HexagonalGridStructure<Weight>(gameConfig.mapWidth, gameConfig.mapHeight);
@@ -37,14 +39,13 @@ export class GameCalculator {
       },
     };
     this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
-    this.activeEffects = [];
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
     return gameState.robots[robotId];
   }
 
-  public getResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
+  public getRobotResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
     return gameState.robots[robotId].resources;
   }
 
@@ -63,7 +64,7 @@ export class GameCalculator {
     throw 'temp error';
   }
 
-  public getRobotPlayingId(): string {
+  public getPlayingRobotId(): string {
     const robotPlaying = this.turnOrder.currentItem;
     if (robotPlaying) {
       return robotPlaying.id;
@@ -73,6 +74,14 @@ export class GameCalculator {
 
   public getTurnNumber(gameState: Readonly<GameState>): number {
     return gameState.turnState.currentTurnNumber;
+  }
+
+  public getAction(actionTypeEnum: ActionTypeEnum): Action {
+    const actionFound = allActions.get(actionTypeEnum);
+    if (actionFound) {
+      return actionFound;
+    }
+    throw 'Temp error';
   }
 
   public getEffect(effectState: EffectState): Effect {
@@ -88,7 +97,7 @@ export class GameCalculator {
   }
 
   public getEffectStatesFromRobot(gameState: Readonly<GameState>, robotId: string): EffectState[] {
-    return gameState.effects.filter(effect => effect.sourceId === robotId);
+    return gameState.effects.filter(effect => effect.sourceRobotId === robotId);
   }
 
   public getEffectStatesFromRobotCell(gameState: Readonly<GameState>, robotId: string): EffectState[] {
@@ -98,12 +107,27 @@ export class GameCalculator {
 
   public getEffectStatesAtCoordinates(gameState: Readonly<GameState>, coordinates: Coordinates): EffectState[] {
     const cellStateId: string = this.getCellStateByCoordinate(gameState, coordinates).id;
-    return gameState.effects.filter(effectState => effectState.cellId === cellStateId);
+    return gameState.effects.filter(effectState => effectState.targetCellId === cellStateId);
   }
 
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
-    const robotPlayingId = this.getRobotPlayingId();
-    return this.getRobotState(gameState, robotId).id === robotPlayingId;
+    const playingRobotId = this.getPlayingRobotId();
+    return this.getRobotState(gameState, robotId).id === playingRobotId;
+  }
+
+  public getPlayingRobotState(gameState: Readonly<GameState>): RobotState {
+    return this.getRobotState(gameState, this.getPlayingRobotId());
+  }
+
+  public hasEnoughMana(gameState: Readonly<GameState>, robotId: string, action: Action): boolean {
+    return this.getRobotResourcesState(gameState, robotId).mana >= action.manaCost;
+  }
+
+  public robotAllowedForAction(gameState: Readonly<GameState>, robotId: string, action: Action): boolean {
+    const isRobotTurn = this.isRobotTurn(gameState, robotId);
+    const isRobotOverheating = this.getRobotResourcesState(gameState, robotId).isOverheating;
+    const robotHasEnoughMana = this.hasEnoughMana(gameState, robotId, action);
+    return isRobotTurn && !isRobotOverheating && robotHasEnoughMana;
   }
 
   public getEffectStateIfTargetAlreadyAffectedBy(
@@ -113,7 +137,8 @@ export class GameCalculator {
     return gameState.effects.find(
       effectState =>
         effectState.effectId === newEffectState.effectId &&
-        (effectState.targetId === newEffectState.targetId || effectState.cellId === newEffectState.cellId)
+        (effectState.targetRobotId === newEffectState.targetRobotId ||
+          effectState.targetCellId === newEffectState.targetCellId)
     );
   }
 
@@ -135,7 +160,7 @@ export class GameCalculator {
 
   public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
     const robotCellId = this.getRobotState(gameState, robotId).cellId;
-    return gameState.arenaState.cells[robotCellId].coordinates;
+    return this.getCellState(gameState, robotCellId).coordinates;
   }
 
   public getPathCoordinateToTarget(

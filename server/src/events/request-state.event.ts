@@ -34,13 +34,18 @@ export interface RequestResourcesStateEvent extends RequestStateEvent {
 }
 
 export interface RequestAddEffectStateEvent extends RequestStateEvent {
-  stateEventType: GameEventTypeEnum.ADD_EFFECT;
+  gameEventType: GameEventTypeEnum.ADD_EFFECT;
   effectState: EffectState;
 }
 
 export interface RequestRemoveEffectStateEvent extends RequestStateEvent {
-  stateEventType: GameEventTypeEnum.REMOVE_EFFECT;
+  gameEventType: GameEventTypeEnum.REMOVE_EFFECT;
   effectStateId: string;
+}
+
+export interface RequestManaStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.MANA;
+  value: number;
 }
 
 // export interface RequestRobotJoinStateEvent extends RequestStateEvent {

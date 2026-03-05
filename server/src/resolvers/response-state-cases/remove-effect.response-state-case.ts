@@ -11,7 +11,7 @@ export function removeEffectResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   removeEffectResponseStateEvent: RemoveEffectResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const effectStateId: string = removeEffectResponseStateEvent.effectStateId;
   const effectState: EffectState = gameCalculator.getEffectStateById(readonlyGameState, effectStateId);
@@ -24,6 +24,6 @@ export function removeEffectResponseStateCase(
     gameCalculator,
   });
 
-  pendingGameEvents.addAll(newEffectsFromApply);
+  pendingRequestEvents.addAll(newEffectsFromApply);
   return removeEffectState(effectStateId);
 }

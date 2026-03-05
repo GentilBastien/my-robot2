@@ -11,7 +11,7 @@ export function addEffectResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   addEffectResponseStateEvent: AddEffectResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const effectState: EffectState = addEffectResponseStateEvent.effectState;
   const alreadyAffected: EffectState | undefined = gameCalculator.getEffectStateIfTargetAlreadyAffectedBy(
@@ -27,7 +27,7 @@ export function addEffectResponseStateCase(
     gameCalculator,
   });
 
-  pendingGameEvents.addAll(newEffectsFromApply);
+  pendingRequestEvents.addAll(newEffectsFromApply);
   if (alreadyAffected) {
     return updateEffectState(alreadyAffected);
   } else {

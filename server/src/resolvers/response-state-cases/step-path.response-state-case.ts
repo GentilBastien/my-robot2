@@ -11,10 +11,10 @@ export function stepPathResponseStateCase(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   stepPathResponseStateEvent: StepPathResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const newRemainingMove: number =
-    gameCalculator.getResourcesState(readonlyGameState, stepPathResponseStateEvent.sourceRobotId).remainingMove -
+    gameCalculator.getRobotResourcesState(readonlyGameState, stepPathResponseStateEvent.sourceRobotId).remainingMove -
     stepPathResponseStateEvent.stepPath.cost;
   const effectStatesFromCoordinates: EffectState[] = gameCalculator.getEffectStatesAtCoordinates(
     readonlyGameState,
@@ -29,6 +29,6 @@ export function stepPathResponseStateCase(
       gameCalculator,
     });
   });
-  pendingGameEvents.addAll(newPendingRequestStateEvents);
+  pendingRequestEvents.addAll(newPendingRequestStateEvents);
   return remainingMovementReducer(stepPathResponseStateEvent.sourceRobotId, newRemainingMove);
 }

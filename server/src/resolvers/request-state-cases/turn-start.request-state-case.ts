@@ -11,7 +11,7 @@ export function turnStartRequestStateCase(
   const allowed =
     gameCalculator.newTurnState(readonlyGameState).currentTurnRobot.id === requestTurnStartStateEvent.sourceRobotId;
   const turnNumber = gameCalculator.getTurnNumber(readonlyGameState);
-  const turnRobotId = gameCalculator.getRobotPlayingId();
+  const turnRobotId = gameCalculator.getPlayingRobotId();
   return {
     gameEventType: GameEventTypeEnum.TURN_START,
     responseValidated: allowed,

@@ -51,12 +51,12 @@ export class Game {
       if (currentRequestEvent === undefined) {
         break;
       }
-      const responseEvent: ResponseStateEvent = requestStateEventResolver(
+      const responseEventsFromRequest: ResponseStateEvent[] = requestStateEventResolver(
         this.gameCalculator,
         readonlyGameState,
         currentRequestEvent
       );
-      responseEvents.push(responseEvent);
+      responseEvents.push(...responseEventsFromRequest);
     } while (this.pendingRequestEvents.elements.length > 0);
     return responseEvents;
   }

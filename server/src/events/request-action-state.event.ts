@@ -1,8 +1,8 @@
-import { ActionEventTypeEnum, DamageTypeEnum } from 'shared';
+import { ActionTypeEnum, DamageTypeEnum } from 'shared';
 import { RequestStateEvent } from '@events/request-state.event';
 
-export interface ActionRequestStateEvent extends RequestStateEvent {
-  actionEventTypeEnum: ActionEventTypeEnum;
+export interface RequestActionStateEvent extends RequestStateEvent {
+  actionTypeEnum: ActionTypeEnum;
 }
 
 // ----------
@@ -34,6 +34,7 @@ interface DamageEvent {
 // EXPORTED
 // --------
 
-export interface AutoAttackRequestActionEvent extends RequestStateEvent, DamageEvent, TargetedEvent {
+export interface RequestAutoAttackActionEvent extends RequestActionStateEvent, DamageEvent, TargetedEvent {
+  actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
   damageType: DamageTypeEnum.ENERGETIC;
 }

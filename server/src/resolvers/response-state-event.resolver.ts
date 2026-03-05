@@ -1,6 +1,7 @@
 import {
   AddEffectResponseStateEvent,
   AdvanceTurnResponseStateEvent,
+  ManaResponseStateEvent,
   PathResponseStateEvent,
   RemoveEffectResponseStateEvent,
   ResourcesResponseStateEvent,
@@ -21,12 +22,13 @@ import { stepPathResponseStateCase } from '@resolvers-response/step-path.respons
 import { resourcesResponseStateCase } from '@resolvers-response/resources.response-state-case';
 import { addEffectResponseStateCase } from '@resolvers-response/add-effect.response-state-case';
 import { removeEffectResponseStateCase } from '@resolvers-response/remove-effect.response-state-case';
+import { manaResponseStateCase } from '@resolvers-response/mana.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
   readonlyGameState: Readonly<GameState>,
   responseEvent: ResponseStateEvent,
-  pendingGameEvents: PriorityListStructure<RequestStateEvent>
+  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer | null {
   if (responseEvent.responseValidated) {
     switch (responseEvent.gameEventType) {
@@ -35,7 +37,7 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as TurnStartResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
       }
       case GameEventTypeEnum.TURN_END: {
@@ -43,14 +45,14 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as TurnEndResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
       }
       case GameEventTypeEnum.ADVANCE_TURN: {
         return advanceTurnResponseStateCase(
           gameCalculator,
           responseEvent as AdvanceTurnResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
       }
       case GameEventTypeEnum.PATH: {
@@ -58,7 +60,7 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as PathResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
         return null;
       }
@@ -67,7 +69,7 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as StepPathResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
       }
       case GameEventTypeEnum.RESOURCES: {
@@ -82,7 +84,7 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as AddEffectResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
       }
       case GameEventTypeEnum.REMOVE_EFFECT: {
@@ -90,8 +92,11 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as RemoveEffectResponseStateEvent,
-          pendingGameEvents
+          pendingRequestEvents
         );
+      }
+      case GameEventTypeEnum.MANA: {
+        return manaResponseStateCase(gameCalculator, readonlyGameState, responseEvent as ManaResponseStateEvent);
       }
       default:
         throw new Error('ResponseEventResolver, unknown gameEventType');

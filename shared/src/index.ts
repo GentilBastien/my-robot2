@@ -3,7 +3,7 @@ export { AttributesTypeEnum } from './enums/attributes-type.enum';
 export { EffectCategoryTypeEnum } from './enums/effect-category-type.enum';
 export { GameStateTypeEnum } from './enums/game-state-type.enum';
 export { DamageTypeEnum } from './enums/damage-type.enum';
-export { ActionEventTypeEnum } from './enums/action-event-type.enum';
+export { ActionTypeEnum } from './enums/action-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { MovementTypeEnum } from './enums/movement-type.enum';
 
@@ -30,3 +30,4 @@ export { EqualsUtils } from './utils/equals.utils';
 export { ArrayUtils } from './utils/array.utils';
 export { DiceUtils } from './utils/dice.utils';
 export { GameFunctionsUtils } from './utils/game-functions.utils';
+export { FunctionUtils } from './utils/function.utils';
