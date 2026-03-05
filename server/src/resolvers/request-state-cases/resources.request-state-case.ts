@@ -1,11 +1,8 @@
 import { RequestResourcesStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum, GameState } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameEventTypeEnum } from 'shared';
 import { ResourcesResponseStateEvent } from '@events/response-state.event';
 
 export function resourcesRequestStateCase(
-  gameCalculator: GameCalculator,
-  readonlyGameState: Readonly<GameState>,
   requestResourcesStateEvent: RequestResourcesStateEvent
 ): ResourcesResponseStateEvent {
   return {

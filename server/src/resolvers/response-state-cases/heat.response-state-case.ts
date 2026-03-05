@@ -11,7 +11,7 @@ export function heatResponseStateCase(
   const resourcesState = gameCalculator.getRobotResourcesState(readonlyGameState, heatResponseStateEvent.sourceRobotId);
 
   const { value } = heatResponseStateEvent;
-  const delta = resourcesState.isOverheating && value > 0 ? value * 2 : value;
+  const delta = computeCooling(resourcesState.isOverheating, value);
 
   const newOverheatingValue = FunctionUtils_valueIn(
     0,
@@ -20,4 +20,14 @@ export function heatResponseStateCase(
   );
 
   return heatReducer(heatResponseStateEvent.sourceRobotId, newOverheatingValue);
+}
+
+function computeCooling(isOverheating: boolean, value: number): number {
+  if (isOverheating) {
+    if (value > 0) {
+      return value * 2;
+    }
+    return Math.ceil(value / 2);
+  }
+  return value;
 }

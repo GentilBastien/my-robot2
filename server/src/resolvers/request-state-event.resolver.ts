@@ -86,8 +86,6 @@ export function requestStateEventResolver(
     }
     case GameEventTypeEnum.RESOURCES: {
       const resourcesResponseStateEvent: ResourcesResponseStateEvent = resourcesRequestStateCase(
-        gameCalculator,
-        readonlyGameState,
         requestEvent as RequestResourcesStateEvent
       );
       return [resourcesResponseStateEvent];
