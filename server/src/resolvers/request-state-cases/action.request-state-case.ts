@@ -25,5 +25,5 @@ export function actionRequestStateCase(
     action
   );
 
-  return allowed ? action.onUse(requestActionStateEvent) : [];
+  return allowed ? action.onUse({ requestActionStateEvent, readonlyGameState, gameCalculator }) : [];
 }
