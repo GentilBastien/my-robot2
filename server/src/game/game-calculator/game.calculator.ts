@@ -5,7 +5,7 @@ import {
   Comparator,
   Coordinates,
   EffectState,
-  EqualsUtils,
+  EqualsUtils_coordinateEquals,
   GameState,
   PathCoordinate,
   ResourcesState,
@@ -56,7 +56,7 @@ export class GameCalculator {
   public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates): CellState {
     const cells = gameState.arenaState.cells;
     const cellIdFound = Object.keys(cells).find(cellId =>
-      EqualsUtils.coordinateEquals(cells[cellId].coordinates, coordinates)
+      EqualsUtils_coordinateEquals(cells[cellId].coordinates, coordinates)
     );
     if (cellIdFound) {
       return cells[cellIdFound];

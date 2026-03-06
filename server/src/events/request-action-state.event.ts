@@ -3,6 +3,7 @@ import { RequestStateEvent } from '@events/request-state.event';
 
 export interface RequestActionStateEvent extends RequestStateEvent {
   actionTypeEnum: ActionTypeEnum;
+  forcedAction: boolean;
 }
 
 // ------------------------------
