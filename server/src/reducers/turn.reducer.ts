@@ -7,7 +7,7 @@ export const startTurnReducer =
     const currentTurnState = gameState.turnState;
     const newTurnState: TurnState = {
       currentTurnNumber: currentTurnState.currentTurnNumber,
-      currentTurnRobot: currentTurnState.currentTurnRobot,
+      currentTurnRobotId: currentTurnState.currentTurnRobotId,
       turnStateTypeEnum,
     };
     return updateTurnState(gameState, newTurnState);
@@ -16,10 +16,9 @@ export const startTurnReducer =
 export const turnAdvanceReducer =
   (nextTurnNumber: number, nextRobotId: string): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
-    const nextRobot = gameState.robots[nextRobotId];
     const newTurnState: TurnState = {
       currentTurnNumber: nextTurnNumber,
-      currentTurnRobot: nextRobot,
+      currentTurnRobotId: nextRobotId,
       turnStateTypeEnum: gameState.turnState.turnStateTypeEnum,
     };
     return updateTurnState(gameState, newTurnState);

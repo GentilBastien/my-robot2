@@ -15,6 +15,6 @@ export function advanceTurnRequestStateCase(
     responseValidated: allowed,
     sourceRobotId: requestAdvanceTurnEvent.sourceRobotId,
     turnNumber: newTurnState.currentTurnNumber,
-    turnRobotId: newTurnState.currentTurnRobot.id,
+    turnRobotId: newTurnState.currentTurnRobotId,
   };
 }

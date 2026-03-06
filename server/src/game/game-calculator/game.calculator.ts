@@ -162,7 +162,7 @@ export class GameCalculator {
       return {
         turnStateTypeEnum: TurnStateTypeEnum.PENDING,
         currentTurnNumber: gameState.turnState.currentTurnNumber + 1,
-        currentTurnRobot: this.getRobotState(gameState, robotToPlay.id),
+        currentTurnRobotId: robotToPlay.id,
       };
     }
     throw new Error('Temp error');
