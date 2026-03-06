@@ -6,5 +6,7 @@ export interface Action {
   overheatingCost: number;
   range: number;
   baseAmount: number;
+  actionCost?: number;
+  subActionCost?: number;
   onUse(requestActionStateEvent: RequestActionStateEvent): ResponseStateEvent[];
 }

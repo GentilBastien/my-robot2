@@ -7,6 +7,7 @@ export class AutoAttack implements Action {
   public baseAmount = 10;
   public manaCost = 0;
   public overheatingCost = 0;
+  public actionCost = 1;
 
   public onUse(_: RequestAutoAttackActionEvent): ResponseStateEvent[] {
     return [];

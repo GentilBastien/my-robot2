@@ -1,5 +1,9 @@
 export interface ResourcesState {
-  isAlive: boolean;
+  totalActions: number;
+  remainingActions: number;
+
+  totalSubActions: number;
+  remainingSubActions: number;
 
   totalMove: number;
   remainingMove: number;

@@ -13,7 +13,8 @@ export function resourcesResponseStateCase(
     resourcesResponseStateEvent.sourceRobotId
   );
 
-  const { regenHp, regenMana, coolingDown, isOverheating, maxOverheating, totalMove } = resourcesState;
+  const { regenHp, regenMana, coolingDown, isOverheating, maxOverheating, totalActions, totalSubActions, totalMove } =
+    resourcesState;
 
   const newHp = incrementsHpByValue(resourcesState, regenHp);
   const newMana = incrementsManaByValue(resourcesState, regenMana);
@@ -28,6 +29,8 @@ export function resourcesResponseStateCase(
     mana: newMana,
     overheating: newOverheating,
     isOverheating: newIsOverheating,
+    remainingActions: totalActions,
+    remainingSubActions: totalSubActions,
     remainingMove: totalMove,
   };
   return updateResourcesState(resourcesResponseStateEvent.sourceRobotId, newResourcesState);

@@ -10,6 +10,7 @@ import {
   PathCoordinate,
   ResourcesState,
   RobotState,
+  RobotStateTypeEnum,
   StepPathCoordinate,
   TurnState,
   TurnStateTypeEnum,
@@ -43,6 +44,10 @@ export class GameCalculator {
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
     return gameState.robots[robotId];
+  }
+
+  public getRobotSelfStates(gameState: Readonly<GameState>, robotId: string): RobotStateTypeEnum[] {
+    return gameState.robots[robotId].selfStates;
   }
 
   public getRobotResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
@@ -119,15 +124,24 @@ export class GameCalculator {
     return this.getRobotState(gameState, this.getPlayingRobotId());
   }
 
-  public hasEnoughMana(gameState: Readonly<GameState>, robotId: string, action: Action): boolean {
-    return this.getRobotResourcesState(gameState, robotId).mana >= action.manaCost;
+  public hasEnoughMana(resourcesState: ResourcesState, action: Action): boolean {
+    return resourcesState.mana >= action.manaCost;
+  }
+
+  public hasEnoughActionResource(resourcesState: ResourcesState, action: Action): boolean {
+    return (
+      resourcesState.remainingActions >= (action.actionCost ?? 0) &&
+      resourcesState.remainingSubActions >= (action.subActionCost ?? 0)
+    );
   }
 
   public robotAllowedForAction(gameState: Readonly<GameState>, robotId: string, action: Action): boolean {
+    const resourcesState = this.getRobotResourcesState(gameState, robotId);
     const isRobotTurn = this.isRobotTurn(gameState, robotId);
-    const isRobotOverheating = this.getRobotResourcesState(gameState, robotId).isOverheating;
-    const robotHasEnoughMana = this.hasEnoughMana(gameState, robotId, action);
-    return isRobotTurn && !isRobotOverheating && robotHasEnoughMana;
+    const isRobotOverheating = resourcesState.isOverheating;
+    const robotHasEnoughAction = this.hasEnoughActionResource(resourcesState, action);
+    const robotHasEnoughMana = this.hasEnoughMana(resourcesState, action);
+    return isRobotTurn && !isRobotOverheating && robotHasEnoughAction && robotHasEnoughMana;
   }
 
   public getEffectStateIfTargetAlreadyAffectedBy(
