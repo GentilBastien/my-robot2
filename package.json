@@ -1,21 +1,17 @@
 {
   "name": "my-robot2",
   "version": "1.0.0",
-  "private": true,
   "workspaces": [
     "shared",
     "server"
   ],
   "scripts": {
-    "build": "tsc -b",
-    "clean": "tsc -b --clean",
-    "start": "node server/dist/index.js"
+    "build": "tsc -b && npm run alias",
+    "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",
+    "start": "node server/dist/index.js",
+    "test": "npm run test --prefix shared && npm run test --prefix server"
   },
   "main": "index.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@eslint/js": "9.39.2",
     "@types/node": "^25.0.3",
@@ -27,6 +23,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.7.4",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.55.0"

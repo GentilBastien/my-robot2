@@ -1,4 +1,7 @@
 {
   "files": [],
+  "compilerOptions": {
+    "outDir": "dist"
+  },
   "references": [{ "path": "./shared" }, { "path": "./server" }]
 }
