@@ -12,8 +12,5 @@
     "rxjs": "^7.8.2",
     "shared": "*",
     "ws": "^8.18.3"
-  },
-  "devDependencies": {
-    "vitest": "^4.0.16"
   }
 }
