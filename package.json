@@ -1,14 +1,17 @@
 {
   "name": "my-robot2",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
+  "private": true,
+  "workspaces": [
+    "shared",
+    "server"
+  ],
   "scripts": {
-    "test": "npm run test --prefix server",
-    "shared": "npm run build --prefix shared",
-    "client": "npm run build --prefix client && npm run start --prefix client",
-    "server": "npm run build --prefix server && npm run start --prefix server"
+    "build": "tsc -b",
+    "clean": "tsc -b --clean",
+    "start": "node server/dist/index.js"
   },
+  "main": "index.js",
   "keywords": [],
   "author": "",
   "license": "ISC",

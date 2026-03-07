@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "composite": true,
     "baseUrl": "./src",
     "paths": {
       "@entities/*": ["entities/*"],
@@ -16,11 +19,14 @@
     "target": "ES2020",
     "module": "ESNext",
     "moduleResolution": "node",
-    "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
     "declaration": true,
     "esModuleInterop": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "extends": "../tsconfig.base.json",
+  "references": [
+    { "path": "../shared" }
+  ],
+
 }

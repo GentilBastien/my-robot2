@@ -1,17 +1,9 @@
 {
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": "./src",
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "outDir": "dist",
     "rootDir": "src",
-    "esModuleInterop": true,
-    "declaration": true,
-    "declarationMap": false,
-    "emitDeclarationOnly": true,
-    "sourceMap": true,
-    "strict": true
+    "outDir": "dist",
+    "composite": true
   },
   "include": ["src"]
 }

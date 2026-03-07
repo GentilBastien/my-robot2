@@ -1,6 +1,6 @@
 import { GameConfig } from './game/game.config';
-import { GameStateTypeEnum, TurnStateTypeEnum } from 'shared';
 import { Game } from './game/game';
+import { GameStateTypeEnum, TurnStateTypeEnum } from 'shared';
 
 /**
  * Program Entry point.
