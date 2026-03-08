@@ -1,7 +1,8 @@
 import { HexagonalCellStructureInterface } from './hexagonal-cell.structure-interface';
 import { HexagonalCellDirectionEnum } from './hexagonal-cell-direction.enum';
 import { HexagonalCellError } from './hexagonal-cell.error';
-import { Coordinates, EqualsUtils_deepEquals, Weight } from 'shared';
+import { Coordinates, Weight } from 'shared';
+import { EqualsUtils_deepEquals } from '@utils/equals.utils';
 
 export class HexagonalCellStructure<T extends Weight> implements HexagonalCellStructureInterface<T> {
   private _item: T | null;

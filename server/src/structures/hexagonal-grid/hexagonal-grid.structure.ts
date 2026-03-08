@@ -1,9 +1,10 @@
 import { HexagonalGridStructureInterface } from './hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
-import { ArrayUtils, Comparator, Coordinates, PathCoordinate, Weight } from 'shared';
+import { Comparator, Coordinates, PathCoordinate, Weight } from 'shared';
 import { HexagonalCellDirectionEnum } from '../hexagonal-cell/hexagonal-cell-direction.enum';
 import { HexagonalGridError } from './hexagonal-grid.error';
 import { PriorityListStructure } from '../priority-list/priority-list.structure';
+import { ArrayUtils } from '@utils/array.utils';
 
 export class HexagonalGridStructure<T extends Weight> implements HexagonalGridStructureInterface<T> {
   private readonly _cells: HexagonalCellStructure<T>[];

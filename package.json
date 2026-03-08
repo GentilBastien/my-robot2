@@ -9,7 +9,7 @@
     "build": "tsc -b && npm run alias",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",
     "start": "node server/dist/index.js",
-    "test": "npm run test --prefix shared && npm run test --prefix server"
+    "test": "npm run test --p server"
   },
   "main": "index.js",
   "devDependencies": {

@@ -26,9 +26,3 @@ export { PathCoordinate, StepPathCoordinate } from './types/path-coordinate';
 export { Comparator } from './types/comparator';
 export { Reducer } from './types/reducer';
 export { MaybeArray, MaybeFunction } from './types/maybe';
-
-export { EqualsUtils_coordinateEquals, EqualsUtils_deepEquals } from './utils/equals.utils';
-export { ArrayUtils } from './utils/array.utils';
-export { DiceUtils_roll, DiceUtils_rollFaces } from './utils/dice.utils';
-export { GameFunctionsUtils } from './utils/game-functions.utils';
-export { FunctionUtils_valueIn } from './utils/function.utils';

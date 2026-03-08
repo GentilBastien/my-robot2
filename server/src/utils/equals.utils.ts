@@ -1,4 +1,4 @@
-import { Coordinates } from '../types/coordinates';
+import { Coordinates } from 'shared';
 
 /**
  * Returns true if both parameters have/share the same value.

@@ -5,7 +5,6 @@ import {
   Comparator,
   Coordinates,
   EffectState,
-  EqualsUtils_coordinateEquals,
   GameState,
   PathCoordinate,
   ResourcesState,
@@ -22,6 +21,7 @@ import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
 import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
+import { EqualsUtils_coordinateEquals } from '@utils/equals.utils';
 
 interface InitiativeRobot {
   id: string;

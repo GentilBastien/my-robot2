@@ -15,7 +15,8 @@
       "@states/*": ["states/*"],
       "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],
-      "@reducers/*": ["reducers/*"]
+      "@reducers/*": ["reducers/*"],
+      "@utils/*": ["utils/*"]
     },
     "esModuleInterop": true
   },

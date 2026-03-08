@@ -1,4 +1,4 @@
-import { EqualsUtils_deepEquals } from './equals.utils';
+import { EqualsUtils_deepEquals } from '@utils/equals.utils';
 
 export class ArrayUtils {
   public static arrayIncludes<T>(array: T[], item: T): boolean {

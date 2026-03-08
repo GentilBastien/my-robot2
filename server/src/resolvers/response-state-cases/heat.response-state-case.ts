@@ -1,7 +1,8 @@
 import { HeatResponseStateEvent } from '@events/response-state.event';
-import { FunctionUtils_valueIn, GameState, Reducer } from 'shared';
+import { GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { heatReducer } from '@reducers/resources.reducer';
+import { FunctionUtils_valueIn } from '@utils/function.utils';
 
 export function heatResponseStateCase(
   gameCalculator: GameCalculator,
