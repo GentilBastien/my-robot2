@@ -7,11 +7,8 @@ interface InitiativeRobot {
   name: string;
   weight: number;
 }
-const comparator: Comparator<InitiativeRobot> = {
-  compare(item1: InitiativeRobot, item2: InitiativeRobot): number {
-    return item1.weight - item2.weight;
-  },
-};
+const comparator: Comparator<InitiativeRobot> = (item1: InitiativeRobot, item2: InitiativeRobot) =>
+  item1.weight - item2.weight;
 describe('CyclicListStructure', () => {
   const robot1: InitiativeRobot = { name: 'wassim', weight: 2 };
   const robot2: InitiativeRobot = { name: 'raphael', weight: 4 };

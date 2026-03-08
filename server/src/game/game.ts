@@ -20,11 +20,8 @@ export class Game {
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.gameState;
     this.gameCalculator = new GameCalculator(gameConfig);
-    const comparator: Comparator<RequestStateEvent> = {
-      compare(item1: RequestStateEvent, item2: RequestStateEvent): number {
-        return (item1.priority ?? 0) - (item2.priority ?? 0);
-      },
-    };
+    const comparator: Comparator<RequestStateEvent> = (item1: RequestStateEvent, item2: RequestStateEvent): number =>
+      (item1.priority ?? 0) - (item2.priority ?? 0);
     this.pendingRequestEvents = new PriorityListStructure(comparator);
   }
 

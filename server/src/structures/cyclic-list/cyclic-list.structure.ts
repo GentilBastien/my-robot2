@@ -35,7 +35,7 @@ export class CyclicListStructure<T> implements CyclicListStructureInterface<T> {
 
     let currentNode = this._heaviestNode;
     do {
-      if (this._comparator.compare(item, currentNode.item) > 0) {
+      if (this._comparator(item, currentNode.item) > 0) {
         this.insertNodeBefore(newNode, currentNode);
         // if currentNode was the heaviestNode, then it needs to be reassigned
         if (currentNode === this._heaviestNode) {

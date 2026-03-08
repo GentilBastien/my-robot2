@@ -3,20 +3,13 @@ import { PriorityListStructure } from './priority-list.structure';
 import { Comparator } from 'shared';
 
 describe('SortedListStructure', () => {
-  type ARandomObject = {
+  interface ARandomObject {
     a: number;
     b: string;
-  };
-  const comparator: Comparator<string> = {
-    compare(item1: string, item2: string): number {
-      return item1.localeCompare(item2);
-    },
-  };
-  const objectComparator: Comparator<ARandomObject> = {
-    compare(item1: ARandomObject, item2: ARandomObject): number {
-      return item1.a - item2.a;
-    },
-  };
+  }
+  const comparator: Comparator<string> = (item1: string, item2: string): number => item1.localeCompare(item2);
+  const objectComparator: Comparator<ARandomObject> = (item1: ARandomObject, item2: ARandomObject): number =>
+    item1.a - item2.a;
 
   test('SortedListStructure addAll #1', () => {
     //given

@@ -1,3 +1,1 @@
-export interface Comparator<T> {
-  compare(item1: T, item2: T): number;
-}
+export type Comparator<T> = (item1: T, item2: T) => number;
