@@ -4,7 +4,6 @@ import {
   GameEventTypeEnum,
   MovementTypeEnum,
   PathCoordinate,
-  RobotState,
   StepPathCoordinate,
 } from 'shared';
 import { GameEvent } from '@events/game.event';
@@ -73,10 +72,9 @@ export interface HeatResponseStateEvent extends ResponseStateEvent {
 }
 
 export interface DamageResponseStateEvent extends ResponseStateEvent {
-  source: RobotState;
-  target: RobotState;
-  damageDealt: number;
+  targetRobotId: string;
   damageType: DamageTypeEnum;
+  damageDealt: number;
   isDodged: boolean;
   isCritical: boolean;
   armorEfficiency: number;

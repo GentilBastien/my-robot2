@@ -1,6 +1,7 @@
 import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
-import { GameStateTypeEnum, TurnStateTypeEnum } from 'shared';
+import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
+import { PathGameEvent } from '@events/game.event';
 
 /**
  * Program Entry point.
@@ -28,3 +29,19 @@ const gameConfig: GameConfig = {
 };
 
 const game = new Game(gameConfig);
+
+const pathGameEvent: PathGameEvent = {
+  gameEventType: GameEventTypeEnum.PATH,
+  path: {
+    costs: [1, 2, 5],
+    coordinatesPath: [
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 0 },
+      { x: 0, y: 0, z: 0 },
+    ],
+  },
+  sourceRobotId: '',
+  actionTypeEnum: undefined,
+  movementType: MovementTypeEnum.WALKED,
+};
+// game.receiveGameEventFromClient(pathGameEvent);
