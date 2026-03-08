@@ -6,7 +6,7 @@
     "server"
   ],
   "scripts": {
-    "build": "tsc -b && npm run alias",
+    "build": "tsc -b shared server/tsconfig.build.json && npm run alias",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",
     "start": "node server/dist/index.js",
     "test": "vitest run && npm run alias"
