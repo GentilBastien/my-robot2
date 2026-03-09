@@ -2,7 +2,7 @@ import { AttributesTypeEnum, GameEventTypeEnum, GameState, StatisticsTypeEnum } 
 import { DamageResponseStateEvent } from '@events/response-state.event';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { RequestDamageStateEvent } from '@events/request-state.event';
-import { DiceUtils_roll } from '@utils/dice.utils';
+import { diceRolls } from '@utils/dice.utils';
 
 export function damageRequestStateCase(
   gameCalculator: GameCalculator,
@@ -37,7 +37,7 @@ export function damageRequestStateCase(
     StatisticsTypeEnum.DODGE
   );
 
-  const atkHitChance = DiceUtils_roll(1, 20) + hitChanceFromAttributes + hitChanceFromStatistics;
+  const atkHitChance = diceRolls(1, 20) + hitChanceFromAttributes + hitChanceFromStatistics;
   const defDodgeChance = 10 + dodgeChanceFromAttributes + dodgeChanceFromStatistics;
   const isDodged = defDodgeChance > atkHitChance;
   if (isDodged) {
@@ -62,7 +62,7 @@ export function damageRequestStateCase(
       sourceRobotId,
       StatisticsTypeEnum.CRITICAL
     );
-    const rollAtkCritChance = DiceUtils_roll(1, 100);
+    const rollAtkCritChance = diceRolls(1, 100);
     isCritical = rollAtkCritChance <= critChanceFromStatistics;
     if (isCritical) {
       damageDealt *= 2;

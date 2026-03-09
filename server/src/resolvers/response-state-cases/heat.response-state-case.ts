@@ -2,7 +2,7 @@ import { HeatResponseStateEvent } from '@events/response-state.event';
 import { GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { heatReducer } from '@reducers/resources.reducer';
-import { FunctionUtils_valueIn } from '@utils/function.utils';
+import { valuesInRange } from '@utils/function.utils';
 
 export function heatResponseStateCase(
   gameCalculator: GameCalculator,
@@ -14,11 +14,7 @@ export function heatResponseStateCase(
 
   const delta = computeCooling(resourcesState.isOverheating, value);
 
-  const newOverheatingValue = FunctionUtils_valueIn(
-    0,
-    resourcesState.maxOverheating,
-    resourcesState.overheating + delta
-  );
+  const newOverheatingValue = valuesInRange(0, resourcesState.maxOverheating, resourcesState.overheating + delta);
 
   return heatReducer(sourceRobotId, newOverheatingValue);
 }

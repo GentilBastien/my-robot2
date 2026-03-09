@@ -7,6 +7,8 @@
   ],
   "scripts": {
     "build": "tsc -b shared server/tsconfig.build.json && npm run alias",
+    "clean": "tsc -b --clean shared server/tsconfig.build.json && rimraf server/dist && rimraf shared/dist",
+    "rebuild": "npm run clean && npm run build",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",
     "start": "node server/dist/index.js",
     "test": "vitest run && npm run alias"
@@ -22,6 +24,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.7.4",
+    "rimraf": "^6.1.3",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.16",
     "tsx": "^4.21.0",

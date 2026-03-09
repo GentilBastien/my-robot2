@@ -1,5 +1,5 @@
-import { PriorityListStructureInterface } from './priority-list.structure-interface';
 import { Comparator } from 'shared';
+import { PriorityListStructureInterface } from '@structures/priority-list/priority-list.structure-interface';
 
 export class PriorityListStructure<T> implements PriorityListStructureInterface<T> {
   private readonly _comparator: Comparator<T>;

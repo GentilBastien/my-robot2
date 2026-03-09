@@ -1,8 +1,8 @@
-import { HexagonalCellStructureInterface } from './hexagonal-cell.structure-interface';
-import { HexagonalCellDirectionEnum } from './hexagonal-cell-direction.enum';
-import { HexagonalCellError } from './hexagonal-cell.error';
 import { Coordinates, Weight } from 'shared';
-import { EqualsUtils_deepEquals } from '@utils/equals.utils';
+import { deepEquals } from '@utils/equals.utils';
+import { HexagonalCellStructureInterface } from '@structures/hexagonal-cell/hexagonal-cell.structure-interface';
+import { HexagonalCellDirectionEnum } from '@structures/hexagonal-cell/hexagonal-cell-direction.enum';
+import { HexagonalCellError } from '@structures/hexagonal-cell/hexagonal-cell.error';
 
 export class HexagonalCellStructure<T extends Weight> implements HexagonalCellStructureInterface<T> {
   private _item: T | null;
@@ -109,7 +109,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
   }
 
   public hasSameItem(otherCell: HexagonalCellStructure<T>): boolean {
-    return EqualsUtils_deepEquals(this._item, otherCell._item);
+    return deepEquals(this._item, otherCell._item);
   }
 
   public getItemOrThrow(): T {

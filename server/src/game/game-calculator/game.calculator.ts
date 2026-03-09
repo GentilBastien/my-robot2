@@ -25,7 +25,7 @@ import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
 import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
-import { EqualsUtils_coordinateEquals } from '@utils/equals.utils';
+import { coordinateEquals } from '@utils/equals.utils';
 
 interface InitiativeRobot {
   id: string;
@@ -69,9 +69,7 @@ export class GameCalculator {
 
   public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates): CellState {
     const cells = gameState.arenaState.cells;
-    const cellIdFound = Object.keys(cells).find(cellId =>
-      EqualsUtils_coordinateEquals(cells[cellId].coordinates, coordinates)
-    );
+    const cellIdFound = Object.keys(cells).find(cellId => coordinateEquals(cells[cellId].coordinates, coordinates));
     if (cellIdFound) {
       return cells[cellIdFound];
     }

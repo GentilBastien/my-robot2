@@ -1,6 +1,12 @@
-import { EffectState, GameEventTypeEnum, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
+import {
+  DamageTypeEnum,
+  EffectState,
+  GameEventTypeEnum,
+  MovementTypeEnum,
+  PathCoordinate,
+  StepPathCoordinate,
+} from 'shared';
 import { GameEvent } from '@events/game.event';
-import { DamageTypeEnum } from 'shared/src/enums/damage-type.enum';
 
 export interface RequestStateEvent extends GameEvent {
   priority?: number;

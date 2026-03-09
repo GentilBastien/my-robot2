@@ -2,7 +2,7 @@ import { HpResponseStateEvent } from '@events/response-state.event';
 import { GameState, Reducer } from 'shared';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { manaReducer } from '@reducers/resources.reducer';
-import { FunctionUtils_valueIn } from '@utils/function.utils';
+import { valuesInRange } from '@utils/function.utils';
 
 export function hpResponseStateCase(
   gameCalculator: GameCalculator,
@@ -11,6 +11,6 @@ export function hpResponseStateCase(
 ): Reducer {
   const resourcesState = gameCalculator.getRobotResourcesState(readonlyGameState, hpResponseStateEvent.sourceRobotId);
   const newVal = resourcesState.hp + hpResponseStateEvent.value;
-  const newHpValue = FunctionUtils_valueIn(0, resourcesState.maxHp, newVal);
+  const newHpValue = valuesInRange(0, resourcesState.maxHp, newVal);
   return manaReducer(hpResponseStateEvent.sourceRobotId, newHpValue);
 }

@@ -1,5 +1,5 @@
-import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
 import { Coordinates, PathCoordinate, Weight } from 'shared';
+import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 
 export interface HexagonalGridStructureInterface<T extends Weight> {
   /**

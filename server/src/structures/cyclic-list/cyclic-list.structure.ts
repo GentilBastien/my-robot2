@@ -1,6 +1,6 @@
-import { CyclicListStructureInterface } from './cyclic-list.structure-interface';
-import { CyclicListError } from './cyclic-list.error';
 import { Comparator } from 'shared';
+import { CyclicListError } from '@structures/cyclic-list/cyclic-list.error';
+import { CyclicListStructureInterface } from '@structures/cyclic-list/cyclic-list.structure-interface';
 
 export class CyclicListStructure<T> implements CyclicListStructureInterface<T> {
   private readonly _comparator: Comparator<T>;

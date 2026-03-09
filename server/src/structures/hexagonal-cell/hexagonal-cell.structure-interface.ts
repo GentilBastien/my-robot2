@@ -1,6 +1,6 @@
-import { HexagonalCellStructure } from './hexagonal-cell.structure';
+import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
+import { HexagonalCellDirectionEnum } from '@structures/hexagonal-cell/hexagonal-cell-direction.enum';
 import { Coordinates, Weight } from 'shared';
-import { HexagonalCellDirectionEnum } from './hexagonal-cell-direction.enum';
 
 /**
  * A cell with a hexagonal form in a 3 axis coordinates representation. Used as
