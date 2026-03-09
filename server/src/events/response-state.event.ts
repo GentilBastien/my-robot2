@@ -72,6 +72,7 @@ export interface HeatResponseStateEvent extends ResponseStateEvent {
 }
 
 export interface DamageResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.DAMAGE;
   targetRobotId: string;
   damageType: DamageTypeEnum;
   damageDealt: number;

@@ -1,6 +1,8 @@
 import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-grid.structure';
 import {
   ActionTypeEnum,
+  AttributesState,
+  AttributesTypeEnum,
   CellState,
   Comparator,
   Coordinates,
@@ -10,6 +12,8 @@ import {
   ResourcesState,
   RobotState,
   RobotStateTypeEnum,
+  StatisticsState,
+  StatisticsTypeEnum,
   StepPathCoordinate,
   TurnState,
   TurnStateTypeEnum,
@@ -49,6 +53,14 @@ export class GameCalculator {
 
   public getRobotResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
     return gameState.robots[robotId].resources;
+  }
+
+  public getRobotAttributeState(gameState: Readonly<GameState>, robotId: string): AttributesState {
+    return gameState.robots[robotId].attributes;
+  }
+
+  public getRobotStatisticState(gameState: Readonly<GameState>, robotId: string): StatisticsState {
+    return gameState.robots[robotId].statistics;
   }
 
   public getCellState(gameState: Readonly<GameState>, cellId: string): CellState {
@@ -224,5 +236,62 @@ export class GameCalculator {
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
     return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
+  }
+
+  public getRobotAttributeValue(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    attributesTypeEnum: AttributesTypeEnum
+  ): number {
+    const attrState = this.getRobotAttributeState(gameState, robotId);
+    switch (attributesTypeEnum) {
+      case AttributesTypeEnum.POW:
+        return attrState.power;
+      case AttributesTypeEnum.MOB:
+        return attrState.mobility;
+      case AttributesTypeEnum.CHS:
+        return attrState.chassis;
+      case AttributesTypeEnum.CPU:
+        return attrState.cpu;
+      case AttributesTypeEnum.ENE:
+        return attrState.energy;
+      case AttributesTypeEnum.INTF:
+        return attrState.interface;
+    }
+  }
+
+  public getRobotStatisticValue(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    statisticsTypeEnum: StatisticsTypeEnum
+  ): number {
+    const statState = this.getRobotStatisticState(gameState, robotId);
+    switch (statisticsTypeEnum) {
+      case StatisticsTypeEnum.HP:
+        return statState.hp;
+      case StatisticsTypeEnum.DAMAGE:
+        return statState.damage;
+      case StatisticsTypeEnum.ACCURACY:
+        return statState.accuracy;
+      case StatisticsTypeEnum.DODGE:
+        return statState.dodge;
+      case StatisticsTypeEnum.CRITICAL:
+        return statState.critical;
+      case StatisticsTypeEnum.REDUCTION:
+        return statState.reduction;
+      case StatisticsTypeEnum.ARMOR:
+        return statState.armor;
+      case StatisticsTypeEnum.MOVE_SPEED:
+        return statState.moveSpeed;
+    }
+  }
+
+  public getRobotAttributeModifier(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    attributesTypeEnum: AttributesTypeEnum
+  ) {
+    const value = this.getRobotAttributeValue(gameState, robotId, attributesTypeEnum);
+    return Math.floor((value - 10) / 2);
   }
 }

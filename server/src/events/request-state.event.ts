@@ -1,5 +1,6 @@
 import { EffectState, GameEventTypeEnum, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
 import { GameEvent } from '@events/game.event';
+import { DamageTypeEnum } from 'shared/src/enums/damage-type.enum';
 
 export interface RequestStateEvent extends GameEvent {
   priority?: number;
@@ -58,31 +59,9 @@ export interface RequestHeatStateEvent extends RequestStateEvent {
   value: number;
 }
 
-// export interface RequestRobotJoinStateEvent extends RequestStateEvent {
-//   gameEventType: GameEventTypeEnum.ROBOT_JOINED;
-//   robotState: RobotState;
-//   lifeTurns: number;
-//   priority: 50;
-// }
-
-// export interface RequestDamageEvent extends RequestStateEvent {
-//   damageType: DamageTypeEnum;
-//   targetRobotId: string;
-//   baseDamage: number;
-// }
-
-// export interface RequestAOEDamageEvent extends RequestStateEvent {
-//   damageType: DamageTypeEnum;
-//   targetTilesId: string[];
-//   baseDamage: number;
-// }
-
-// export interface AddEffectRequestStateEvent extends RequestStateEvent {
-//   stateEventType: StateEventTypeEnum.ADD_EFFECT;
-//   effectInstance: EffectState;
-// }
-//
-// export interface RemoveEffectRequestStateEvent extends RequestStateEvent {
-//   stateEventType: StateEventTypeEnum.REMOVE_EFFECT;
-//   effectInstance: EffectState;
-// }
+export interface RequestDamageStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.DAMAGE;
+  damageType: DamageTypeEnum;
+  targetRobotId: string;
+  baseDamage: number;
+}

@@ -11,4 +11,5 @@ export enum GameEventTypeEnum {
   HP,
   MANA,
   HEAT,
+  DAMAGE,
 }
