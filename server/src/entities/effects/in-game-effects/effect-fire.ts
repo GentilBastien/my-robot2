@@ -1,6 +1,6 @@
-import { EffectStackingConfig, EffectTickingConfig } from '../effect';
 import { EffectCategoryTypeEnum } from 'shared';
 import { AbstractEffect } from '@entities/effects/abstract-effect';
+import { EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
 
 export class EffectFire extends AbstractEffect {
   protected _id = 'EffectFire';

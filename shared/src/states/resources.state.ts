@@ -12,6 +12,8 @@ export interface ResourcesState {
   maxHp: number;
   regenHp: number;
 
+  shield: number;
+
   mana: number;
   maxMana: number;
   regenMana: number;

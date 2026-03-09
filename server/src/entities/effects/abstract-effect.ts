@@ -1,7 +1,7 @@
 import { Effect, EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
-import { EffectCategoryTypeEnum } from 'shared';
+import { EffectCategoryTypeEnum, GameEventTypeEnum } from 'shared';
 import { EffectContext } from '@entities/effects/effect-context';
-import { RequestStateEvent } from '@events/request-state.event';
+import { RequestRemoveEffectStateEvent, RequestStateEvent } from '@events/request-state.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 
 export abstract class AbstractEffect implements Effect {
@@ -40,7 +40,12 @@ export abstract class AbstractEffect implements Effect {
 
   protected _handleOnExpire = (effectContext: EffectContext): RequestStateEvent[] => {
     const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
-    return [];
+    const requestRemoveEffectStateEvent: RequestRemoveEffectStateEvent = {
+      gameEventType: GameEventTypeEnum.REMOVE_EFFECT,
+      effectStateId: effectState.id,
+      sourceRobotId: effectState.sourceRobotId,
+    };
+    return [requestRemoveEffectStateEvent];
   };
 
   public handle(context: EffectContext): RequestStateEvent[] {
