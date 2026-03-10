@@ -1,3 +1,8 @@
+export { ClientMessage } from './socket/client-message';
+export { ClientMessageType } from './socket/client-message.type';
+export { ServerMessage } from './socket/server-message';
+export { ClientLoginPayload } from './socket/payloads/client-login.payload';
+
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
 export { EffectCategoryTypeEnum } from './enums/effect-category-type.enum';
