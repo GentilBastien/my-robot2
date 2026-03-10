@@ -1,6 +1,6 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { Client, ClientRegistry } from './client-registry';
-import { ClientLoginPayload, ClientMessage, ClientMessageType } from 'shared';
+import { ClientLoginPayload, ClientMessage, MessageType } from 'shared';
 import { Server } from 'node:https';
 
 const clientRegistry = new ClientRegistry();
@@ -15,7 +15,7 @@ export function createWebsocketServer(server: Server) {
       const parsedData: ClientMessage<unknown> = JSON.parse(data.toString());
 
       switch (parsedData.type) {
-        case ClientMessageType.LOGIN: {
+        case MessageType.LOGIN: {
           const clientMessageLogin: ClientMessage<ClientLoginPayload> = parsedData as ClientMessage<ClientLoginPayload>;
           login = clientMessageLogin.login;
           const clientToRegister: Client = {
