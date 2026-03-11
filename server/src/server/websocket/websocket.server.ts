@@ -1,7 +1,7 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { Server } from 'node:https';
 import { IncomingMessage } from 'node:http';
-import { WebsocketManager } from './websocket.manager';
+import { WebsocketManager } from '@server/websocket/websocket.manager';
 
 const websocketManager = new WebsocketManager();
 
@@ -11,7 +11,11 @@ export function createWebsocketServer(server: Server) {
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
     const login: string | undefined = req.url;
     if (login) {
-      websocketManager.register(login, ws);
+      if (websocketManager.isAlreadyRegistered(login)) {
+        throw 'already registered';
+      } else {
+        websocketManager.register(login, ws);
+      }
       ws.on('message', data => {
         websocketManager.handleClientMessage(ws, data);
       });

@@ -2,13 +2,7 @@ import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
 import { PathGameEvent } from '@events/game.event';
-
-/**
- * Program Entry point.
- */
-// new ClientRegistry({
-//   port: 8080,
-// });
+import { createServer } from './server/server';
 
 const gameConfig: GameConfig = {
   mapWidth: 10,
@@ -45,3 +39,5 @@ const pathGameEvent: PathGameEvent = {
   movementType: MovementTypeEnum.WALKED,
 };
 // game.receiveGameEventFromClient(pathGameEvent);
+
+createServer();

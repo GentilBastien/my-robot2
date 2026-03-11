@@ -12,6 +12,7 @@
       "@resolvers/*": ["resolvers/*"],
       "@resolvers-request/*": ["resolvers/request-state-cases/*"],
       "@resolvers-response/*": ["resolvers/response-state-cases/*"],
+      "@server/*": ["server/*"],
       "@states/*": ["states/*"],
       "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],
