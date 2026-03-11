@@ -2,9 +2,6 @@ import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
 import { PathGameEvent } from '@events/game.event';
-import { createWebsocketServer } from './serv/websocket/websocket.server';
-import * as https from 'node:https';
-import { Server } from 'node:https';
 
 /**
  * Program Entry point.
@@ -48,11 +45,3 @@ const pathGameEvent: PathGameEvent = {
   movementType: MovementTypeEnum.WALKED,
 };
 // game.receiveGameEventFromClient(pathGameEvent);
-
-const server: Server = https.createServer();
-
-const websocketManager = createWebsocketServer(server);
-
-server.listen(8080, () => {
-  console.log('Server running');
-});
