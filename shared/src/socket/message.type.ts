@@ -1,6 +1,13 @@
 export enum MessageType {
   LOGIN,
-  PLAY,
+  LEAVE,
+
+  QUEUE,
+  DEQUEUE,
+
+  ACCEPT_MATCH,
+  DECLINE_MATCH,
+
   TURN_END,
   MOVEMENT,
   ACTION,

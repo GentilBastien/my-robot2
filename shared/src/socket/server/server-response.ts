@@ -1,10 +1,11 @@
 import { GameState } from '../../states/game.state';
 import { MessageType } from '../message.type';
 
-export interface ServerMessage<T> {
+export interface ServerResponse {
   login: string;
   type: MessageType;
-  payload: T;
+  code: number;
+  payload: Record<string, string>;
 }
 
 export interface ServerGameUpdate {

@@ -2,7 +2,7 @@ import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
 import { PathGameEvent } from '@events/game.event';
-import { createWebsocketServer } from './websocket/websocket.server';
+import { createWebsocketServer } from './serv/websocket/websocket.server';
 import * as https from 'node:https';
 import { Server } from 'node:https';
 
@@ -55,11 +55,4 @@ const websocketManager = createWebsocketServer(server);
 
 server.listen(8080, () => {
   console.log('Server running');
-});
-
-websocketManager.sendTo('player1', {
-  type: 'game_update',
-  payload: {
-    hp: 10,
-  },
 });

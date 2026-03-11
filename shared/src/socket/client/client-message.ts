@@ -1,7 +1,7 @@
 import { MessageType } from '../message.type';
 
-export interface ClientMessage<T> {
+export interface ClientMessage {
   login: string;
   type: MessageType;
-  payload: T;
+  payload: Record<string, string>;
 }

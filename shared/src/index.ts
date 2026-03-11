@@ -1,7 +1,9 @@
-export { ClientMessage } from './socket/client/client-message';
 export { MessageType } from './socket/message.type';
-export { ServerMessage } from './socket/server/server-message';
-export { ClientLoginPayload } from './socket/client/client-login.payload';
+export { ClientMessage } from './socket/client/client-message';
+export { ClientLoginRequest } from './socket/client/client-login.request';
+
+export { ServerResponse } from './socket/server/server-response';
+export { ServerLoginResponse } from './socket/server/server-login.response';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
