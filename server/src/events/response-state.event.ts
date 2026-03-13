@@ -1,12 +1,12 @@
 import {
   DamageTypeEnum,
   EffectState,
+  GameEvent,
   GameEventTypeEnum,
   MovementTypeEnum,
   PathCoordinate,
   StepPathCoordinate,
 } from 'shared';
-import { GameEvent } from '@events/game.event';
 
 export interface ResponseStateEvent extends GameEvent {
   responseValidated: boolean;

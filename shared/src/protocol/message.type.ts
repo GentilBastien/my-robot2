@@ -1,7 +1,4 @@
 export enum MessageType {
-  LOGIN,
-  LEAVE,
-
   QUEUE,
   DEQUEUE,
 

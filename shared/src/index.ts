@@ -1,6 +1,9 @@
 export { MessageType } from './protocol/message.type';
-export { LoginRequest } from './protocol/login/request';
-export { LoginResponse } from './protocol/login/response';
+export { LoginRequest } from './protocol/api/login/request';
+export { LoginResponse } from './protocol/api/login/response';
+export { ClientMessage } from './protocol/websocket/client/client-message';
+
+export { GameEvent, PathGameEvent, ActionGameEvent } from './protocol/websocket/client/game.event';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';

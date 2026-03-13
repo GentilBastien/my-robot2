@@ -1,13 +1,12 @@
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
-import { Comparator, GameState, Reducer } from 'shared';
+import { Comparator, GameEvent, GameState, Reducer } from 'shared';
 import { requestStateEventResolver } from '@resolvers/request-state-event.resolver';
 import { responseStateEventResolver } from '@resolvers/response-state-event.resolver';
 import { gameEventResolver } from '@resolvers/game-event.resolver';
 import { ResponseStateEvent } from '@events/response-state.event';
 import { GameConfig } from './game.config';
 import { GameCalculator } from './game-calculator/game.calculator';
-import { GameEvent } from '@events/game.event';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
@@ -35,10 +34,6 @@ export class Game {
     const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
     this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
   }
-
-  // private dispatchGameEvent(gameEvent: GameEvent): void {
-  // // dispatch the game event to other clients
-  // }
 
   private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>) {
     const responseEvents: ResponseStateEvent[] = [];

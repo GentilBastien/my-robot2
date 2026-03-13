@@ -1,6 +1,5 @@
 import { RequestActionStateEvent, RequestAutoAttackActionEvent } from '@events/request-action-state.event';
-import { ActionTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
-import { ActionGameEvent } from '@events/game.event';
+import { ActionGameEvent, ActionTypeEnum, DamageTypeEnum, GameEventTypeEnum } from 'shared';
 
 export function actionGameCase(actionGameEvent: ActionGameEvent): RequestActionStateEvent {
   const actionTypeEnum: ActionTypeEnum = actionGameEvent.actionTypeEnum;

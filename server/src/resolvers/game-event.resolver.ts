@@ -1,6 +1,5 @@
 import { RequestStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum } from 'shared';
-import { ActionGameEvent, GameEvent, PathGameEvent } from '@events/game.event';
+import { ActionGameEvent, GameEvent, GameEventTypeEnum, PathGameEvent } from 'shared';
 import { turnEndGameCase } from '@resolvers/game-cases/turn-end.game-case';
 import { pathGameCase } from '@resolvers/game-cases/path.game-case';
 import { actionGameCase } from '@resolvers/game-cases/action.game-case';

@@ -1,7 +1,7 @@
 import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
-import { PathGameEvent } from '@events/game.event';
+import { PathGameEvent } from '../../shared/src/protocol/websocket/client/game.event';
 import { createServer } from '@server/server';
 
 const gameConfig: GameConfig = {

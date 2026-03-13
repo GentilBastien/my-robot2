@@ -1,6 +1,5 @@
 import { RequestPathStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum } from 'shared';
-import { PathGameEvent } from '@events/game.event';
+import { GameEventTypeEnum, PathGameEvent } from 'shared';
 
 export function pathGameCase(pathGameEvent: PathGameEvent): RequestPathStateEvent {
   return {

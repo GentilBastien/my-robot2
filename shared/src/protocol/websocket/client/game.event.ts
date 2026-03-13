@@ -1,4 +1,7 @@
-import { ActionTypeEnum, GameEventTypeEnum, MovementTypeEnum, PathCoordinate } from 'shared';
+import { GameEventTypeEnum } from '../../../enums/game-event-type.enum';
+import { ActionTypeEnum } from '../../../enums/action-type.enum';
+import { MovementTypeEnum } from '../../../enums/movement-type.enum';
+import { PathCoordinate } from '../../../types/path-coordinate';
 
 export interface GameEvent {
   gameEventType: GameEventTypeEnum;
