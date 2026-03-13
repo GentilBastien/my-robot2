@@ -2,7 +2,7 @@ import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, TurnStateTypeEnum } from 'shared';
 import { PathGameEvent } from '@events/game.event';
-import { createServer } from './server/server';
+import { createServer } from '@server/server';
 
 const gameConfig: GameConfig = {
   mapWidth: 10,
@@ -40,4 +40,4 @@ const pathGameEvent: PathGameEvent = {
 };
 // game.receiveGameEventFromClient(pathGameEvent);
 
-createServer();
+createServer().then();

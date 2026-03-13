@@ -1,6 +1,5 @@
 import { WebSocket, WebSocketServer } from 'ws';
-import { Server } from 'node:https';
-import { IncomingMessage } from 'node:http';
+import { IncomingMessage, Server } from 'node:http';
 import { WebsocketManager } from '@server/websocket/websocket.manager';
 
 const websocketManager = new WebsocketManager();
