@@ -12,7 +12,9 @@ export class QueueManager {
     this.sessions = this.sessions.filter(p => p !== session);
   }
 
-  public tryCreateGame(): string[] | null {
+  public tryCreateProposal(): string[] | null {
+    //TODO: other rules of matchmaking
+    //
     return [];
   }
 }

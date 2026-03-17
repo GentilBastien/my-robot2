@@ -4,5 +4,5 @@ export interface GameProposal {
   accepted: Set<string>;
   declined: boolean;
   loginDeclined?: string;
-  timeout: number;
+  timeout: NodeJS.Timeout;
 }
