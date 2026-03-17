@@ -1,20 +1,31 @@
-import { Session } from '@server-websocket/websocket.manager';
-
 export class QueueManager {
-  //TODO, make it a struct
-  sessions: Session[] = [];
+  private logins: Set<string>;
 
-  public add(session: Session): void {
-    this.sessions.push(session);
+  constructor() {
+    this.logins = new Set();
   }
 
-  public remove(session: Session): void {
-    this.sessions = this.sessions.filter(p => p !== session);
+  public add(login: string): void {
+    this.logins.add(login);
+  }
+
+  public addAll(logins: string[]): void {
+    logins.forEach(login => this.logins.add(login));
+  }
+
+  public remove(login: string): void {
+    this.logins.delete(login);
+  }
+
+  public removeAll(logins: string[]): void {
+    logins.forEach(login => this.logins.delete(login));
   }
 
   public tryCreateProposal(): string[] | null {
     //TODO: other rules of matchmaking
-    //
-    return [];
+    if (this.logins.size >= 4) {
+      return [];
+    }
+    return null;
   }
 }

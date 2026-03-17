@@ -1,7 +1,6 @@
 import { GameProposal } from './game-proposal';
 import { QueueManager } from '@structures/queue.manager';
 import { SessionManager } from '@server/session/session.manager';
-import { SessionStateTypeEnum } from 'shared';
 import { Session } from '@server-websocket/websocket.manager';
 
 export class ProposalManager {
@@ -14,16 +13,12 @@ export class ProposalManager {
     setInterval(() => this.tryCreateProposal(), 10000);
   }
 
-  public joinQueue(session: Session): void {
-    this.queueManager.add(session);
+  public joinQueue(login: string): void {
+    this.queueManager.add(login);
   }
 
-  public tryCreateProposal(): void {
-    const loginsForProposal: string[] | null = this.queueManager.tryCreateProposal();
-    if (loginsForProposal) {
-      const gameProposal = this.createProposal(loginsForProposal);
-      this.sessionManager.sendGameProposal(gameProposal);
-    }
+  public leaveQueue(login: string): void {
+    this.queueManager.remove(login);
   }
 
   public createProposal(logins: string[]): GameProposal {
@@ -43,15 +38,14 @@ export class ProposalManager {
   /**
    * Accepts a Proposal and returns true if the proposal has been fully accepted and proc has been sent to clients
    */
-  public acceptProposal(session: Session, proposalId: string): boolean {
+  public acceptProposal(session: Session, proposalId: string): void {
     const proposal = this.proposals[proposalId];
     proposal.accepted.add(session.login);
     if (proposal.logins.length === proposal.accepted.size) {
       this.sessionManager.sendMatchAccepted(proposal);
+      this.queueManager.removeAll(proposal.logins);
       this.removeProposal(proposal);
-      return true;
     }
-    return false;
   }
 
   public declineProposal(session: Session, proposalId: string): void {
@@ -59,20 +53,27 @@ export class ProposalManager {
     proposal.declined = true;
     proposal.loginDeclined = session.login;
     this.sessionManager.sendMatchCancelled(proposal);
+    this.queueManager.addAll(Array.from(proposal.accepted));
     this.removeProposal(proposal);
   }
 
   public timeOutProposal(proposal: GameProposal): void {
     this.sessionManager.sendMatchTimedOut(proposal);
+    this.queueManager.addAll(Array.from(proposal.accepted));
     this.removeProposal(proposal);
   }
 
-  public removeProposal(proposal: GameProposal): void {
-    clearTimeout(proposal.timeout);
-    delete this.proposals[proposal.id];
+  private tryCreateProposal(): void {
+    const loginsForProposal: string[] | null = this.queueManager.tryCreateProposal();
+    if (loginsForProposal) {
+      const gameProposal = this.createProposal(loginsForProposal);
+      this.queueManager.removeAll(gameProposal.logins);
+      this.sessionManager.sendGameProposal(gameProposal);
+    }
   }
 
-  private setSessionState(sessions: Session[], updatedState: SessionStateTypeEnum): void {
-    sessions.forEach((session: Session) => (session.state = updatedState));
+  private removeProposal(proposal: GameProposal): void {
+    clearTimeout(proposal.timeout);
+    delete this.proposals[proposal.id];
   }
 }

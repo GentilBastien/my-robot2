@@ -34,34 +34,57 @@ export class SessionManager {
     return this.sessions[login] !== undefined;
   }
 
+  //todo call this method
   public receiveJoinQueue(login: string): void {
-    const session = this.sessions[login];
-    this.proposalManager.joinQueue(session);
+    this.proposalManager.joinQueue(login);
+    this.setSessionState([login], SessionStateTypeEnum.IN_QUEUE);
   }
 
+  //todo call this method
+  public receiveLeaveQueue(login: string): void {
+    this.proposalManager.leaveQueue(login);
+    this.setSessionState([login], SessionStateTypeEnum.ONLINE);
+  }
+
+  //todo call this method
   public receiveAcceptProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     this.proposalManager.acceptProposal(session, proposalId);
   }
 
+  //todo call this method
   public receiveDeclineProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     this.proposalManager.declineProposal(session, proposalId);
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
+    this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_PROPOSAL);
     //todo send to client
   }
 
   public sendMatchAccepted(gameProposal: GameProposal): void {
+    this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_GAME);
     //todo send to client
   }
 
   public sendMatchCancelled(gameProposal: GameProposal): void {
+    const acceptedLogins: string[] = Array.from(gameProposal.accepted);
+    const declinedLogin: string = gameProposal.loginDeclined!;
+    this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
+    this.setSessionState([declinedLogin], SessionStateTypeEnum.ONLINE);
     //todo send to client
   }
 
   public sendMatchTimedOut(gameProposal: GameProposal): void {
+    const acceptedLogins = Array.from(gameProposal.accepted);
+    const noResponseLogins = gameProposal.logins.filter(login => !gameProposal.accepted.has(login));
+    this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
+    this.setSessionState(noResponseLogins, SessionStateTypeEnum.ONLINE);
     //todo send to client
+  }
+
+  private setSessionState(logins: string[], updatedState: SessionStateTypeEnum): void {
+    logins.map(login => this.sessions[login]).forEach((session: Session) => (session.state = updatedState));
   }
 }
