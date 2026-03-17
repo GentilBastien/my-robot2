@@ -9,6 +9,7 @@
       "@entities/*": ["entities/*"],
       "@events/*": ["events/*"],
       "@managers/*": ["managers/*"],
+      "@proposal/*": ["proposal/*"],
       "@resolvers-request/*": ["resolvers/request-state-cases/*"],
       "@resolvers-response/*": ["resolvers/response-state-cases/*"],
       "@resolvers/*": ["resolvers/*"],

@@ -1,14 +1,15 @@
-export { MessageType } from './protocol/message.type';
-export { LoginRequest } from './protocol/api/login/request';
-export { LoginResponse } from './protocol/api/login/response';
-export { ClientMessage } from './protocol/websocket/client/client-message';
+export { MessageType } from './server/websocket/client/message.type';
+export { LoginRequest } from './server/api/login/request';
+export { LoginResponse } from './server/api/login/response';
+export { ClientMessage } from './server/websocket/client/client-message';
 
-export { GameEvent, PathGameEvent, ActionGameEvent } from './protocol/websocket/client/game.event';
+export { GameEvent, PathGameEvent, ActionGameEvent } from './server/websocket/client/game.event';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
 export { EffectCategoryTypeEnum } from './enums/effect-category-type.enum';
 export { GameStateTypeEnum } from './enums/game-state-type.enum';
+export { SessionStateTypeEnum } from './enums/session-state-type.enum';
 export { RobotStateTypeEnum } from './enums/robot-state-type.enum';
 export { DamageTypeEnum } from './enums/damage-type.enum';
 export { ActionTypeEnum } from './enums/action-type.enum';
