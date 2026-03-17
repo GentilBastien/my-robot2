@@ -10,7 +10,7 @@ export class ProposalManager {
 
   constructor(sessionManager: SessionManager) {
     this.sessionManager = sessionManager;
-    setInterval(() => this.tryCreateProposal(), 10000);
+    setInterval(() => this.tick(), 10000);
   }
 
   public joinQueue(login: string): void {
@@ -29,7 +29,8 @@ export class ProposalManager {
       accepted: new Set<string>(),
       declined: false,
       loginDeclined: undefined,
-      timeout: setTimeout(() => this.timeOutProposal(proposal), 10000),
+      createdAt: Date.now(),
+      // timeout: setTimeout(() => this.timeOutProposal(proposal), 10000),
     };
     this.proposals[id] = proposal;
     return proposal;
@@ -63,6 +64,25 @@ export class ProposalManager {
     this.removeProposal(proposal);
   }
 
+  private removeProposal(proposal: GameProposal): void {
+    delete this.proposals[proposal.id];
+  }
+
+  private tick(): void {
+    this.processTimeouts();
+    this.tryCreateProposal();
+  }
+
+  private processTimeouts(): void {
+    const now = Date.now();
+    for (const proposalId in this.proposals) {
+      const gameProposal: GameProposal = this.proposals[proposalId];
+      if (now - gameProposal.createdAt > 15000) {
+        this.timeOutProposal(gameProposal);
+      }
+    }
+  }
+
   private tryCreateProposal(): void {
     const loginsForProposal: string[] | null = this.queueManager.tryCreateProposal();
     if (loginsForProposal) {
@@ -70,10 +90,5 @@ export class ProposalManager {
       this.queueManager.removeAll(gameProposal.logins);
       this.sessionManager.sendGameProposal(gameProposal);
     }
-  }
-
-  private removeProposal(proposal: GameProposal): void {
-    clearTimeout(proposal.timeout);
-    delete this.proposals[proposal.id];
   }
 }

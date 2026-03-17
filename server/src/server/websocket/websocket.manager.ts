@@ -6,25 +6,25 @@ export interface Session {
   login: string;
   webSocket: WebSocket;
   state: SessionStateTypeEnum;
-  proposalId?: boolean;
+  proposalId?: string;
   gameId?: string;
   ping?: number;
   permissions?: number[];
 }
 
 export class WebsocketManager {
-  private readonly playerRegistry = new SessionManager();
+  private readonly sessionManager = new SessionManager();
 
   public isAlreadyRegistered(login: string): boolean {
-    return this.playerRegistry.isAlreadyRegistered(login);
+    return this.sessionManager.isAlreadyRegistered(login);
   }
 
   public register(login: string, webSocket: WebSocket): void {
-    this.playerRegistry.register(login, webSocket);
+    this.sessionManager.register(login, webSocket);
   }
 
   public unregister(ws: WebSocket): void {
-    this.playerRegistry.unregister(ws);
+    this.sessionManager.unregister(ws);
   }
 
   public handleClientMessage(ws: WebSocket, data: RawData) {

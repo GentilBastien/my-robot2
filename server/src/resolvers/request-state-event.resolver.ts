@@ -1,6 +1,7 @@
 import {
   RequestAddEffectStateEvent,
   RequestAdvanceTurnStateEvent,
+  RequestDamageStateEvent,
   RequestHeatStateEvent,
   RequestHpStateEvent,
   RequestManaStateEvent,
@@ -37,6 +38,7 @@ import { RequestActionStateEvent } from '@events/request-action-state.event';
 import { manaRequestStateCase } from '@resolvers-request/mana.request-state-case';
 import { hpRequestStateCase } from '@resolvers-request/hp.request-state-case';
 import { heatRequestStateCase } from '@resolvers-request/heat.request-state-case';
+import { damageRequestStateCase } from '@resolvers-request/damage.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -116,6 +118,14 @@ export function requestStateEventResolver(
     }
     case GameEventTypeEnum.ACTION: {
       return actionRequestStateCase(gameCalculator, readonlyGameState, requestEvent as RequestActionStateEvent);
+    }
+    case GameEventTypeEnum.DAMAGE: {
+      const damageResponse = damageRequestStateCase(
+        gameCalculator,
+        readonlyGameState,
+        requestEvent as RequestDamageStateEvent
+      );
+      return [damageResponse];
     }
 
     //...

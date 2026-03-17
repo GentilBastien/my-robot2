@@ -18,7 +18,17 @@ export class SessionManager {
 
   public unregister(ws: WebSocket): void {
     for (const login in this.sessions) {
-      if (this.sessions[login].webSocket === ws) {
+      const session = this.sessions[login];
+      if (session.webSocket === ws) {
+        if (session.state === SessionStateTypeEnum.IN_QUEUE) {
+          this.proposalManager.leaveQueue(session.login);
+        }
+        if (session.state === SessionStateTypeEnum.IN_PROPOSAL) {
+          this.proposalManager.declineProposal(session, session.proposalId!);
+        }
+        if (session.state === SessionStateTypeEnum.IN_GAME) {
+          //todo, leave the game.
+        }
         delete this.sessions[login];
         return;
       }
@@ -60,11 +70,13 @@ export class SessionManager {
 
   public sendGameProposal(gameProposal: GameProposal): void {
     this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_PROPOSAL);
+    this.setSessionProposalId(gameProposal.logins, gameProposal.id);
     //todo send to client
   }
 
   public sendMatchAccepted(gameProposal: GameProposal): void {
     this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_GAME);
+    this.setSessionProposalId(gameProposal.logins, undefined);
     //todo send to client
   }
 
@@ -73,6 +85,7 @@ export class SessionManager {
     const declinedLogin: string = gameProposal.loginDeclined!;
     this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
     this.setSessionState([declinedLogin], SessionStateTypeEnum.ONLINE);
+    this.setSessionProposalId(gameProposal.logins, undefined);
     //todo send to client
   }
 
@@ -81,10 +94,15 @@ export class SessionManager {
     const noResponseLogins = gameProposal.logins.filter(login => !gameProposal.accepted.has(login));
     this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
     this.setSessionState(noResponseLogins, SessionStateTypeEnum.ONLINE);
+    this.setSessionProposalId(gameProposal.logins, undefined);
     //todo send to client
   }
 
   private setSessionState(logins: string[], updatedState: SessionStateTypeEnum): void {
     logins.map(login => this.sessions[login]).forEach((session: Session) => (session.state = updatedState));
+  }
+
+  private setSessionProposalId(logins: string[], gameProposalId: string | undefined): void {
+    logins.map(login => this.sessions[login]).forEach((session: Session) => (session.proposalId = gameProposalId));
   }
 }
