@@ -75,7 +75,7 @@ export class ProposalManager {
   }
 
   private tryCreateProposal(): void {
-    const loginsForProposal: string[] | null = [];
+    const loginsForProposal: string[] | null = this.sessionManager.matchmakingFromQueue();
     if (loginsForProposal) {
       const gameProposal = this.createProposal(loginsForProposal);
       this.sessionManager.sendGameProposal(gameProposal);

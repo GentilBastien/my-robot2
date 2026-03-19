@@ -21,7 +21,7 @@ export class QueueManager {
     logins.forEach(login => this.logins.delete(login));
   }
 
-  public tryCreateProposal(): string[] | null {
+  public removeAndGet(): string[] | null {
     this.removeAll([]);
     //TODO: other rules of matchmaking, the logins that are chosen MUST be removed from the queue in the mean-time like a array.pop()
     if (this.logins.size >= 4) {

@@ -46,6 +46,10 @@ export class SessionManager {
     return this.sessions[login] !== undefined;
   }
 
+  public matchmakingFromQueue(): string[] | null {
+    return this.queueManager.removeAndGet();
+  }
+
   public receiveJoinQueue(login: string): void {
     const session = this.sessions[login];
     if (session.state !== SessionStateTypeEnum.ONLINE) return;
