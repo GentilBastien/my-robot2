@@ -1,7 +1,7 @@
 import { Game } from './game';
 import { GameConfig } from './game.config';
 import { GameState, GameStateTypeEnum, RobotState, TurnStateTypeEnum } from 'shared';
-import { GameProposal } from '@proposal/game-proposal';
+import { GameProposal } from '@server/proposal/game-proposal';
 
 export class GameManager {
   private readonly games: Game[];

@@ -1,16 +1,6 @@
 import WebSocket, { RawData } from 'ws';
-import { MessageType, SessionStateTypeEnum } from 'shared';
+import { MessageType } from 'shared';
 import { SessionManager } from '@server/session/session.manager';
-
-export interface Session {
-  login: string;
-  webSocket: WebSocket;
-  state: SessionStateTypeEnum;
-  proposalId?: string;
-  gameId?: string;
-  ping?: number;
-  permissions?: number[];
-}
 
 export class WebsocketManager {
   private readonly sessionManager = new SessionManager();

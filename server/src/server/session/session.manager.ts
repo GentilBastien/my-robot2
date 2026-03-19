@@ -1,11 +1,13 @@
-import { Session } from '@server-websocket/websocket.manager';
 import WebSocket from 'ws';
 import { SessionStateTypeEnum } from 'shared';
-import { GameProposal } from '@proposal/game-proposal';
-import { ProposalManager } from '@proposal/proposal-manager';
+import { GameProposal } from '@server/proposal/game-proposal';
+import { ProposalManager } from '@server/proposal/proposal-manager';
+import { Session } from '@server/session/session';
+import { QueueManager } from '@structures/queue.manager';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
+  private readonly queueManager = new QueueManager();
   private readonly sessions: Record<string, Session> = {};
 
   constructor() {
@@ -21,7 +23,7 @@ export class SessionManager {
       const session = this.sessions[login];
       if (session.webSocket === ws) {
         if (session.state === SessionStateTypeEnum.IN_QUEUE) {
-          this.proposalManager.leaveQueue(session.login);
+          this.queueManager.remove(session.login);
         }
         if (session.state === SessionStateTypeEnum.IN_PROPOSAL) {
           this.proposalManager.declineProposal(session, session.proposalId!);
@@ -44,65 +46,82 @@ export class SessionManager {
     return this.sessions[login] !== undefined;
   }
 
-  //todo call this method
   public receiveJoinQueue(login: string): void {
-    this.proposalManager.joinQueue(login);
-    this.setSessionState([login], SessionStateTypeEnum.IN_QUEUE);
+    const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.ONLINE) return;
+    this.queueManager.add(login);
+    session.state = SessionStateTypeEnum.IN_QUEUE;
   }
 
-  //todo call this method
   public receiveLeaveQueue(login: string): void {
-    this.proposalManager.leaveQueue(login);
-    this.setSessionState([login], SessionStateTypeEnum.ONLINE);
+    const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.IN_QUEUE) return;
+    this.queueManager.remove(login);
+    session.state = SessionStateTypeEnum.ONLINE;
   }
 
-  //todo call this method
   public receiveAcceptProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     this.proposalManager.acceptProposal(session, proposalId);
   }
 
-  //todo call this method
   public receiveDeclineProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     this.proposalManager.declineProposal(session, proposalId);
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
-    this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_PROPOSAL);
-    this.setSessionProposalId(gameProposal.logins, gameProposal.id);
+    this.queueManager.removeAll(gameProposal.logins);
+    for (const login in gameProposal.logins) {
+      const session = this.sessions[login];
+      session.state = SessionStateTypeEnum.IN_PROPOSAL;
+      session.proposalId = gameProposal.id;
+    }
     //todo send to client
   }
 
   public sendMatchAccepted(gameProposal: GameProposal): void {
-    this.setSessionState(gameProposal.logins, SessionStateTypeEnum.IN_GAME);
-    this.setSessionProposalId(gameProposal.logins, undefined);
+    for (const login in gameProposal.logins) {
+      const session = this.sessions[login];
+      session.state = SessionStateTypeEnum.IN_GAME;
+      session.proposalId = undefined;
+    }
     //todo send to client
   }
 
   public sendMatchCancelled(gameProposal: GameProposal): void {
-    const acceptedLogins: string[] = Array.from(gameProposal.accepted);
-    const declinedLogin: string = gameProposal.loginDeclined!;
-    this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
-    this.setSessionState([declinedLogin], SessionStateTypeEnum.ONLINE);
-    this.setSessionProposalId(gameProposal.logins, undefined);
+    for (const login in gameProposal.logins) {
+      const session = this.sessions[login];
+      session.proposalId = undefined;
+      if (gameProposal.loginDeclined === login) {
+        this.leaveQueue(session);
+      } else {
+        this.joinQueue(session);
+      }
+    }
     //todo send to client
   }
 
   public sendMatchTimedOut(gameProposal: GameProposal): void {
-    const acceptedLogins = Array.from(gameProposal.accepted);
-    const noResponseLogins = gameProposal.logins.filter(login => !gameProposal.accepted.has(login));
-    this.setSessionState(acceptedLogins, SessionStateTypeEnum.IN_QUEUE);
-    this.setSessionState(noResponseLogins, SessionStateTypeEnum.ONLINE);
-    this.setSessionProposalId(gameProposal.logins, undefined);
+    for (const login in gameProposal.logins) {
+      const session = this.sessions[login];
+      session.proposalId = undefined;
+      if (gameProposal.accepted.has(login)) {
+        this.leaveQueue(session);
+      } else {
+        this.joinQueue(session);
+      }
+    }
     //todo send to client
   }
 
-  private setSessionState(logins: string[], updatedState: SessionStateTypeEnum): void {
-    logins.map(login => this.sessions[login]).forEach((session: Session) => (session.state = updatedState));
+  private joinQueue(session: Session): void {
+    this.queueManager.add(session.login);
+    session.state = SessionStateTypeEnum.IN_QUEUE;
   }
 
-  private setSessionProposalId(logins: string[], gameProposalId: string | undefined): void {
-    logins.map(login => this.sessions[login]).forEach((session: Session) => (session.proposalId = gameProposalId));
+  private leaveQueue(session: Session): void {
+    this.queueManager.remove(session.login);
+    session.state = SessionStateTypeEnum.ONLINE;
   }
 }

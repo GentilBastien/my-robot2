@@ -22,7 +22,8 @@ export class QueueManager {
   }
 
   public tryCreateProposal(): string[] | null {
-    //TODO: other rules of matchmaking
+    this.removeAll([]);
+    //TODO: other rules of matchmaking, the logins that are chosen MUST be removed from the queue in the mean-time like a array.pop()
     if (this.logins.size >= 4) {
       return [];
     }

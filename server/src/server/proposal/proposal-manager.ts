@@ -1,24 +1,14 @@
 import { GameProposal } from './game-proposal';
-import { QueueManager } from '@structures/queue.manager';
 import { SessionManager } from '@server/session/session.manager';
-import { Session } from '@server-websocket/websocket.manager';
+import { Session } from '@server/session/session';
 
 export class ProposalManager {
-  private readonly queueManager = new QueueManager();
   private readonly proposals: Record<string, GameProposal> = {};
   private readonly sessionManager: SessionManager;
 
   constructor(sessionManager: SessionManager) {
     this.sessionManager = sessionManager;
-    setInterval(() => this.tick(), 10000);
-  }
-
-  public joinQueue(login: string): void {
-    this.queueManager.add(login);
-  }
-
-  public leaveQueue(login: string): void {
-    this.queueManager.remove(login);
+    setInterval(() => this.tick(), 2000);
   }
 
   public createProposal(logins: string[]): GameProposal {
@@ -30,37 +20,38 @@ export class ProposalManager {
       declined: false,
       loginDeclined: undefined,
       createdAt: Date.now(),
-      // timeout: setTimeout(() => this.timeOutProposal(proposal), 10000),
     };
     this.proposals[id] = proposal;
     return proposal;
   }
 
-  /**
-   * Accepts a Proposal and returns true if the proposal has been fully accepted and proc has been sent to clients
-   */
   public acceptProposal(session: Session, proposalId: string): void {
     const proposal = this.proposals[proposalId];
+    this.checkSessionValidForProposal(session, proposal);
+    if (proposal.loginDeclined === session.login) {
+      throw 'tempError, proposal has been declined already';
+    }
     proposal.accepted.add(session.login);
     if (proposal.logins.length === proposal.accepted.size) {
       this.sessionManager.sendMatchAccepted(proposal);
-      this.queueManager.removeAll(proposal.logins);
       this.removeProposal(proposal);
     }
   }
 
   public declineProposal(session: Session, proposalId: string): void {
     const proposal = this.proposals[proposalId];
+    this.checkSessionValidForProposal(session, proposal);
+    if (proposal.accepted.has(session.login)) {
+      throw 'tempError, proposal has been accepted already';
+    }
     proposal.declined = true;
     proposal.loginDeclined = session.login;
     this.sessionManager.sendMatchCancelled(proposal);
-    this.queueManager.addAll(Array.from(proposal.accepted));
     this.removeProposal(proposal);
   }
 
   public timeOutProposal(proposal: GameProposal): void {
     this.sessionManager.sendMatchTimedOut(proposal);
-    this.queueManager.addAll(Array.from(proposal.accepted));
     this.removeProposal(proposal);
   }
 
@@ -84,11 +75,16 @@ export class ProposalManager {
   }
 
   private tryCreateProposal(): void {
-    const loginsForProposal: string[] | null = this.queueManager.tryCreateProposal();
+    const loginsForProposal: string[] | null = [];
     if (loginsForProposal) {
       const gameProposal = this.createProposal(loginsForProposal);
-      this.queueManager.removeAll(gameProposal.logins);
       this.sessionManager.sendGameProposal(gameProposal);
+    }
+  }
+
+  private checkSessionValidForProposal(session: Session, gameProposal: GameProposal): void {
+    if (gameProposal.logins.includes(session.login)) {
+      throw 'Temp error, login is not included in session';
     }
   }
 }
