@@ -16,6 +16,7 @@ export class SessionManager {
 
   public register(login: string, webSocket: WebSocket): void {
     this.sessions[login] = { login, webSocket, state: SessionStateTypeEnum.ONLINE };
+    this.__printSessions();
   }
 
   public unregister(ws: WebSocket): void {
@@ -32,6 +33,7 @@ export class SessionManager {
           //todo, leave the game.
         }
         delete this.sessions[login];
+        this.__printSessions();
         return;
       }
     }
@@ -127,5 +129,9 @@ export class SessionManager {
   private leaveQueue(session: Session): void {
     this.queueManager.remove(session.login);
     session.state = SessionStateTypeEnum.ONLINE;
+  }
+
+  private __printSessions(): void {
+    console.log('sessions', Object.keys(this.sessions));
   }
 }

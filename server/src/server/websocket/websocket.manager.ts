@@ -19,12 +19,23 @@ export class WebsocketManager {
 
   public handleClientMessage(ws: WebSocket, data: RawData) {
     const { login, type, payload } = JSON.parse(data.toString());
+    console.log('log data', login, type, payload);
     switch (type) {
-      case MessageType.QUEUE:
-      case MessageType.DEQUEUE:
-      case MessageType.ACCEPT_MATCH:
+      case MessageType.QUEUE: {
+        this.sessionManager.receiveJoinQueue(login);
+        break;
+      }
+      case MessageType.DEQUEUE: {
+        this.sessionManager.receiveLeaveQueue(login);
+        break;
+      }
+      case MessageType.ACCEPT_MATCH: {
+        this.sessionManager.receiveAcceptProposal(login, payload.proposalId);
+        break;
+      }
       case MessageType.DECLINE_MATCH: {
-        return;
+        this.sessionManager.receiveDeclineProposal(login, payload.proposalId);
+        break;
       }
     }
   }

@@ -6,7 +6,7 @@
     "server"
   ],
   "scripts": {
-    "build": "tsc -b shared server/tsconfig.build.json && npm run alias",
+    "build": "tsc -b shared server/tsconfig.build.json client && npm run alias",
     "clean": "tsc -b --clean shared server/tsconfig.build.json && rimraf server/dist && rimraf shared/dist",
     "rebuild": "npm run clean && npm run build",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",

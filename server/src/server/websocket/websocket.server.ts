@@ -26,7 +26,9 @@ export function createWebsocketServer(server: Server): void {
   server.on('upgrade', (request, socket, head) => {
     const { url } = request;
     // const authHeader = request.headers['authorization'];
-    if (url !== '/api/v1/game') {
+
+    if (!url || !url.startsWith('/api/v1/game')) {
+      // WebSocket connection to 'ws://....' failed
       socket.destroy();
       return;
     }
@@ -37,10 +39,15 @@ export function createWebsocketServer(server: Server): void {
   });
 
   wss.on('connection', (ws: WebSocket, req: IncomingMessage) => {
-    const login: string | undefined = req.httpVersion; //TODO get login from IncomingMessage
+    if (!req.url || !req.headers.host) {
+      throw 'Temp error, url undefined.';
+    }
+    const url = `ws:${req.headers.host}${req.url}` as string;
+    const searchParams = new URL(url).searchParams;
+    const login: string | null = searchParams.get('login');
     if (!login) {
       ws.close();
-      throw 'Not logged in';
+      throw 'Temp error, login not found in queryParams';
     }
     if (websocketManager.isAlreadyRegistered(login)) {
       throw 'already registered';
