@@ -3,18 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <title>Title</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div>
-      <label for="connect-ws-input">connect to webserver</label>
-      <input id="connect-ws-input" type="text" />
-      <button id="connect-ws">Connect to Webserver</button>
+    <div class="inline-bro">
+      <div id="block-login-a">
+        <label for="connect-ws-input">connect to webserver</label>
+        <input id="connect-ws-input" type="text" />
+        <button id="connect-ws">Connect to Webserver</button>
+      </div>
+      <span id="connected-span"></span>
+
+      <button id="disconnect-ws" style="display: none" disabled>Disconnect from Webserver</button>
     </div>
-    <div>
-      <label for="disconnect-ws-input">disconnect from webserver</label>
-      <input id="disconnect-ws-input" type="text" />
-      <button id="disconnect-ws">Disconnect to Webserver</button>
-    </div>
+
     <script src="./test.js"></script>
   </body>
 </html>
