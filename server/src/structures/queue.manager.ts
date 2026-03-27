@@ -22,10 +22,11 @@ export class QueueManager {
   }
 
   public removeAndGet(): string[] | null {
-    this.removeAll([]);
-    //TODO: other rules of matchmaking, the logins that are chosen MUST be removed from the queue in the mean-time like a array.pop()
+    console.log('queue check', this.logins);
     if (this.logins.size >= 4) {
-      return [];
+      const returned = Array.from(this.logins);
+      this.removeAll(returned);
+      return returned;
     }
     return null;
   }

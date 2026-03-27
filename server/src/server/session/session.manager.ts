@@ -68,17 +68,19 @@ export class SessionManager {
 
   public receiveAcceptProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.IN_PROPOSAL) return;
     this.proposalManager.acceptProposal(session, proposalId);
   }
 
   public receiveDeclineProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.IN_PROPOSAL) return;
     this.proposalManager.declineProposal(session, proposalId);
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
     this.queueManager.removeAll(gameProposal.logins);
-    for (const login in gameProposal.logins) {
+    for (const login of gameProposal.logins) {
       const session = this.sessions[login];
       session.state = SessionStateTypeEnum.IN_PROPOSAL;
       session.proposalId = gameProposal.id;
@@ -87,7 +89,7 @@ export class SessionManager {
   }
 
   public sendMatchAccepted(gameProposal: GameProposal): void {
-    for (const login in gameProposal.logins) {
+    for (const login of gameProposal.logins) {
       const session = this.sessions[login];
       session.state = SessionStateTypeEnum.IN_GAME;
       session.proposalId = undefined;
@@ -96,7 +98,7 @@ export class SessionManager {
   }
 
   public sendMatchCancelled(gameProposal: GameProposal): void {
-    for (const login in gameProposal.logins) {
+    for (const login of gameProposal.logins) {
       const session = this.sessions[login];
       session.proposalId = undefined;
       if (gameProposal.loginDeclined === login) {
@@ -109,7 +111,7 @@ export class SessionManager {
   }
 
   public sendMatchTimedOut(gameProposal: GameProposal): void {
-    for (const login in gameProposal.logins) {
+    for (const login of gameProposal.logins) {
       const session = this.sessions[login];
       session.proposalId = undefined;
       if (gameProposal.accepted.has(login)) {

@@ -19,7 +19,7 @@ export class WebsocketManager {
 
   public handleClientMessage(ws: WebSocket, data: RawData) {
     const { login, type, payload } = JSON.parse(data.toString());
-    console.log('log data', login, type, payload);
+    console.log('login:', login, 'type:', type, 'payload', payload);
     switch (type) {
       case MessageType.QUEUE: {
         this.sessionManager.receiveJoinQueue(login);
