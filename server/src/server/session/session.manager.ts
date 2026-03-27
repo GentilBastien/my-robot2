@@ -26,7 +26,7 @@ export class SessionManager {
         if (session.state === SessionStateTypeEnum.IN_QUEUE) {
           this.queueManager.remove(session.login);
         }
-        if (session.state === SessionStateTypeEnum.IN_PROPOSAL) {
+        if (session.state === SessionStateTypeEnum.PROPOSAL_ASKING) {
           this.proposalManager.declineProposal(session, session.proposalId!);
         }
         if (session.state === SessionStateTypeEnum.IN_GAME) {
@@ -38,10 +38,6 @@ export class SessionManager {
       }
     }
     throw 'Client not found';
-  }
-
-  public getSession(login: string): Session {
-    return this.sessions[login];
   }
 
   public isAlreadyRegistered(login: string): boolean {
@@ -68,13 +64,21 @@ export class SessionManager {
 
   public receiveAcceptProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
-    if (session.state !== SessionStateTypeEnum.IN_PROPOSAL) return;
+    if (session.state !== SessionStateTypeEnum.PROPOSAL_ASKING) {
+      console.log('Not in a good state to accept proposal');
+      return;
+    }
+    session.state = SessionStateTypeEnum.PROPOSAL_ANSWERED;
     this.proposalManager.acceptProposal(session, proposalId);
   }
 
   public receiveDeclineProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
-    if (session.state !== SessionStateTypeEnum.IN_PROPOSAL) return;
+    if (session.state !== SessionStateTypeEnum.PROPOSAL_ASKING) {
+      console.log('Not in a good state to decline proposal');
+      return;
+    }
+    session.state = SessionStateTypeEnum.PROPOSAL_ANSWERED;
     this.proposalManager.declineProposal(session, proposalId);
   }
 
@@ -82,10 +86,14 @@ export class SessionManager {
     this.queueManager.removeAll(gameProposal.logins);
     for (const login of gameProposal.logins) {
       const session = this.sessions[login];
-      session.state = SessionStateTypeEnum.IN_PROPOSAL;
+      session.state = SessionStateTypeEnum.PROPOSAL_ASKING;
       session.proposalId = gameProposal.id;
     }
     //todo send to client
+    for (const login of gameProposal.logins) {
+      const session = this.sessions[login];
+      session.webSocket.send(JSON.stringify({ type: 'SEND_PROPOSAL', proposalId: gameProposal.id }));
+    }
   }
 
   public sendMatchAccepted(gameProposal: GameProposal): void {
@@ -95,6 +103,10 @@ export class SessionManager {
       session.proposalId = undefined;
     }
     //todo send to client
+    for (const login of gameProposal.logins) {
+      const session = this.sessions[login];
+      session.webSocket.send(JSON.stringify({ type: 'MATCH_ACCEPTED' }));
+    }
   }
 
   public sendMatchCancelled(gameProposal: GameProposal): void {
@@ -108,6 +120,10 @@ export class SessionManager {
       }
     }
     //todo send to client
+    for (const login of gameProposal.logins) {
+      const session = this.sessions[login];
+      session.webSocket.send(JSON.stringify({ type: 'MATCH_DECLINED', loginDeclined: gameProposal.loginDeclined }));
+    }
   }
 
   public sendMatchTimedOut(gameProposal: GameProposal): void {
@@ -115,12 +131,16 @@ export class SessionManager {
       const session = this.sessions[login];
       session.proposalId = undefined;
       if (gameProposal.accepted.has(login)) {
-        this.leaveQueue(session);
-      } else {
         this.joinQueue(session);
+      } else {
+        this.leaveQueue(session);
       }
     }
     //todo send to client
+    for (const login of gameProposal.logins) {
+      const session = this.sessions[login];
+      session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_TIMED_OUT' }));
+    }
   }
 
   private joinQueue(session: Session): void {

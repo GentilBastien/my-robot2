@@ -2,6 +2,7 @@ export enum SessionStateTypeEnum {
   ONLINE,
   IDLE,
   IN_QUEUE,
-  IN_PROPOSAL,
+  PROPOSAL_ASKING,
+  PROPOSAL_ANSWERED,
   IN_GAME,
 }

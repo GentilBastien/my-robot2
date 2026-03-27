@@ -32,7 +32,8 @@ export class ProposalManager {
       throw 'tempError, proposal has been declined already';
     }
     proposal.accepted.add(session.login);
-    if (proposal.logins.length === proposal.accepted.size) {
+    if (this.proposalValidated(proposal)) {
+      console.log('PROPOSAL FULLY ACCEPTED, MATCH ACCEPTED');
       this.sessionManager.sendMatchAccepted(proposal);
       this.removeProposal(proposal);
     }
@@ -51,8 +52,14 @@ export class ProposalManager {
   }
 
   public timeOutProposal(proposal: GameProposal): void {
-    this.sessionManager.sendMatchTimedOut(proposal);
-    this.removeProposal(proposal);
+    if (!this.proposalValidated(proposal)) {
+      this.sessionManager.sendMatchTimedOut(proposal);
+      this.removeProposal(proposal);
+    }
+  }
+
+  private proposalValidated(proposal: GameProposal): boolean {
+    return proposal.logins.length === proposal.accepted.size;
   }
 
   private removeProposal(proposal: GameProposal): void {
@@ -83,7 +90,7 @@ export class ProposalManager {
   }
 
   private checkSessionValidForProposal(session: Session, gameProposal: GameProposal): void {
-    if (gameProposal.logins.includes(session.login)) {
+    if (!gameProposal.logins.includes(session.login)) {
       throw 'Temp error, login is not included in session';
     }
   }

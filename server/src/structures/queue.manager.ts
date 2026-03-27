@@ -1,5 +1,5 @@
 export class QueueManager {
-  private logins: Set<string>;
+  private readonly logins: Set<string>;
 
   constructor() {
     this.logins = new Set();
@@ -22,8 +22,10 @@ export class QueueManager {
   }
 
   public removeAndGet(): string[] | null {
-    console.log('queue check', this.logins);
-    if (this.logins.size >= 4) {
+    if (this.logins.size > 0) {
+      console.log('queue check', this.logins);
+    }
+    if (this.logins.size >= 2) {
       const returned = Array.from(this.logins);
       this.removeAll(returned);
       return returned;

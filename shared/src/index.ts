@@ -1,4 +1,4 @@
-export { MessageType } from './server/websocket/client/message.type';
+export { ClientMessageType } from './server/websocket/client/client-message.type';
 export { LoginRequest } from './server/api/login/request';
 export { LoginResponse } from './server/api/login/response';
 export { ClientMessage } from './server/websocket/client/client-message';

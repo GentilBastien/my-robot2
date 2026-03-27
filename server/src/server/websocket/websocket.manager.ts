@@ -1,5 +1,5 @@
 import WebSocket, { RawData } from 'ws';
-import { MessageType } from 'shared';
+import { ClientMessageType } from 'shared';
 import { SessionManager } from '@server/session/session.manager';
 
 export class WebsocketManager {
@@ -21,19 +21,19 @@ export class WebsocketManager {
     const { login, type, payload } = JSON.parse(data.toString());
     console.log('login:', login, 'type:', type, 'payload', payload);
     switch (type) {
-      case MessageType.QUEUE: {
+      case ClientMessageType.QUEUE: {
         this.sessionManager.receiveJoinQueue(login);
         break;
       }
-      case MessageType.DEQUEUE: {
+      case ClientMessageType.DEQUEUE: {
         this.sessionManager.receiveLeaveQueue(login);
         break;
       }
-      case MessageType.ACCEPT_MATCH: {
+      case ClientMessageType.ACCEPT_PROPOSAL: {
         this.sessionManager.receiveAcceptProposal(login, payload.proposalId);
         break;
       }
-      case MessageType.DECLINE_MATCH: {
+      case ClientMessageType.DECLINE_PROPOSAL: {
         this.sessionManager.receiveDeclineProposal(login, payload.proposalId);
         break;
       }
