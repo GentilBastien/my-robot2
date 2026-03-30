@@ -6,10 +6,9 @@
     "server"
   ],
   "scripts": {
-    "build": "tsc -b shared server/tsconfig.build.json client && npm run alias",
-    "clean": "tsc -b --clean shared server/tsconfig.build.json && rimraf server/dist && rimraf shared/dist",
-    "rebuild": "npm run clean && npm run build",
-    "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json",
+    "clean": "tsc -b --clean shared server/tsconfig.build.json client && rimraf server/dist && rimraf shared/dist",
+    "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json && tsc-alias -p client/tsconfig.json",
+    "build": "npm run clean && tsc -b shared server/tsconfig.build.json client && npm run alias",
     "start": "node server/dist/index.js",
     "test": "vitest run && npm run alias"
   },

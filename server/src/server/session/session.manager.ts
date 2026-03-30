@@ -84,63 +84,69 @@ export class SessionManager {
 
   public sendGameProposal(gameProposal: GameProposal): void {
     this.queueManager.removeAll(gameProposal.logins);
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.state = SessionStateTypeEnum.PROPOSAL_ASKING;
-      session.proposalId = gameProposal.id;
-    }
-    //todo send to client
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.webSocket.send(JSON.stringify({ type: 'SEND_PROPOSAL', proposalId: gameProposal.id }));
-    }
+    this.updateSessionsAndSend(
+      gameProposal.logins,
+      session => {
+        session.state = SessionStateTypeEnum.PROPOSAL_ASKING;
+        session.proposalId = gameProposal.id;
+      },
+      session => session.webSocket.send(JSON.stringify({ type: 'SEND_PROPOSAL', proposalId: gameProposal.id }))
+    );
   }
 
-  public sendMatchAccepted(gameProposal: GameProposal): void {
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.state = SessionStateTypeEnum.IN_GAME;
-      session.proposalId = undefined;
-    }
-    //todo send to client
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.webSocket.send(JSON.stringify({ type: 'MATCH_ACCEPTED' }));
-    }
+  public sendGameProposalAccepted(gameProposal: GameProposal): void {
+    this.updateSessionsAndSend(
+      gameProposal.logins,
+      session => {
+        session.state = SessionStateTypeEnum.IN_GAME;
+        session.proposalId = undefined;
+        session.gameId = undefined; //TODO define game ID
+      },
+      session => session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_ACCEPTED' }))
+    );
   }
 
-  public sendMatchCancelled(gameProposal: GameProposal): void {
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.proposalId = undefined;
-      if (gameProposal.loginDeclined === login) {
-        this.leaveQueue(session);
-      } else {
-        this.joinQueue(session);
-      }
-    }
-    //todo send to client
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.webSocket.send(JSON.stringify({ type: 'MATCH_DECLINED', loginDeclined: gameProposal.loginDeclined }));
-    }
+  public sendGameProposalCancelled(gameProposal: GameProposal): void {
+    this.updateSessionsAndSend(
+      gameProposal.logins,
+      session => {
+        session.proposalId = undefined;
+        if (gameProposal.loginDeclined === session.login) {
+          this.leaveQueue(session);
+        } else {
+          this.joinQueue(session);
+        }
+      },
+      session =>
+        session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_DECLINED', loginDeclined: gameProposal.loginDeclined }))
+    );
   }
 
-  public sendMatchTimedOut(gameProposal: GameProposal): void {
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.proposalId = undefined;
-      if (gameProposal.accepted.has(login)) {
-        this.joinQueue(session);
-      } else {
-        this.leaveQueue(session);
-      }
-    }
-    //todo send to client
-    for (const login of gameProposal.logins) {
-      const session = this.sessions[login];
-      session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_TIMED_OUT' }));
-    }
+  public sendGameProposalTimedOut(gameProposal: GameProposal): void {
+    this.updateSessionsAndSend(
+      gameProposal.logins,
+      session => {
+        session.proposalId = undefined;
+        if (gameProposal.accepted.has(session.login)) {
+          this.joinQueue(session);
+        } else {
+          this.leaveQueue(session);
+        }
+      },
+      session => session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_TIMED_OUT' }))
+    );
+  }
+
+  public sendMatchFinished(gameProposal: GameProposal): void {
+    this.updateSessionsAndSend(
+      gameProposal.logins,
+      session => {
+        session.state = SessionStateTypeEnum.ONLINE;
+        session.proposalId = undefined;
+        session.gameId = undefined;
+      },
+      session => session.webSocket.send(JSON.stringify({ type: 'MATCH_FINISHED' }))
+    );
   }
 
   private joinQueue(session: Session): void {
@@ -155,5 +161,15 @@ export class SessionManager {
 
   private __printSessions(): void {
     console.log('sessions', Object.keys(this.sessions));
+  }
+
+  private updateSessionsAndSend(
+    logins: string[],
+    updateSessionFn: (session: Session) => void,
+    sendFn: (session: Session) => void
+  ): void {
+    const sessions = logins.map(login => this.sessions[login]);
+    sessions.forEach(session => updateSessionFn(session));
+    sessions.forEach(session => sendFn(session));
   }
 }

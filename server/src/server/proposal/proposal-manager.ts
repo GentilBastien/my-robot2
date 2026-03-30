@@ -34,7 +34,7 @@ export class ProposalManager {
     proposal.accepted.add(session.login);
     if (this.proposalValidated(proposal)) {
       console.log('PROPOSAL FULLY ACCEPTED, MATCH ACCEPTED');
-      this.sessionManager.sendMatchAccepted(proposal);
+      this.sessionManager.sendGameProposalAccepted(proposal);
       this.removeProposal(proposal);
     }
   }
@@ -47,13 +47,13 @@ export class ProposalManager {
     }
     proposal.declined = true;
     proposal.loginDeclined = session.login;
-    this.sessionManager.sendMatchCancelled(proposal);
+    this.sessionManager.sendGameProposalCancelled(proposal);
     this.removeProposal(proposal);
   }
 
   public timeOutProposal(proposal: GameProposal): void {
     if (!this.proposalValidated(proposal)) {
-      this.sessionManager.sendMatchTimedOut(proposal);
+      this.sessionManager.sendGameProposalTimedOut(proposal);
       this.removeProposal(proposal);
     }
   }

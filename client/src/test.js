@@ -40,14 +40,14 @@ connectWsBtn.onclick = () => {
       leaveQueue.disabled = !answeredProposal;
       updateProposal(false);
     }
-    if (message.type === 'MATCH_DECLINED') {
-      console.log('MATCH_DECLINED by ', message.loginDeclined);
+    if (message.type === 'PROPOSAL_DECLINED') {
+      console.log('PROPOSAL_DECLINED by ', message.loginDeclined);
       enterQueue.disabled = login !== message.loginDeclined;
       leaveQueue.disabled = login === message.loginDeclined;
       updateProposal(false);
     }
-    if (message.type === 'MATCH_ACCEPTED') {
-      console.log('MATCH_ACCEPTED');
+    if (message.type === 'PROPOSAL_ACCEPTED') {
+      console.log('PROPOSAL_ACCEPTED');
       enterQueue.disabled = true;
       leaveQueue.disabled = true;
       updateProposal(false);
