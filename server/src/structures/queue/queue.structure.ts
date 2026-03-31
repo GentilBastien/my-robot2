@@ -1,7 +1,7 @@
 import { QueueStructureInterface } from '@structures/queue/queue.structure-interface';
 
-type ElementRank<T> = (element: T) => number;
-type ElementMatch<T> = (elements: T[]) => T[] | null;
+export type ElementRank<T> = (element: T) => number;
+export type ElementMatch<T> = (elements: T[]) => T[] | null;
 
 export class QueueStructure<T> implements QueueStructureInterface<T> {
   private readonly elementRank: ElementRank<T>;
