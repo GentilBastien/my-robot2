@@ -11,6 +11,7 @@ export default defineConfig([
       reportUnusedDisableDirectives: 'error',
     },
     rules: {
+      '@typescript-eslint/explicit-function-return-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'error',
       'prefer-template': 'error',
       '@typescript-eslint/no-unused-vars': [

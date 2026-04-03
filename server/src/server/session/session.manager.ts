@@ -45,7 +45,7 @@ export class SessionManager {
   }
 
   public matchmakingFromQueue(): string[] | null {
-    return this.queueManager.removeAndGet();
+    return this.queueManager.removeAllMatchedAndGet();
   }
 
   public receiveJoinQueue(login: string): void {

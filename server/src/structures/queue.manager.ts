@@ -1,14 +1,14 @@
-import { ElementMatch, ElementRank, QueueStructure } from '@structures/queue/queue.structure';
+import { QueueStructure } from '@structures/queue/queue.structure';
+import { ElementMatcher, ElementRanker } from '@structures/queue/queue.structure-type';
 
 export class QueueManager {
-  private readonly elementRank: ElementRank<string> = () => 1;
-  private readonly elementMatch: ElementMatch<string> = elems => {
+  private readonly elementRank: ElementRanker<string> = () => 1;
+  private readonly elementMatch: ElementMatcher<string> = elems => {
     if (elems.length > 0) {
       console.log('queue check', elems);
     }
     if (elems.length >= 2) {
-      const [first, second, ...rest] = elems;
-      return [first, second];
+      return [elems[0], elems[1]];
     }
     return null;
   };
@@ -30,7 +30,7 @@ export class QueueManager {
     this.queue.removeAll(logins);
   }
 
-  public removeAndGet(): string[] | null {
-    return this.queue.removeAllAndGet();
+  public removeAllMatchedAndGet(): string[] | null {
+    return this.queue.popMatched();
   }
 }

@@ -1,53 +1,70 @@
 import { QueueStructureInterface } from '@structures/queue/queue.structure-interface';
-
-export type ElementRank<T> = (element: T) => number;
-export type ElementMatch<T> = (elements: T[]) => T[] | null;
+import { ElementMatcher, ElementRanker } from '@structures/queue/queue.structure-type';
 
 export class QueueStructure<T> implements QueueStructureInterface<T> {
-  private readonly elementRank: ElementRank<T>;
-  private readonly elementMatch: ElementMatch<T>;
-  private readonly elementsByRank = new Map<number, Set<T>>();
+  private _elementRanker: ElementRanker<T>;
+  private _elementMatcher: ElementMatcher<T>;
+  private readonly byRank: Map<number, Set<T>>;
+  private readonly all: Set<T>;
 
-  constructor(elementRank: ElementRank<T>, elementMatch: ElementMatch<T>) {
-    this.elementRank = elementRank;
-    this.elementMatch = elementMatch;
+  constructor(elementRanker: ElementRanker<T>, elementMatcher: ElementMatcher<T>) {
+    this._elementRanker = elementRanker;
+    this._elementMatcher = elementMatcher;
+    this.byRank = new Map<number, Set<T>>();
+    this.all = new Set<T>();
+  }
+
+  public setElementRanker(elementRanker: ElementRanker<T>): void {
+    this._elementRanker = elementRanker;
+    this.byRank.clear();
+    this.all.forEach(element => this.add(element));
+  }
+
+  public setElementMatcher(elementMatcher: ElementMatcher<T>): void {
+    this._elementMatcher = elementMatcher;
+  }
+
+  public getAllElements(): T[] {
+    return [...this.all];
   }
 
   public add(element: T): void {
-    const rank = this.elementRank(element);
-    const set = this.elementsByRank.get(rank) ?? new Set<T>();
+    const rank = this._elementRanker(element);
+    const set = this.byRank.get(rank) ?? new Set<T>();
     set.add(element);
-    this.elementsByRank.set(rank, set);
+    this.byRank.set(rank, set);
+    this.all.add(element);
   }
 
   public remove(element: T): void {
-    const rank = this.elementRank(element);
-    const set = this.elementsByRank.get(rank);
+    const rank = this._elementRanker(element);
+    const set = this.byRank.get(rank);
     if (!set) return;
+
     set.delete(element);
+    this.all.delete(element);
+
     if (set.size === 0) {
-      this.elementsByRank.delete(rank);
+      this.byRank.delete(rank);
     }
   }
 
   public addAll(elements: T[]): void {
-    elements.forEach(e => this.add(e));
+    elements.forEach(element => this.add(element));
   }
 
   public removeAll(elements: T[]): void {
-    elements.forEach(e => this.remove(e));
+    elements.forEach(element => this.remove(element));
   }
 
   public contains(element: T): boolean {
-    const rank = this.elementRank(element);
-    return this.elementsByRank.get(rank)?.has(element) ?? false;
+    return this.all.has(element);
   }
 
-  public removeAllAndGet(): T[] | null {
-    for (const set of this.elementsByRank.values()) {
-      const matched: T[] | null = this.elementMatch([...set]);
+  public popMatched(): T[] | null {
+    for (const set of this.byRank.values()) {
+      const matched: T[] | null = this._elementMatcher([...set]);
       if (matched) {
-        matched.forEach(e => set.delete(e));
         this.removeAll(matched);
         return matched;
       }

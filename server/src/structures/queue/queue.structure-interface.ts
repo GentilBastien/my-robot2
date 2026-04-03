@@ -1,4 +1,33 @@
+import { ElementMatcher, ElementRanker } from '@structures/queue/queue.structure-type';
+
+/**
+ * Structure that stores its values by rank. Each rank is a key in a map,
+ * and the values are all the elements that are matched in this rank
+ * according to the definition of a {@link ElementRanker}.
+ *
+ * A {@link ElementMatcher} is used to group and match the elements of a
+ * same rank.
+ */
 export interface QueueStructureInterface<T> {
+  /**
+   * Set the {@link ElementRanker} of this structure. Retroactively change
+   * the internal structure.
+   * @param elementRanker The new ElementRank.
+   */
+  setElementRanker(elementRanker: ElementRanker<T>): void;
+
+  /**
+   * Set the {@link ElementMatcher} of this structure. Next matching will use
+   * this new element matcher.
+   * @param elementMatcher The new ElementMatch.
+   */
+  setElementMatcher(elementMatcher: ElementMatcher<T>): void;
+
+  /**
+   * Get all the elements stored in this queue.
+   */
+  getAllElements(): T[];
+
   /**
    * Adds an element to the queue.
    * @param element The element to add.
@@ -30,7 +59,8 @@ export interface QueueStructureInterface<T> {
   contains(element: T): boolean;
 
   /**
-   * Removes a portion of the queue if possible and returns it.
+   * Removes, if possible, a portion of the queue determined
+   * by {@link ElementMatcher} and returns it.
    */
-  removeAllAndGet(): T[] | null;
+  popMatched(): T[] | null;
 }
