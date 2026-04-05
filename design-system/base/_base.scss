@@ -1,0 +1,12 @@
+@use '../tokens/colors' as colors;
+@use '../tokens/variables' as variables;
+
+body {
+  background: colors.$color-bg;
+  color: colors.$color-text;
+  font-family: variables.$font-main;
+}
+
+* {
+  box-sizing: border-box;
+}
