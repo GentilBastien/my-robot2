@@ -4,14 +4,17 @@ import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
 import { QueueManager } from '@structures/queue.manager';
+import { GameManager } from '../../game/game.manager';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
+  private readonly gameManager: GameManager;
   private readonly queueManager = new QueueManager();
   private readonly sessions: Record<string, Session> = {};
 
   constructor() {
     this.proposalManager = new ProposalManager(this);
+    this.gameManager = new GameManager(this);
   }
 
   public register(login: string, webSocket: WebSocket): void {
