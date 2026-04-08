@@ -5,6 +5,7 @@ export interface Action {
   manaCost: number;
   overheatingCost: number;
   range: number;
+  needVision: boolean;
   baseAmount: number;
   actionCost?: number;
   subActionCost?: number;

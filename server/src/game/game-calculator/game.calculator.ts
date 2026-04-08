@@ -148,7 +148,16 @@ export class GameCalculator {
     const isRobotOverheating = resourcesState.isOverheating;
     const robotHasEnoughAction = this.hasEnoughActionResource(resourcesState, action);
     const robotHasEnoughMana = this.hasEnoughMana(resourcesState, action);
-    return isRobotTurn && !isRobotOverheating && robotHasEnoughAction && robotHasEnoughMana;
+    const robotHasEnoughRange = true; //TODO
+    const robotHasVision = !action.needVision || (action.needVision && true); //TODO
+    return (
+      isRobotTurn &&
+      !isRobotOverheating &&
+      robotHasEnoughAction &&
+      robotHasEnoughMana &&
+      robotHasEnoughRange &&
+      robotHasVision
+    );
   }
 
   public getEffectStateIfTargetAlreadyAffectedBy(

@@ -4,6 +4,7 @@ import { ActionContext } from '@entities/actions/action-context';
 
 export class AutoAttack implements Action {
   public range = 2;
+  public needVision = true;
   public baseAmount = 10;
   public manaCost = 0;
   public overheatingCost = 0;
