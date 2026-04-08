@@ -2,11 +2,12 @@ import { Game } from './game';
 import { GameConfig } from './game.config';
 import { GameState, GameStateTypeEnum, RobotState, TurnStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
+import { SessionManager } from '@server/session/session.manager';
 
 export class GameManager {
   private readonly games: Game[];
 
-  constructor() {
+  constructor(sessionManager: SessionManager) {
     this.games = [];
   }
 
