@@ -20,12 +20,12 @@ import {
   Weight,
 } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
-import { GameConfig } from '../game.config';
 import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
 import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
 import { coordinateEquals } from '@utils/equals.utils';
+import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 
 interface InitiativeRobot {
   id: string;
@@ -36,11 +36,28 @@ export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<Weight>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
 
-  constructor(gameConfig: GameConfig) {
-    this.hexGrid = new HexagonalGridStructure<Weight>(gameConfig.mapWidth, gameConfig.mapHeight);
+  constructor(hexGrid: HexagonalGridStructure<Weight>) {
+    this.hexGrid = hexGrid;
     const robotComparator: Comparator<InitiativeRobot> = (robot1: InitiativeRobot, robot2: InitiativeRobot): number =>
       robot1.initiative - robot2.initiative;
     this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
+  }
+
+  public getPathCoordinateToTarget(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    target: Coordinates
+  ): PathCoordinate | null {
+    const startCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
+    const targetCell = this.hexGrid.getCellAt(target);
+    return this.hexGrid.shortestPathTo(startCell, targetCell);
+  }
+
+  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
+    const robotState = this.getRobotState(gameState, robotId);
+    const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
+    const robotCell = this.hexGrid.getCellAt(robotCoordinates);
+    return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
@@ -132,7 +149,7 @@ export class GameCalculator {
   }
 
   public hasEnoughMana(resourcesState: ResourcesState, action: Action): boolean {
-    return resourcesState.mana >= action.manaCost;
+    return resourcesState.mana >= (action.manaCost ?? 0);
   }
 
   public hasEnoughActionResource(resourcesState: ResourcesState, action: Action): boolean {
@@ -142,22 +159,34 @@ export class GameCalculator {
     );
   }
 
-  public robotAllowedForAction(gameState: Readonly<GameState>, robotId: string, action: Action): boolean {
-    const resourcesState = this.getRobotResourcesState(gameState, robotId);
+  public robotAllowedForAction(gameState: Readonly<GameState>, robotId: string, action: Action): ActionResponseErrors {
+    const response: ActionResponseErrors = {};
     const isRobotTurn = this.isRobotTurn(gameState, robotId);
+    if (!isRobotTurn) {
+      response.wrongTurn = { robotTurnId: this.getPlayingRobotId() };
+    }
+    const resourcesState = this.getRobotResourcesState(gameState, robotId);
     const isRobotOverheating = resourcesState.isOverheating;
+    if (isRobotOverheating) {
+      response.robotOverheating = { overheating: resourcesState.overheating };
+    }
     const robotHasEnoughAction = this.hasEnoughActionResource(resourcesState, action);
+    if (!robotHasEnoughAction) {
+      response.noEnoughAction = { cost: action.actionCost ?? 0, available: resourcesState.totalActions };
+    }
     const robotHasEnoughMana = this.hasEnoughMana(resourcesState, action);
-    const robotHasEnoughRange = true; //TODO
+    if (!robotHasEnoughMana) {
+      response.noEnoughMana = { cost: action.manaCost ?? 0, available: resourcesState.mana };
+    }
+    const robotHasEnoughRange = true; //TODO Range
+    if (!robotHasEnoughRange) {
+      response.noEnoughRange = { cost: action.range, available: 0 };
+    }
     const robotHasVision = !action.needVision || (action.needVision && true); //TODO
-    return (
-      isRobotTurn &&
-      !isRobotOverheating &&
-      robotHasEnoughAction &&
-      robotHasEnoughMana &&
-      robotHasEnoughRange &&
-      robotHasVision
-    );
+    if (!robotHasVision) {
+      response.noVision = { invisible: true };
+    }
+    return response;
   }
 
   public getEffectStateIfTargetAlreadyAffectedBy(
@@ -193,16 +222,6 @@ export class GameCalculator {
     return this.getCellState(gameState, robotCellId).coordinates;
   }
 
-  public getPathCoordinateToTarget(
-    gameState: Readonly<GameState>,
-    robotId: string,
-    target: Coordinates
-  ): PathCoordinate | null {
-    const startCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
-    const targetCell = this.hexGrid.getCellAt(target);
-    return this.hexGrid.shortestPathTo(startCell, targetCell);
-  }
-
   public getPathCoordinateCost(pathCoordinate: PathCoordinate): number {
     let sum = 0;
     for (let i = 1; i < pathCoordinate.costs.length; i++) {
@@ -236,13 +255,6 @@ export class GameCalculator {
       };
     }
     return undefined;
-  }
-
-  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
-    const robotState = this.getRobotState(gameState, robotId);
-    const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
-    const robotCell = this.hexGrid.getCellAt(robotCoordinates);
-    return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
   }
 
   public getRobotAttributeValue(
@@ -297,7 +309,7 @@ export class GameCalculator {
     gameState: Readonly<GameState>,
     robotId: string,
     attributesTypeEnum: AttributesTypeEnum
-  ) {
+  ): number {
     const value = this.getRobotAttributeValue(gameState, robotId, attributesTypeEnum);
     return Math.floor((value - 10) / 2);
   }

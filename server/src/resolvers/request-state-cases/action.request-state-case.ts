@@ -3,6 +3,7 @@ import { ResponseStateEvent } from '@events/response-state.event';
 import { isUpgradedAction, RequestActionStateEvent } from '@events/request-action-state.event';
 import { GameCalculator } from '../../game/game-calculator/game.calculator';
 import { Action } from '@entities/actions/action';
+import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 
 export function actionRequestStateCase(
   gameCalculator: GameCalculator,
@@ -19,11 +20,17 @@ export function actionRequestStateCase(
     requestActionStateEvent.hasEnergyModule = true;
   }
 
-  const allowed = gameCalculator.robotAllowedForAction(
+  const actionResponseErrors: ActionResponseErrors = gameCalculator.robotAllowedForAction(
     readonlyGameState,
     requestActionStateEvent.sourceRobotId,
     action
   );
 
-  return allowed ? action.onUse({ requestActionStateEvent, readonlyGameState, gameCalculator }) : [];
+  const isAllowed = Object.keys(actionResponseErrors).length === 0;
+
+  if (isAllowed) {
+    return action.onUse({ requestActionStateEvent, readonlyGameState, gameCalculator });
+  } else {
+    return [];
+  }
 }
