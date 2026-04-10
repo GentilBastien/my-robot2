@@ -29,19 +29,19 @@ export interface QueueStructureInterface<T> {
   getAllElements(): T[];
 
   /**
-   * Adds an element to the queue.
+   * Adds an element to the queue according to the {@link ElementRanker}.
    * @param element The element to add.
    */
   add(element: T): void;
 
   /**
-   * Removes an element from the queue.
+   * Removes an element from the queue. The elements may not exist in the queue.
    * @param element The element to remove.
    */
   remove(element: T): void;
 
   /**
-   * Adds elements to the queue.
+   * Adds elements to the queue according to the {@link ElementRanker}.
    * @param elements The elements to add.
    */
   addAll(elements: T[]): void;
@@ -53,7 +53,7 @@ export interface QueueStructureInterface<T> {
   removeAll(elements: T[]): void;
 
   /**
-   * Check if the element is contained in the queue.
+   * Check if the element is contained in the queue, whatever its rank.
    * @param element The element to check.
    */
   contains(element: T): boolean;

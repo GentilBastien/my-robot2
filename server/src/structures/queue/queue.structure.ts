@@ -16,8 +16,10 @@ export class QueueStructure<T> implements QueueStructureInterface<T> {
 
   public setElementRanker(elementRanker: ElementRanker<T>): void {
     this._elementRanker = elementRanker;
+    const temp: T[] = this.getAllElements();
     this.byRank.clear();
-    this.all.forEach(element => this.add(element));
+    this.all.clear();
+    temp.forEach(element => this.add(element));
   }
 
   public setElementMatcher(elementMatcher: ElementMatcher<T>): void {

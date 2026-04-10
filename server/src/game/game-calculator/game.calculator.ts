@@ -17,7 +17,6 @@ import {
   StepPathCoordinate,
   TurnState,
   TurnStateTypeEnum,
-  Weight,
 } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { Effect } from '@entities/effects/effect';
@@ -33,10 +32,10 @@ interface InitiativeRobot {
 }
 
 export class GameCalculator {
-  private readonly hexGrid: HexagonalGridStructure<Weight>;
+  private readonly hexGrid: HexagonalGridStructure<CellState>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
 
-  constructor(hexGrid: HexagonalGridStructure<Weight>) {
+  constructor(hexGrid: HexagonalGridStructure<CellState>) {
     this.hexGrid = hexGrid;
     const robotComparator: Comparator<InitiativeRobot> = (robot1: InitiativeRobot, robot2: InitiativeRobot): number =>
       robot1.initiative - robot2.initiative;
@@ -85,6 +84,7 @@ export class GameCalculator {
   }
 
   public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates): CellState {
+    this.hexGrid.getCellAt(coordinates);
     const cells = gameState.arenaState.cells;
     const cellIdFound = Object.keys(cells).find(cellId => coordinateEquals(cells[cellId].coordinates, coordinates));
     if (cellIdFound) {

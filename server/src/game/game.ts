@@ -7,21 +7,20 @@ import { gameEventResolver } from '@resolvers/game-event.resolver';
 import { ResponseStateEvent } from '@events/response-state.event';
 import { GameConfig } from './game.config';
 import { GameCalculator } from './game-calculator/game.calculator';
-import { GameGenerator } from './game-generator/game.generator';
+import { gameMapGenerator } from './game-generator/game.map-generator';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
  */
 export class Game {
   private gameState: GameState;
-  private readonly gameGenerator: GameGenerator;
   private readonly gameCalculator: GameCalculator;
   private readonly pendingRequestEvents: PriorityListStructure<RequestStateEvent>;
 
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.gameState;
-    this.gameGenerator = new GameGenerator(gameConfig);
-    this.gameCalculator = new GameCalculator(this.gameGenerator.build());
+    const generatedGame = gameMapGenerator(gameConfig);
+    this.gameCalculator = new GameCalculator(generatedGame);
     const comparator: Comparator<RequestStateEvent> = (item1: RequestStateEvent, item2: RequestStateEvent): number =>
       (item1.priority ?? 0) - (item2.priority ?? 0);
     this.pendingRequestEvents = new PriorityListStructure(comparator);
