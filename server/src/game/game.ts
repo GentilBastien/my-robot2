@@ -37,7 +37,7 @@ export class Game {
     this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
   }
 
-  private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>) {
+  private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>): ResponseStateEvent[] {
     const responseEvents: ResponseStateEvent[] = [];
     let currentRequestEvent: RequestStateEvent | undefined;
     do {

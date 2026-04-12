@@ -15,7 +15,7 @@ import {
 } from '@events/response-state.event';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
-import { GameCalculator } from '../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { turnStartResponseStateCase } from '@resolvers-response/turn-start.response-state-case';
 import { turnEndResponseStateCase } from '@resolvers-response/turn-end.response-state-case';

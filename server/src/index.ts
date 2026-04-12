@@ -1,5 +1,5 @@
-import { GameConfig } from './game/game.config';
-import { Game } from './game/game';
+import { GameConfig } from '@game/game.config';
+import { Game } from '@game/game';
 import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, PathGameEvent, TurnStateTypeEnum } from 'shared';
 import { createServer } from '@server/server';
 

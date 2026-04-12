@@ -1,6 +1,6 @@
 import { AttributesTypeEnum, GameEventTypeEnum, GameState, StatisticsTypeEnum } from 'shared';
 import { DamageResponseStateEvent } from '@events/response-state.event';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { RequestDamageStateEvent } from '@events/request-state.event';
 import { diceRolls } from '@utils/dice.utils';
 

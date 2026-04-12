@@ -1,7 +1,7 @@
 import { GameState } from 'shared';
 import { ResponseStateEvent } from '@events/response-state.event';
 import { isUpgradedAction, RequestActionStateEvent } from '@events/request-action-state.event';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { Action } from '@entities/actions/action';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 

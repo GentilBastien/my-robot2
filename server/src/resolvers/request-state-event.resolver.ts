@@ -24,7 +24,7 @@ import {
   TurnStartResponseStateEvent,
 } from '@events/response-state.event';
 import { GameEventTypeEnum, GameState } from 'shared';
-import { GameCalculator } from '../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { turnStartRequestStateCase } from '@resolvers-request/turn-start.request-state-case';
 import { turnEndRequestStateCase } from '@resolvers-request/turn-end.request-state-case';
 import { advanceTurnRequestStateCase } from '@resolvers-request/advance-turn.request-state-case';

@@ -3,8 +3,8 @@ import { SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
-import { QueueManager } from '@structures/queue.manager';
-import { GameManager } from '../../game/game.manager';
+import { GameManager } from '@game/game.manager';
+import { QueueManager } from '@server/queue/queue.manager';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
@@ -103,7 +103,7 @@ export class SessionManager {
       session => {
         session.state = SessionStateTypeEnum.IN_GAME;
         session.proposalId = undefined;
-        session.gameId = undefined; //TODO define game ID
+        session.gameId = undefined; //TODO create the game and define game ID
       },
       session => session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_ACCEPTED' }))
     );

@@ -1,6 +1,6 @@
 import { ResourcesResponseStateEvent } from '@events/response-state.event';
 import { GameState, Reducer, ResourcesState } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { updateResourcesState } from '@reducers/resources.reducer';
 
 export function resourcesResponseStateCase(

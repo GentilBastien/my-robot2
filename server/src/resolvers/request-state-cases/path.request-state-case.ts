@@ -1,6 +1,6 @@
 import { RequestPathStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum, GameState } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PathResponseStateEvent } from '@events/response-state.event';
 
 export function pathRequestStateCase(

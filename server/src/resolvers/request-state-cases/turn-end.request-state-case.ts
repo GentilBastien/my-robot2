@@ -1,7 +1,7 @@
 import { RequestTurnEndStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum, GameState } from 'shared';
 import { TurnEndResponseStateEvent } from '@events/response-state.event';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 
 export function turnEndRequestStateCase(
   gameCalculator: GameCalculator,

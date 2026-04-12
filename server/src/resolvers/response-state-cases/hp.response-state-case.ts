@@ -1,6 +1,6 @@
 import { HpResponseStateEvent } from '@events/response-state.event';
 import { GameState, Reducer } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { manaReducer } from '@reducers/resources.reducer';
 import { valuesInRange } from '@utils/function.utils';
 
