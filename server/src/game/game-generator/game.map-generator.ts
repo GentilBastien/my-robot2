@@ -4,5 +4,9 @@ import { GameConfig } from '../game.config';
 
 export function gameMapGenerator(gameConfig: GameConfig): HexagonalGridStructure<CellState> {
   //TODO game generator function
-  return new HexagonalGridStructure<CellState>(gameConfig.mapWidth, gameConfig.mapHeight);
+  return new HexagonalGridStructure<CellState>(
+    gameConfig.mapWidth,
+    gameConfig.mapHeight,
+    gameConfig.initialGameState.arenaState.cells
+  );
 }

@@ -1,17 +1,38 @@
 import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
-import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, PathGameEvent, TurnStateTypeEnum } from 'shared';
+import { GameStateTypeEnum, TurnStateTypeEnum } from 'shared';
 import { createServer } from '@server/server';
 
 const gameConfig: GameConfig = {
-  mapWidth: 10,
-  mapHeight: 15,
-  gameState: {
+  mapWidth: 2,
+  mapHeight: 2,
+  initialGameState: {
     state: GameStateTypeEnum.PENDING,
     robots: {},
     effects: [],
     arenaState: {
-      cells: {},
+      cells: [
+        {
+          id: 'cell_1',
+          coordinates: { x: 0, y: 0, z: 0 },
+          weight: 2,
+        },
+        {
+          id: 'cell_2',
+          coordinates: { x: 0, y: 0, z: 0 },
+          weight: 2,
+        },
+        {
+          id: 'cell_3',
+          coordinates: { x: 0, y: 0, z: 0 },
+          weight: 2,
+        },
+        {
+          id: 'cell_4',
+          coordinates: { x: 0, y: 0, z: 0 },
+          weight: 2,
+        },
+      ],
     },
     turnState: {
       turnStateTypeEnum: TurnStateTypeEnum.PENDING,
@@ -22,21 +43,6 @@ const gameConfig: GameConfig = {
 };
 
 const game = new Game(gameConfig);
-
-const pathGameEvent: PathGameEvent = {
-  gameEventType: GameEventTypeEnum.PATH,
-  path: {
-    costs: [1, 2, 5],
-    coordinatesPath: [
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 },
-      { x: 0, y: 0, z: 0 },
-    ],
-  },
-  sourceRobotId: '',
-  actionTypeEnum: undefined,
-  movementType: MovementTypeEnum.WALKED,
-};
-// game.receiveGameEventFromClient(pathGameEvent);
+console.log(game);
 
 createServer().then();

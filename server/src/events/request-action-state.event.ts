@@ -15,7 +15,7 @@ interface TargetedAction extends RequestActionStateEvent {
 }
 
 interface ZoneAction extends RequestActionStateEvent {
-  targetCellId: string;
+  targetCoordinates: string;
   radius: number;
 }
 
@@ -39,7 +39,7 @@ export function isTargetedAction(
 }
 
 export function isZoneAction(requestActionStateEvent: RequestActionStateEvent): requestActionStateEvent is ZoneAction {
-  return 'targetCellId' in requestActionStateEvent && 'radius' in requestActionStateEvent;
+  return 'targetCoordinates' in requestActionStateEvent && 'radius' in requestActionStateEvent;
 }
 
 export function isDamageAction(

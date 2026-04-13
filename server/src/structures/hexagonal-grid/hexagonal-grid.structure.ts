@@ -11,11 +11,14 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   private readonly _width: number;
   private readonly _height: number;
 
-  constructor(width: number, height: number) {
+  constructor(width: number, height: number, items?: T[]) {
     this._cells = [];
     this._width = width;
     this._height = height;
     this.setAllCellCoordinates(width, height);
+    if (items) {
+      this.setAllCellItems(items);
+    }
   }
 
   public get cells(): HexagonalCellStructure<T>[] {

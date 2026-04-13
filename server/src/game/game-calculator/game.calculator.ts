@@ -23,8 +23,9 @@ import { Effect } from '@entities/effects/effect';
 import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
 import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
-import { coordinateEquals } from '@utils/equals.utils';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
+import { gameMapGenerator } from '../game-generator/game.map-generator';
+import { GameConfig } from '../game.config';
 
 interface InitiativeRobot {
   id: string;
@@ -35,8 +36,8 @@ export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<CellState>;
   private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
 
-  constructor(hexGrid: HexagonalGridStructure<CellState>) {
-    this.hexGrid = hexGrid;
+  constructor(gameConfig: GameConfig) {
+    this.hexGrid = gameMapGenerator(gameConfig);
     const robotComparator: Comparator<InitiativeRobot> = (robot1: InitiativeRobot, robot2: InitiativeRobot): number =>
       robot1.initiative - robot2.initiative;
     this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
@@ -79,18 +80,8 @@ export class GameCalculator {
     return gameState.robots[robotId].statistics;
   }
 
-  public getCellState(gameState: Readonly<GameState>, cellId: string): CellState {
-    return gameState.arenaState.cells[cellId];
-  }
-
-  public getCellStateByCoordinate(gameState: Readonly<GameState>, coordinates: Coordinates): CellState {
-    this.hexGrid.getCellAt(coordinates);
-    const cells = gameState.arenaState.cells;
-    const cellIdFound = Object.keys(cells).find(cellId => coordinateEquals(cells[cellId].coordinates, coordinates));
-    if (cellIdFound) {
-      return cells[cellIdFound];
-    }
-    throw 'temp error';
+  public getCellStateAtCoordinates(coordinates: Coordinates): CellState {
+    return this.hexGrid.getCellAt(coordinates).getItemOrThrow();
   }
 
   public getPlayingRobotId(): string {
@@ -135,8 +126,7 @@ export class GameCalculator {
   }
 
   public getEffectStatesAtCoordinates(gameState: Readonly<GameState>, coordinates: Coordinates): EffectState[] {
-    const cellStateId: string = this.getCellStateByCoordinate(gameState, coordinates).id;
-    return gameState.effects.filter(effectState => effectState.targetCellId === cellStateId);
+    return gameState.effects.filter(effectState => effectState.targetCoordinates === coordinates);
   }
 
   public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
@@ -197,7 +187,7 @@ export class GameCalculator {
       effectState =>
         effectState.effectId === newEffectState.effectId &&
         (effectState.targetRobotId === newEffectState.targetRobotId ||
-          effectState.targetCellId === newEffectState.targetCellId)
+          effectState.targetCoordinates === newEffectState.targetCoordinates)
     );
   }
 
@@ -218,8 +208,7 @@ export class GameCalculator {
   }
 
   public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
-    const robotCellId = this.getRobotState(gameState, robotId).cellId;
-    return this.getCellState(gameState, robotCellId).coordinates;
+    return this.getRobotState(gameState, robotId).coordinates;
   }
 
   public getPathCoordinateCost(pathCoordinate: PathCoordinate): number {

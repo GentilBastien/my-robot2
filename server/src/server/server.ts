@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import { createWebsocketServer } from '@server/websocket/websocket.server';
 import { registerRoutes } from '@server/api/routes';
 
-export async function createServer() {
+export async function createServer(): Promise<void> {
   const fastifyServer = Fastify();
 
   createWebsocketServer(fastifyServer.server);

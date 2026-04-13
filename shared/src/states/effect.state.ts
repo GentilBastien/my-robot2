@@ -1,8 +1,10 @@
+import { Coordinates } from '../types/coordinates';
+
 export interface EffectState {
   id: string;
   sourceRobotId: string;
   targetRobotId?: string;
-  targetCellId?: string;
+  targetCoordinates?: Coordinates;
   effectId: string;
   stacks: number;
   lastedTurns: number;

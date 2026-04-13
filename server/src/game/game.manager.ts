@@ -14,7 +14,7 @@ export class GameManager {
   private createNewGame(gameProposal: GameProposal): Game {
     const robotStates: RobotState[] = gameProposal.logins as unknown as RobotState[]; //TODO get robotStates from logins
     const gameConfig: GameConfig = {
-      gameState: this.defineGameState(robotStates),
+      initialGameState: this.defineGameState(robotStates),
       mapHeight: 10,
       mapWidth: 10,
     };
@@ -37,7 +37,7 @@ export class GameManager {
       },
       state: GameStateTypeEnum.PENDING,
       arenaState: {
-        cells: {},
+        cells: [],
       },
       effects: [],
       robots,

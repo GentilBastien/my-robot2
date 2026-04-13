@@ -1,5 +1,4 @@
 import { GameState, Reducer, TurnState, TurnStateTypeEnum } from 'shared';
-import { updateTurnState } from '@reducers/state-helper.reducer';
 
 export const startTurnReducer =
   (turnStateTypeEnum: TurnStateTypeEnum): Reducer =>
@@ -10,7 +9,10 @@ export const startTurnReducer =
       currentTurnRobotId: currentTurnState.currentTurnRobotId,
       turnStateTypeEnum,
     };
-    return updateTurnState(gameState, newTurnState);
+    return {
+      ...gameState,
+      turnState: newTurnState,
+    };
   };
 
 export const turnAdvanceReducer =
@@ -21,5 +23,8 @@ export const turnAdvanceReducer =
       currentTurnRobotId: nextRobotId,
       turnStateTypeEnum: gameState.turnState.turnStateTypeEnum,
     };
-    return updateTurnState(gameState, newTurnState);
+    return {
+      ...gameState,
+      turnState: newTurnState,
+    };
   };

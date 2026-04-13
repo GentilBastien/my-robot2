@@ -1,7 +1,7 @@
 import { GameState } from 'shared';
 
 export interface GameConfig {
-  gameState: GameState;
+  initialGameState: GameState;
   mapWidth: number;
   mapHeight: number;
 }
