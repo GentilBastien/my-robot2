@@ -2,7 +2,7 @@ import { TurnStartResponseStateEvent } from '@events/response-state.event';
 import { RequestStateEvent } from '@events/request-state.event';
 import { startTurnReducer } from '@reducers/turn.reducer';
 import { EffectState, GameState, Reducer, TurnStateTypeEnum } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { Effect } from '@entities/effects/effect';

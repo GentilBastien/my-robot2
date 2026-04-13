@@ -8,6 +8,8 @@
     "paths": {
       "@entities/*": ["entities/*"],
       "@events/*": ["events/*"],
+      "@game/*": ["game/*"],
+      "@reducers/*": ["reducers/*"],
       "@managers/*": ["managers/*"],
       "@proposal/*": ["proposal/*"],
       "@resolvers-request/*": ["resolvers/request-state-cases/*"],
@@ -19,7 +21,7 @@
       "@states/*": ["states/*"],
       "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],
-      "@reducers/*": ["reducers/*"],
+
       "@utils/*": ["utils/*"]
     },
     "esModuleInterop": true

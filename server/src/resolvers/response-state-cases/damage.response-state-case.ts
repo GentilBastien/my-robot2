@@ -1,6 +1,6 @@
 import { DamageResponseStateEvent } from '@events/response-state.event';
 import { GameState, Reducer } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
 
 export function damageResponseStateCase(

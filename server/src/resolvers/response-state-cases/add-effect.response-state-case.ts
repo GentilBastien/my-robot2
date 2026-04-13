@@ -1,6 +1,6 @@
 import { AddEffectResponseStateEvent } from '@events/response-state.event';
 import { EffectState, GameState, Reducer } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
 import { addEffectState, updateEffectState } from '@reducers/effect.reducer';

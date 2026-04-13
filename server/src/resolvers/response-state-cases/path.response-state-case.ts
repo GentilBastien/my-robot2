@@ -1,7 +1,7 @@
 import { PathResponseStateEvent } from '@events/response-state.event';
 import { RequestStateEvent, RequestStepPathStateEvent } from '@events/request-state.event';
 import { GameEventTypeEnum, GameState, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
-import { GameCalculator } from '../../game/game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 
 export function pathResponseStateCase(

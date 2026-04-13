@@ -1,3 +1,6 @@
+import { GameConfig } from '@game/game.config';
+import { Game } from '@game/game';
+import { GameEventTypeEnum, GameStateTypeEnum, MovementTypeEnum, PathGameEvent, TurnStateTypeEnum } from 'shared';
 import { GameConfig } from './game/game.config';
 import { Game } from './game/game';
 import { GameStateTypeEnum, TurnStateTypeEnum } from 'shared';
