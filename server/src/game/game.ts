@@ -5,8 +5,8 @@ import { requestStateEventResolver } from '@resolvers/request-state-event.resolv
 import { responseStateEventResolver } from '@resolvers/response-state-event.resolver';
 import { gameEventResolver } from '@resolvers/game-event.resolver';
 import { ResponseStateEvent } from '@events/response-state.event';
-import { GameConfig } from './game.config';
-import { GameCalculator } from './game-calculator/game.calculator';
+import { GameCalculator } from '@game/game-calculator/game.calculator';
+import { GameConfig } from '@game/game.config';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
