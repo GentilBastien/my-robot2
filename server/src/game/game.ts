@@ -33,6 +33,8 @@ export class Game {
     this.pendingRequestEvents.add(requestEvent);
     const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
     this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
+    this.gameCalculator.updateHexGrid(this.gameState.arenaState.cells);
+    this.gameCalculator.updateCyclicList(this.gameState.robots);
   }
 
   private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>): ResponseStateEvent[] {

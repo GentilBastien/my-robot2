@@ -1,10 +1,10 @@
-import { Game } from './game';
-import { GameConfig } from './game.config';
 import { GameState, GameStateTypeEnum, RobotState, TurnStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { SessionManager } from '@server/session/session.manager';
+import { Game } from '@game/game';
+import { GameConfig } from '@game/game.config';
 
-export class GameManager {
+export class GameGenerator {
   private readonly games: Game[];
 
   constructor(sessionManager: SessionManager) {

@@ -24,7 +24,6 @@ import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
 import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
-import { gameMapGenerator } from '../game-generator/game.map-generator';
 import { GameConfig } from '../game.config';
 
 interface InitiativeRobot {
@@ -34,13 +33,28 @@ interface InitiativeRobot {
 
 export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<CellState>;
-  private readonly turnOrder: CyclicListStructure<InitiativeRobot>;
+  private readonly cyclicList: CyclicListStructure<InitiativeRobot>;
 
   constructor(gameConfig: GameConfig) {
-    this.hexGrid = gameMapGenerator(gameConfig);
+    this.hexGrid = new HexagonalGridStructure<CellState>(
+      gameConfig.mapWidth,
+      gameConfig.mapHeight,
+      gameConfig.initialGameState.arenaState.cells
+    );
     const robotComparator: Comparator<InitiativeRobot> = (robot1: InitiativeRobot, robot2: InitiativeRobot): number =>
       robot1.initiative - robot2.initiative;
-    this.turnOrder = new CyclicListStructure<InitiativeRobot>(robotComparator);
+    this.cyclicList = new CyclicListStructure<InitiativeRobot>(robotComparator);
+  }
+
+  public updateHexGrid(cells: CellState[]): void {
+    this.hexGrid.setAllCellItems(cells);
+  }
+
+  public updateCyclicList(robotStates: Record<string, RobotState>): void {
+    const robots: RobotState[] = Object.values(robotStates);
+    for (const robot of robots) {
+      this.cyclicList.insertItem({ id: robot.id, initiative: robot.attributes.mobility });
+    }
   }
 
   public getPathCoordinateToTarget(
@@ -85,7 +99,7 @@ export class GameCalculator {
   }
 
   public getPlayingRobotId(): string {
-    const robotPlaying = this.turnOrder.currentItem;
+    const robotPlaying = this.cyclicList.currentItem;
     if (robotPlaying) {
       return robotPlaying.id;
     }
@@ -192,7 +206,7 @@ export class GameCalculator {
   }
 
   public newTurnState(gameState: Readonly<GameState>): TurnState {
-    const robotToPlay = this.turnOrder.nextItem;
+    const robotToPlay = this.cyclicList.nextItem;
     if (robotToPlay) {
       return {
         turnStateTypeEnum: TurnStateTypeEnum.PENDING,
@@ -204,7 +218,7 @@ export class GameCalculator {
   }
 
   public advanceTurn(): void {
-    this.turnOrder.next();
+    this.cyclicList.next();
   }
 
   public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {

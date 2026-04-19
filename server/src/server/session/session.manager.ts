@@ -3,18 +3,18 @@ import { SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
-import { GameManager } from '@game/game.manager';
 import { QueueManager } from '@server/queue/queue.manager';
+import { GameGenerator } from '@game/game-generator/game.generator';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
-  private readonly gameManager: GameManager;
+  private readonly gameManager: GameGenerator;
   private readonly queueManager = new QueueManager();
   private readonly sessions: Record<string, Session> = {};
 
   constructor() {
     this.proposalManager = new ProposalManager(this);
-    this.gameManager = new GameManager(this);
+    this.gameManager = new GameGenerator(this);
   }
 
   public register(login: string, webSocket: WebSocket): void {
