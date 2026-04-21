@@ -19,6 +19,9 @@ export class Game {
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.initialGameState;
     this.gameCalculator = new GameCalculator(gameConfig);
+    this.gameCalculator.updateHexGrid(this.gameState.arenaState.cells);
+    this.gameCalculator.updateCyclicList(this.gameState.robots);
+
     const comparator: Comparator<RequestStateEvent> = (item1: RequestStateEvent, item2: RequestStateEvent): number =>
       (item1.priority ?? 0) - (item2.priority ?? 0);
     this.pendingRequestEvents = new PriorityListStructure(comparator);

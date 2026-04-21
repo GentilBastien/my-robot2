@@ -36,11 +36,7 @@ export class GameCalculator {
   private readonly cyclicList: CyclicListStructure<InitiativeRobot>;
 
   constructor(gameConfig: GameConfig) {
-    this.hexGrid = new HexagonalGridStructure<CellState>(
-      gameConfig.mapWidth,
-      gameConfig.mapHeight,
-      gameConfig.initialGameState.arenaState.cells
-    );
+    this.hexGrid = new HexagonalGridStructure<CellState>(gameConfig.mapWidth, gameConfig.mapHeight);
     const robotComparator: Comparator<InitiativeRobot> = (robot1: InitiativeRobot, robot2: InitiativeRobot): number =>
       robot1.initiative - robot2.initiative;
     this.cyclicList = new CyclicListStructure<InitiativeRobot>(robotComparator);

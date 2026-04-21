@@ -9,6 +9,7 @@ import {
   RemoveEffectResponseStateEvent,
   ResourcesResponseStateEvent,
   ResponseStateEvent,
+  RobotDestroyedResponseStateEvent,
   StepPathResponseStateEvent,
   TurnEndResponseStateEvent,
   TurnStartResponseStateEvent,
@@ -29,6 +30,7 @@ import { manaResponseStateCase } from '@resolvers-response/mana.response-state-c
 import { hpResponseStateCase } from '@resolvers-response/hp.response-state-case';
 import { heatResponseStateCase } from '@resolvers-response/heat.response-state-case';
 import { damageResponseStateCase } from '@resolvers-response/damage.response-state-case';
+import { robotDestroyedResponseStateCase } from '@resolvers-response/robot-destroyed.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -58,6 +60,13 @@ export function responseStateEventResolver(
         return advanceTurnResponseStateCase(
           gameCalculator,
           responseEvent as AdvanceTurnResponseStateEvent,
+          pendingRequestEvents
+        );
+      }
+      case GameEventTypeEnum.ROBOT_DESTROYED: {
+        return robotDestroyedResponseStateCase(
+          gameCalculator,
+          responseEvent as RobotDestroyedResponseStateEvent,
           pendingRequestEvents
         );
       }
@@ -111,7 +120,12 @@ export function responseStateEventResolver(
         return heatResponseStateCase(gameCalculator, readonlyGameState, responseEvent as HeatResponseStateEvent);
       }
       case GameEventTypeEnum.DAMAGE: {
-        return damageResponseStateCase(gameCalculator, readonlyGameState, responseEvent as DamageResponseStateEvent);
+        return damageResponseStateCase(
+          gameCalculator,
+          readonlyGameState,
+          responseEvent as DamageResponseStateEvent,
+          pendingRequestEvents
+        );
       }
       default:
         throw new Error('ResponseEventResolver, unknown gameEventType');

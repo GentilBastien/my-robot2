@@ -8,6 +8,7 @@ import {
   RequestPathStateEvent,
   RequestRemoveEffectStateEvent,
   RequestResourcesStateEvent,
+  RequestRobotDestroyedStateEvent,
   RequestStateEvent,
   RequestStepPathStateEvent,
   RequestTurnEndStateEvent,
@@ -19,6 +20,7 @@ import {
   PathResponseStateEvent,
   ResourcesResponseStateEvent,
   ResponseStateEvent,
+  RobotDestroyedResponseStateEvent,
   StepPathResponseStateEvent,
   TurnEndResponseStateEvent,
   TurnStartResponseStateEvent,
@@ -39,6 +41,7 @@ import { manaRequestStateCase } from '@resolvers-request/mana.request-state-case
 import { hpRequestStateCase } from '@resolvers-request/hp.request-state-case';
 import { heatRequestStateCase } from '@resolvers-request/heat.request-state-case';
 import { damageRequestStateCase } from '@resolvers-request/damage.request-state-case';
+import { robotDestroyedRequestStateCase } from '@resolvers-request/robot-destroyed.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -69,6 +72,12 @@ export function requestStateEventResolver(
         requestEvent as RequestAdvanceTurnStateEvent
       );
       return [advanceTurnResponseStateEvent];
+    }
+    case GameEventTypeEnum.ROBOT_DESTROYED: {
+      const robotDestroyedResponseStateEvent: RobotDestroyedResponseStateEvent = robotDestroyedRequestStateCase(
+        requestEvent as RequestRobotDestroyedStateEvent
+      );
+      return [robotDestroyedResponseStateEvent];
     }
     case GameEventTypeEnum.PATH: {
       const pathResponseStateEvent: PathResponseStateEvent = pathRequestStateCase(
