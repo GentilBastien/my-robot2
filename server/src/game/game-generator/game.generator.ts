@@ -1,67 +1,121 @@
 import {
   ArenaState,
+  BaseAttribute,
   EffectState,
+  FeatureAttribute,
   GameState,
   GameStateTypeEnum,
+  RaisingLevelAttribute,
+  ResourceAttribute,
   RobotState,
+  TopographyAttribute,
   TurnState,
   TurnStateTypeEnum,
 } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
-import { SessionManager } from '@server/session/session.manager';
 import { Game } from '@game/game';
 import { GameConfig } from '@game/game.config';
 
-export class GameGenerator {
-  private readonly games: Game[];
+export function createNewGame(gameProposal: GameProposal): Game {
+  const gameConfig: GameConfig = {
+    initialGameState: defineGameState(gameProposal),
+    mapHeight: 10,
+    mapWidth: 10,
+  };
+  return new Game(gameConfig);
+}
 
-  constructor(sessionManager: SessionManager) {
-    this.games = [];
-  }
+function defineGameState(gameProposal: GameProposal): GameState {
+  return {
+    state: GameStateTypeEnum.PENDING,
+    turnState: defineInitialTurnState(),
+    arenaState: defineInitialArenaState(),
+    effects: defineInitialEffectState(),
+    robots: defineRobotStates(gameProposal),
+  };
+}
 
-  private createNewGame(gameProposal: GameProposal): Game {
-    const gameConfig: GameConfig = {
-      initialGameState: this.defineGameState(gameProposal),
-      mapHeight: 10,
-      mapWidth: 10,
-    };
-    return new Game(gameConfig);
-  }
+function defineRobotStates(_gameProposal: GameProposal): Record<string, RobotState> {
+  //TODO fetch RobotState[] from gameProposal.logins
+  return {
+    bast: defineRandomRobot('bast'),
+    raph: defineRandomRobot('raph'),
+    jade: defineRandomRobot('jade'),
+    wass: defineRandomRobot('wass'),
+  };
+}
 
-  private defineGameState(gameProposal: GameProposal): GameState {
-    return {
-      state: GameStateTypeEnum.PENDING,
-      turnState: this.defineInitialTurnState(),
-      arenaState: this.defineInitialArenaState(),
-      effects: this.defineInitialEffectState(),
-      robots: this.defineRobotStates(gameProposal),
-    };
-  }
+function defineInitialTurnState(): TurnState {
+  return {
+    currentTurnNumber: 0,
+    turnStateTypeEnum: TurnStateTypeEnum.PENDING,
+    currentTurnRobotId: '',
+  };
+}
 
-  private defineRobotStates(gameProposal: GameProposal): Record<string, RobotState> {
-    const robotStates: RobotState[] = gameProposal.logins as unknown as RobotState[]; //TODO get robotStates from logins
-    return robotStates.reduce(
-      (acc, curr) => {
-        acc[curr.id] = curr;
-        return acc;
+function defineInitialArenaState(): ArenaState {
+  return {
+    cells: Array.from({ length: 100 }).map((_, index) => ({
+      id: index.toString(),
+      weight: 2,
+      attributes: {
+        baseAttribute: BaseAttribute.GRASS,
+        topographyAttribute: TopographyAttribute.FLAT,
+        featureAttribute: FeatureAttribute.NONE,
+        resourceAttribute: ResourceAttribute.NONE,
+        raisingLevelAttribute: RaisingLevelAttribute.LEVEL1,
       },
-      {} as Record<string, RobotState>
-    );
-  }
+    })),
+  };
+}
 
-  private defineInitialTurnState(): TurnState {
-    return {
-      currentTurnNumber: 0,
-      turnStateTypeEnum: TurnStateTypeEnum.PENDING,
-      currentTurnRobotId: '',
-    };
-  }
+function defineInitialEffectState(): EffectState[] {
+  return [];
+}
 
-  private defineInitialArenaState(): ArenaState {
-    throw 'not implemented yet';
-  }
-
-  private defineInitialEffectState(): EffectState[] {
-    return [];
-  }
+function defineRandomRobot(name: string): RobotState {
+  return {
+    id: name,
+    name: name,
+    attributes: {
+      cpu: 10,
+      chassis: 10,
+      energy: 10,
+      interface: 10,
+      mobility: 10,
+      power: 10,
+    },
+    resources: {
+      remainingMove: 4,
+      coolingDown: 10,
+      energyModules: 3,
+      mana: 100,
+      maxHp: 200,
+      maxMana: 100,
+      hp: 200,
+      isOverheating: false,
+      maxOverheating: 100,
+      overheating: 0,
+      regenHp: 10,
+      regenMana: 10,
+      remainingActions: 1,
+      remainingSubActions: 1,
+      shield: 50,
+      totalActions: 1,
+      totalMove: 20,
+      totalSubActions: 1,
+    },
+    selfStates: [],
+    coordinates: { x: 4, y: -3, z: -1 },
+    statistics: {
+      hp: 10,
+      accuracy: 10,
+      armor: 10,
+      critical: 10,
+      damage: 10,
+      dodge: 10,
+      moveSpeed: 10,
+      reduction: 10,
+    },
+  };
 }

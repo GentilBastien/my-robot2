@@ -20,7 +20,15 @@ export { TurnStateTypeEnum } from './enums/turn-state-type.enum';
 
 export { ArenaState } from './states/arena.state';
 export { AttributesState } from './states/attributes.state';
-export { CellState } from './states/cell-state';
+export { CellState } from './states/cell.state';
+export {
+  CellAttributeState,
+  BaseAttribute,
+  TopographyAttribute,
+  FeatureAttribute,
+  ResourceAttribute,
+  RaisingLevelAttribute,
+} from './states/cell-attribute.state';
 export { EffectState } from './states/effect.state';
 export { GameState } from './states/game.state';
 export { ResourcesState } from './states/resources.state';

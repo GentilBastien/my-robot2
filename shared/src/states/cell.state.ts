@@ -1,8 +1,8 @@
 import { Weight } from '../types/weight';
-import { Coordinates } from '../types/coordinates';
+import { CellAttributeState } from './cell-attribute.state';
 
 export interface CellState extends Weight {
   id: string;
-  coordinates: Coordinates;
   weight: number;
+  attributes: CellAttributeState;
 }

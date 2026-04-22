@@ -19,8 +19,7 @@ export class Game {
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.initialGameState;
     this.gameCalculator = new GameCalculator(gameConfig);
-    this.gameCalculator.updateHexGrid(this.gameState.arenaState.cells);
-    this.gameCalculator.updateCyclicList(this.gameState.robots);
+    this.gameCalculator.update(this.gameState);
 
     const comparator: Comparator<RequestStateEvent> = (item1: RequestStateEvent, item2: RequestStateEvent): number =>
       (item1.priority ?? 0) - (item2.priority ?? 0);
@@ -36,8 +35,7 @@ export class Game {
     this.pendingRequestEvents.add(requestEvent);
     const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
     this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
-    this.gameCalculator.updateHexGrid(this.gameState.arenaState.cells);
-    this.gameCalculator.updateCyclicList(this.gameState.robots);
+    this.gameCalculator.update(this.gameState);
   }
 
   private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>): ResponseStateEvent[] {
