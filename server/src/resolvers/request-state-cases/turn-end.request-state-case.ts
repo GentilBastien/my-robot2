@@ -8,7 +8,7 @@ export function turnEndRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestTurnEndStateEvent: RequestTurnEndStateEvent
 ): TurnEndResponseStateEvent {
-  const allowed = gameCalculator.isRobotTurn(readonlyGameState, requestTurnEndStateEvent.sourceRobotId);
+  const allowed = gameCalculator.isRobotTurn(requestTurnEndStateEvent.sourceRobotId);
   const turnNumber = gameCalculator.getTurnNumber(readonlyGameState);
   const turnRobotId = gameCalculator.getPlayingRobotId();
   return {

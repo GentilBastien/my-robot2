@@ -3,18 +3,17 @@ import { AbstractEffect } from '@entities/effects/abstract-effect';
 import { EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
 
 export class EffectFire extends AbstractEffect {
-  protected _id = 'EffectFire';
-  protected _type: EffectCategoryTypeEnum = EffectCategoryTypeEnum.NEGATIVE;
-
-  protected _ticking: EffectTickingConfig = {
-    totalTurns: 5,
-    everyTurn: true,
-    atApply: true,
-  };
-
-  protected _stacking: EffectStackingConfig = {
-    enabled: true,
-    maxStacks: 5,
-    refreshDuration: true,
-  };
+  constructor() {
+    const ticking: EffectTickingConfig = {
+      totalTurns: 5,
+      everyTurn: true,
+      atApply: true,
+    };
+    const stacking: EffectStackingConfig = {
+      enabled: true,
+      maxStacks: 5,
+      refreshDuration: true,
+    };
+    super('EffectFire', EffectCategoryTypeEnum.NEGATIVE, ticking, stacking);
+  }
 }

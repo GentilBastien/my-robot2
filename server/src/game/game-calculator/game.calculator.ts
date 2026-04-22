@@ -29,6 +29,7 @@ import { GameConfig } from '../game.config';
 interface InitiativeRobot {
   id: string;
   initiative: number;
+  dead: boolean;
 }
 
 export class GameCalculator {
@@ -49,7 +50,11 @@ export class GameCalculator {
   public updateCyclicList(robotStates: Record<string, RobotState>): void {
     const robots: RobotState[] = Object.values(robotStates);
     for (const robot of robots) {
-      this.cyclicList.insertItem({ id: robot.id, initiative: robot.attributes.mobility });
+      this.cyclicList.insertItem({
+        id: robot.id,
+        initiative: robot.attributes.mobility,
+        dead: robot.selfStates.includes(RobotStateTypeEnum.DEATH),
+      });
     }
   }
 
@@ -139,9 +144,9 @@ export class GameCalculator {
     return gameState.effects.filter(effectState => effectState.targetCoordinates === coordinates);
   }
 
-  public isRobotTurn(gameState: Readonly<GameState>, robotId: string): boolean {
+  public isRobotTurn(robotId: string): boolean {
     const playingRobotId = this.getPlayingRobotId();
-    return this.getRobotState(gameState, robotId).id === playingRobotId;
+    return robotId === playingRobotId;
   }
 
   public getPlayingRobotState(gameState: Readonly<GameState>): RobotState {
@@ -161,7 +166,7 @@ export class GameCalculator {
 
   public robotAllowedForAction(gameState: Readonly<GameState>, robotId: string, action: Action): ActionResponseErrors {
     const response: ActionResponseErrors = {};
-    const isRobotTurn = this.isRobotTurn(gameState, robotId);
+    const isRobotTurn = this.isRobotTurn(robotId);
     if (!isRobotTurn) {
       response.wrongTurn = { robotTurnId: this.getPlayingRobotId() };
     }
@@ -189,6 +194,9 @@ export class GameCalculator {
     return response;
   }
 
+  /**
+   * Returns the (possible) previously equal affected EffectState;
+   */
   public getEffectStateIfTargetAlreadyAffectedBy(
     gameState: Readonly<GameState>,
     newEffectState: EffectState

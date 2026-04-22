@@ -14,12 +14,13 @@ export function addEffectResponseStateCase(
   pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
   const effectState: EffectState = addEffectResponseStateEvent.effectState;
+  const effect: Effect = gameCalculator.getEffect(effectState);
+
   const alreadyAffected: EffectState | undefined = gameCalculator.getEffectStateIfTargetAlreadyAffectedBy(
     readonlyGameState,
     effectState
   );
 
-  const effect: Effect = gameCalculator.getEffect(alreadyAffected ?? effectState);
   const newEffectsFromApply: RequestStateEvent[] = effect.handle({
     trigger: EffectTrigger.ON_APPLY,
     effectState: alreadyAffected ?? effectState,

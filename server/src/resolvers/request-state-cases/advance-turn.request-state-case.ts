@@ -8,7 +8,7 @@ export function advanceTurnRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestAdvanceTurnEvent: RequestAdvanceTurnStateEvent
 ): AdvanceTurnResponseStateEvent {
-  const allowed = gameCalculator.isRobotTurn(readonlyGameState, requestAdvanceTurnEvent.sourceRobotId);
+  const allowed = gameCalculator.isRobotTurn(requestAdvanceTurnEvent.sourceRobotId);
   const newTurnState = gameCalculator.newTurnState(readonlyGameState);
   return {
     gameEventType: GameEventTypeEnum.ADVANCE_TURN,

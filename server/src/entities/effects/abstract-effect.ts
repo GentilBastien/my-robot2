@@ -5,41 +5,45 @@ import { RequestRemoveEffectStateEvent, RequestStateEvent } from '@events/reques
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 
 export abstract class AbstractEffect implements Effect {
-  protected _id = '';
-  protected _type: EffectCategoryTypeEnum = EffectCategoryTypeEnum.INVISIBLE;
-  protected _ticking: EffectTickingConfig = {
-    totalTurns: 0,
-    everyTurn: false,
-    atApply: false,
-  };
-  protected _stacking: EffectStackingConfig = {
-    enabled: false,
-    maxStacks: 0,
-    refreshDuration: false,
-  };
+  private readonly _id: string;
+  private readonly _type: EffectCategoryTypeEnum;
+  private readonly _ticking: EffectTickingConfig;
+  private readonly _stacking: EffectStackingConfig;
 
-  protected _handleOnApply = (effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
+  protected constructor(
+    id: string,
+    type: EffectCategoryTypeEnum,
+    ticking: EffectTickingConfig,
+    stacking: EffectStackingConfig
+  ) {
+    this._id = id;
+    this._type = type;
+    this._ticking = ticking;
+    this._stacking = stacking;
+  }
+
+  protected _handleOnApply = (_effectContext: EffectContext): RequestStateEvent[] => {
+    // const { trigger, effectState, readonlyGameState, gameCalculator, action } = _effectContext;
     return [];
   };
 
-  protected _handleOnAction = (effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
+  protected _handleOnAction = (_effectContext: EffectContext): RequestStateEvent[] => {
+    // const { trigger, effectState, readonlyGameState, gameCalculator, action } = _effectContext;
     return [];
   };
 
-  protected _handleOnTurnStart = (effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
+  protected _handleOnTurnStart = (_effectContext: EffectContext): RequestStateEvent[] => {
+    // const { trigger, effectState, readonlyGameState, gameCalculator, action } = _effectContext;
     return [];
   };
 
-  protected _handleOnTurnEnd = (effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
+  protected _handleOnTurnEnd = (_effectContext: EffectContext): RequestStateEvent[] => {
+    // const { trigger, effectState, readonlyGameState, gameCalculator, action } = _effectContext;
     return [];
   };
 
   protected _handleOnExpire = (effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action } = effectContext;
+    const effectState = effectContext.effectState;
     const requestRemoveEffectStateEvent: RequestRemoveEffectStateEvent = {
       gameEventType: GameEventTypeEnum.REMOVE_EFFECT,
       effectStateId: effectState.id,

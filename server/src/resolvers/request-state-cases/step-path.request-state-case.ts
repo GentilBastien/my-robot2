@@ -8,7 +8,7 @@ export function stepPathRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestStepPathStateEvent: RequestStepPathStateEvent
 ): StepPathResponseStateEvent {
-  const isRobotTurn = gameCalculator.isRobotTurn(readonlyGameState, requestStepPathStateEvent.sourceRobotId);
+  const isRobotTurn = gameCalculator.isRobotTurn(requestStepPathStateEvent.sourceRobotId);
   const enoughRemainingMovement =
     gameCalculator.getRobotState(readonlyGameState, requestStepPathStateEvent.sourceRobotId).resources.remainingMove >=
     requestStepPathStateEvent.stepPath.cost;

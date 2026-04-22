@@ -14,7 +14,7 @@ export function advanceTurnResponseStateCase(
 
   const requestTurnStartStateEvent: RequestTurnStartStateEvent = {
     gameEventType: GameEventTypeEnum.TURN_START,
-    sourceRobotId: responseAdvanceTurnEvent.sourceRobotId,
+    sourceRobotId: responseAdvanceTurnEvent.turnRobotId,
   };
   pendingRequestEvents.add(requestTurnStartStateEvent);
 

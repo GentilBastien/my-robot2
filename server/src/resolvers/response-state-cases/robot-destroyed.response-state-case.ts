@@ -1,11 +1,13 @@
 import { RobotDestroyedResponseStateEvent } from '@events/response-state.event';
-import { Reducer } from 'shared';
-import { GameCalculator } from '@game/game-calculator/game.calculator';
-import { RequestStateEvent } from '@events/request-state.event';
-import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
+import { GameState, Reducer, RobotStateTypeEnum } from 'shared';
+import { updateSelfStates } from '@reducers/robot.reducer';
 
 export function robotDestroyedResponseStateCase(
-  gameCalculator: GameCalculator,
-  robotDestroyedResponseStateEvent: RobotDestroyedResponseStateEvent,
-  pendingRequestEvents: PriorityListStructure<RequestStateEvent>
-): Reducer {}
+  readonlyGameState: Readonly<GameState>,
+  robotDestroyedResponseStateEvent: RobotDestroyedResponseStateEvent
+): Reducer {
+  const robotDestroyedId = robotDestroyedResponseStateEvent.targetRobotId;
+  const robotDestroyedSelfStates = readonlyGameState.robots[robotDestroyedId].selfStates;
+  const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEATH);
+  return updateSelfStates(robotDestroyedId, addedDeathState);
+}

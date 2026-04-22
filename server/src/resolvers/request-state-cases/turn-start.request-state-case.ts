@@ -8,15 +8,13 @@ export function turnStartRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestTurnStartStateEvent: RequestTurnStartStateEvent
 ): TurnStartResponseStateEvent {
-  const allowed =
-    gameCalculator.newTurnState(readonlyGameState).currentTurnRobotId === requestTurnStartStateEvent.sourceRobotId;
-  const turnNumber = gameCalculator.getTurnNumber(readonlyGameState);
-  const turnRobotId = gameCalculator.getPlayingRobotId();
+  const newTurnState = gameCalculator.newTurnState(readonlyGameState);
+  const allowed = newTurnState.currentTurnRobotId === requestTurnStartStateEvent.sourceRobotId;
   return {
     gameEventType: GameEventTypeEnum.TURN_START,
     responseValidated: allowed,
     sourceRobotId: requestTurnStartStateEvent.sourceRobotId,
-    turnNumber,
-    turnRobotId,
+    turnNumber: newTurnState.currentTurnNumber,
+    turnRobotId: newTurnState.currentTurnRobotId,
   };
 }

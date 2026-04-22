@@ -64,11 +64,7 @@ export function responseStateEventResolver(
         );
       }
       case GameEventTypeEnum.ROBOT_DESTROYED: {
-        return robotDestroyedResponseStateCase(
-          gameCalculator,
-          responseEvent as RobotDestroyedResponseStateEvent,
-          pendingRequestEvents
-        );
+        return robotDestroyedResponseStateCase(readonlyGameState, responseEvent as RobotDestroyedResponseStateEvent);
       }
       case GameEventTypeEnum.PATH: {
         pathResponseStateCase(

@@ -8,7 +8,7 @@ export function pathRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestPathStateEvent: RequestPathStateEvent
 ): PathResponseStateEvent {
-  const isRobotTurn = gameCalculator.isRobotTurn(readonlyGameState, requestPathStateEvent.sourceRobotId);
+  const isRobotTurn = gameCalculator.isRobotTurn(requestPathStateEvent.sourceRobotId);
   const enoughRemainingMovement =
     gameCalculator.getRobotState(readonlyGameState, requestPathStateEvent.sourceRobotId).resources.remainingMove >=
     gameCalculator.getPathCoordinateCost(requestPathStateEvent.path);
