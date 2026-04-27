@@ -8,5 +8,4 @@ export interface Session {
   proposalId?: string;
   gameId?: string;
   ping?: number;
-  permissions?: number[];
 }

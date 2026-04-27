@@ -10,6 +10,8 @@ const divProposal = document.getElementById('div-proposal');
 const acceptProposal = document.getElementById('accept-proposal-btn');
 const declineProposal = document.getElementById('decline-proposal-btn');
 const inGameSpan = document.getElementById('in-game-span');
+const leaveGameBtn = document.getElementById('leave-game-btn');
+const rejoinGameBtn = document.getElementById('rejoin-game-btn');
 
 let websocket = null;
 let logged = false;
@@ -19,6 +21,8 @@ let hasProposal = false;
 let currProposalId = undefined;
 let answeredProposal = false;
 let inGame = false;
+let currGameId = undefined;
+let rejoinGameDisabled = true;
 
 connectWsBtn.onclick = () => {
   login = connectWsInput.value;
@@ -52,6 +56,7 @@ connectWsBtn.onclick = () => {
       leaveQueue.disabled = true;
       updateProposal(false);
       updateGame(true);
+      currGameId = message.gameId;
     }
   };
 };
@@ -85,6 +90,17 @@ declineProposal.onclick = () => {
   clientSent(login, 'DECLINE_PROPOSAL', { proposalId: currProposalId });
 };
 
+leaveGameBtn.onclick = () => {
+  updateGame(false);
+  rejoinGameBtn.disabled = false;
+  clientSent(login, 'LEAVE_GAME');
+};
+rejoinGameBtn.onclick = () => {
+  updateGame(true);
+  rejoinGameBtn.disabled = true;
+  clientSent(login, 'REJOIN_GAME');
+};
+
 function updateLogged(flag, login) {
   if (flag) {
     connectedSpan.innerHTML = 'Connected as <b>' + login + '</b>';
@@ -113,6 +129,7 @@ function updateProposal(flag) {
 }
 
 function updateGame(flag) {
+  inGame = flag;
   if (flag) {
     inGameSpan.style.display = 'inline-block';
   } else {

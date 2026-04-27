@@ -4,14 +4,17 @@ import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
 import { QueueManager } from '@server/queue/queue.manager';
+import { GameManager } from '@server/game/game.manager';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
+  private readonly gameManager: GameManager;
   private readonly queueManager = new QueueManager();
   private readonly sessions: Record<string, Session> = {};
 
   constructor() {
     this.proposalManager = new ProposalManager(this);
+    this.gameManager = new GameManager();
   }
 
   public register(login: string, webSocket: WebSocket): void {
@@ -65,8 +68,7 @@ export class SessionManager {
   public receiveAcceptProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     if (session.state !== SessionStateTypeEnum.PROPOSAL_ASKING) {
-      console.log('Not in a good state to accept proposal');
-      return;
+      throw 'Not in a good state to accept proposal';
     }
     session.state = SessionStateTypeEnum.PROPOSAL_ANSWERED;
     this.proposalManager.acceptProposal(session, proposalId);
@@ -75,11 +77,47 @@ export class SessionManager {
   public receiveDeclineProposal(login: string, proposalId: string): void {
     const session = this.sessions[login];
     if (session.state !== SessionStateTypeEnum.PROPOSAL_ASKING) {
-      console.log('Not in a good state to decline proposal');
-      return;
+      throw 'Not in a good state to decline proposal';
     }
     session.state = SessionStateTypeEnum.PROPOSAL_ANSWERED;
     this.proposalManager.declineProposal(session, proposalId);
+  }
+
+  public receiveLeaveGame(login: string): void {
+    const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.IN_GAME) {
+      throw 'Must be in a game to leave game';
+    }
+    const gameSession = this.gameManager.getGameSession(login);
+    if (gameSession) {
+      session.state = SessionStateTypeEnum.ONLINE;
+      session.gameId = undefined;
+      this.gameManager.updateGameSession(gameSession.id, session);
+    }
+  }
+
+  public receiveRejoinGame(login: string): void {
+    const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.ONLINE) {
+      throw 'Must be in an online state to rejoin a game previously left';
+    }
+    if (session.gameId !== undefined) {
+      throw 'still in a game, cannot rejoin it';
+    }
+    const gameSession = this.gameManager.getGameSession(login);
+    if (gameSession) {
+      session.state = SessionStateTypeEnum.IN_GAME;
+      session.gameId = gameSession.id;
+      this.gameManager.updateGameSession(gameSession.id, session);
+    }
+  }
+
+  public receiveTurnEnd(login: string): void {
+    const session = this.sessions[login];
+    if (session.state !== SessionStateTypeEnum.IN_GAME) {
+      throw 'Must be in a game to endTurn';
+    }
+    this.gameManager.receiveTurnEnd(session);
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
@@ -95,15 +133,16 @@ export class SessionManager {
   }
 
   public sendGameProposalAccepted(gameProposal: GameProposal): void {
-    this.updateSessionsAndSend(
+    const sessions = this.updateSessionsAndSend(
       gameProposal.logins,
       session => {
         session.state = SessionStateTypeEnum.IN_GAME;
         session.proposalId = undefined;
-        session.gameId = undefined; //TODO create the game and define game ID
+        session.gameId = gameProposal.id;
       },
-      session => session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_ACCEPTED' }))
+      session => session.webSocket.send(JSON.stringify({ type: 'PROPOSAL_ACCEPTED', gameId: gameProposal.id }))
     );
+    this.gameManager.createGame(gameProposal, sessions);
   }
 
   public sendGameProposalCancelled(gameProposal: GameProposal): void {
@@ -167,9 +206,10 @@ export class SessionManager {
     logins: string[],
     updateSessionFn: (session: Session) => void,
     sendFn: (session: Session) => void
-  ): void {
+  ): Session[] {
     const sessions = logins.map(login => this.sessions[login]);
     sessions.forEach(session => updateSessionFn(session));
     sessions.forEach(session => sendFn(session));
+    return sessions;
   }
 }

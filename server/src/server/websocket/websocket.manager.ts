@@ -17,7 +17,7 @@ export class WebsocketManager {
     this.sessionManager.unregister(ws);
   }
 
-  public handleClientMessage(ws: WebSocket, data: RawData) {
+  public handleClientMessage(ws: WebSocket, data: RawData): void {
     const { login, type, payload } = JSON.parse(data.toString());
     console.log('login:', login, 'type:', type, 'payload', payload);
     switch (type) {
@@ -35,6 +35,18 @@ export class WebsocketManager {
       }
       case ClientMessageType.DECLINE_PROPOSAL: {
         this.sessionManager.receiveDeclineProposal(login, payload.proposalId);
+        break;
+      }
+      case ClientMessageType.LEAVE_GAME: {
+        this.sessionManager.receiveLeaveGame(login);
+        break;
+      }
+      case ClientMessageType.REJOIN_GAME: {
+        this.sessionManager.receiveRejoinGame(login);
+        break;
+      }
+      case ClientMessageType.TURN_END: {
+        this.sessionManager.receiveTurnEnd(login);
         break;
       }
     }
