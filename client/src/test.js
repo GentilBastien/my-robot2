@@ -22,7 +22,6 @@ let currProposalId = undefined;
 let answeredProposal = false;
 let inGame = false;
 let currGameId = undefined;
-let rejoinGameDisabled = true;
 
 connectWsBtn.onclick = () => {
   login = connectWsInput.value;
@@ -57,6 +56,14 @@ connectWsBtn.onclick = () => {
       updateProposal(false);
       updateGame(true);
       currGameId = message.gameId;
+    }
+    if (message.type === 'MATCH_FINISHED') {
+      console.log('MATCH_FINISHED');
+      enterQueue.disabled = false;
+      leaveQueue.disabled = true;
+      rejoinGameBtn.disabled = true;
+      updateGame(false);
+      currGameId = undefined;
     }
   };
 };

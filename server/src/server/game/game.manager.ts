@@ -21,6 +21,10 @@ export class GameManager {
     };
   }
 
+  public finishGame(gameSessionId: string): void {
+    delete this.gameSessions[gameSessionId];
+  }
+
   public getGameSession(login: string): GameSession | undefined {
     for (const gs of Object.values(this.gameSessions)) {
       if (gs.sessions.some(session => session.login === login)) {
@@ -30,9 +34,10 @@ export class GameManager {
     return undefined;
   }
 
-  public updateGameSession(gameSessionId: string, session: Session): void {
+  public updateGameSession(gameSessionId: string, session: Session): GameSession {
     const sessions: Session[] = this.gameSessions[gameSessionId].sessions;
     this.gameSessions[gameSessionId].sessions = sessions.map(s => (s.login === session.login ? session : s));
+    return this.gameSessions[gameSessionId];
   }
 
   /**

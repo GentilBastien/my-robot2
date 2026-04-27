@@ -5,6 +5,7 @@ import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
 import { QueueManager } from '@server/queue/queue.manager';
 import { GameManager } from '@server/game/game.manager';
+import { GameSession } from '@server/game/game-session';
 
 export class SessionManager {
   private readonly proposalManager: ProposalManager;
@@ -33,7 +34,14 @@ export class SessionManager {
           this.proposalManager.declineProposal(session, session.proposalId!);
         }
         if (session.state === SessionStateTypeEnum.IN_GAME) {
-          //todo, leave the game.
+          const gameSession = this.gameManager.getGameSession(login);
+          if (gameSession) {
+            session.gameId = undefined;
+            const newGameSession = this.gameManager.updateGameSession(gameSession.id, session);
+            if (this.gameManager.isGameSessionIdle(newGameSession.id)) {
+              this.sendMatchFinished(newGameSession);
+            }
+          }
         }
         delete this.sessions[login];
         this.__printSessions();
@@ -53,14 +61,18 @@ export class SessionManager {
 
   public receiveJoinQueue(login: string): void {
     const session = this.sessions[login];
-    if (session.state !== SessionStateTypeEnum.ONLINE) return;
+    if (session.state !== SessionStateTypeEnum.ONLINE) {
+      throw 'Must be online to enter queue';
+    }
     this.queueManager.add(login);
     session.state = SessionStateTypeEnum.IN_QUEUE;
   }
 
   public receiveLeaveQueue(login: string): void {
     const session = this.sessions[login];
-    if (session.state !== SessionStateTypeEnum.IN_QUEUE) return;
+    if (session.state !== SessionStateTypeEnum.IN_QUEUE) {
+      throw 'Must be in queue to leave queue';
+    }
     this.queueManager.remove(login);
     session.state = SessionStateTypeEnum.ONLINE;
   }
@@ -91,8 +103,12 @@ export class SessionManager {
     const gameSession = this.gameManager.getGameSession(login);
     if (gameSession) {
       session.state = SessionStateTypeEnum.ONLINE;
+      session.proposalId = undefined;
       session.gameId = undefined;
-      this.gameManager.updateGameSession(gameSession.id, session);
+      const newGameSession: GameSession = this.gameManager.updateGameSession(gameSession.id, session);
+      if (this.gameManager.isGameSessionIdle(newGameSession.id)) {
+        this.sendMatchFinished(newGameSession);
+      }
     }
   }
 
@@ -109,6 +125,8 @@ export class SessionManager {
       session.state = SessionStateTypeEnum.IN_GAME;
       session.gameId = gameSession.id;
       this.gameManager.updateGameSession(gameSession.id, session);
+    } else {
+      throw 'no gameSession found to rejoin';
     }
   }
 
@@ -176,9 +194,11 @@ export class SessionManager {
     );
   }
 
-  public sendMatchFinished(gameProposal: GameProposal): void {
+  public sendMatchFinished(gameSession: GameSession): void {
+    this.gameManager.finishGame(gameSession.id);
+    //updateSessionsAndSend uses this.sessions[login] but when doing that, the client that unregistered has no session[login] anymore
     this.updateSessionsAndSend(
-      gameProposal.logins,
+      gameSession.sessions.map(s => s.login),
       session => {
         session.state = SessionStateTypeEnum.ONLINE;
         session.proposalId = undefined;
