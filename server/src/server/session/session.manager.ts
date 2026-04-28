@@ -196,7 +196,6 @@ export class SessionManager {
 
   public sendMatchFinished(gameSession: GameSession): void {
     this.gameManager.finishGame(gameSession.id);
-    //updateSessionsAndSend uses this.sessions[login] but when doing that, the client that unregistered has no session[login] anymore
     this.updateSessionsAndSend(
       gameSession.sessions.map(s => s.login),
       session => {
@@ -227,7 +226,7 @@ export class SessionManager {
     updateSessionFn: (session: Session) => void,
     sendFn: (session: Session) => void
   ): Session[] {
-    const sessions = logins.map(login => this.sessions[login]);
+    const sessions = logins.map(login => this.sessions[login]).filter(s => s !== undefined);
     sessions.forEach(session => updateSessionFn(session));
     sessions.forEach(session => sendFn(session));
     return sessions;
