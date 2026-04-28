@@ -27,11 +27,19 @@ connectWsBtn.onclick = () => {
   login = connectWsInput.value;
   websocket = new WebSocket('ws://localhost:8080/api/v1/game?login=' + login);
 
-  websocket.onopen = a => {
+  websocket.onopen = _ => {
     updateLogged(true, login);
+    console.log('onOpen !');
   };
   websocket.onmessage = event => {
     const message = JSON.parse(event.data);
+    if (message.type === 'LOGGED_IN') {
+      currGameId = message.gameId;
+      console.log('LOGGED_IN', currGameId);
+      if (currGameId) {
+        updateGame(true);
+      }
+    }
     if (message.type === 'SEND_PROPOSAL') {
       console.log('SEND_PROPOSAL');
       updateProposal(true);
@@ -57,6 +65,7 @@ connectWsBtn.onclick = () => {
       updateGame(true);
       currGameId = message.gameId;
     }
+
     if (message.type === 'MATCH_FINISHED') {
       console.log('MATCH_FINISHED');
       enterQueue.disabled = false;
@@ -139,8 +148,12 @@ function updateGame(flag) {
   inGame = flag;
   if (flag) {
     inGameSpan.style.display = 'inline-block';
+    enterQueue.disabled = true;
+    leaveQueue.disabled = true;
   } else {
     inGameSpan.style.display = 'none';
+    enterQueue.disabled = false;
+    leaveQueue.disabled = true;
   }
 }
 

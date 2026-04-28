@@ -2,6 +2,7 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
+import { SessionStateTypeEnum } from 'shared';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;
@@ -25,13 +26,27 @@ export class GameManager {
     delete this.gameSessions[gameSessionId];
   }
 
-  public getGameSession(login: string): GameSession | undefined {
+  public getGameSession(login: string): GameSession {
     for (const gs of Object.values(this.gameSessions)) {
       if (gs.sessions.some(session => session.login === login)) {
         return gs;
       }
     }
-    return undefined;
+    throw 'no game session found';
+  }
+
+  public getSession(login: string): Session {
+    for (const gs of Object.values(this.gameSessions)) {
+      const session: Session | undefined = gs.sessions.find(session => session.login === login);
+      if (session) {
+        return session;
+      }
+    }
+    throw 'no session found';
+  }
+
+  public hasGameSession(login: string): boolean {
+    return Object.values(this.gameSessions).some(gs => gs.sessions.some(session => session.login === login));
   }
 
   public updateGameSession(gameSessionId: string, session: Session): GameSession {
@@ -42,13 +57,15 @@ export class GameManager {
 
   /**
    * Returns true if all client left the current {@link GameSession}.
+   * That implies the client is not in a IN_GAME state or is in a different game.
    * @param gameSessionId The id of the {@link GameSession}.
    */
   public isGameSessionIdle(gameSessionId: string): boolean {
-    return this.gameSessions[gameSessionId].sessions.every(session => session.gameId === undefined);
+    const gs = this.gameSessions[gameSessionId];
+    return gs.sessions.every(session => session.state !== SessionStateTypeEnum.IN_GAME || session.gameId !== gs.id);
   }
 
-  public receiveTurnEnd(session: Session): void {
+  public receiveTurnEnd(_session: Session): void {
     // const gameSession: GameSession | undefined = this.gameSessions.find(
     //   gameSession => !!gameSession.sessions.find(s => s.gameId === session.gameId)
     // );

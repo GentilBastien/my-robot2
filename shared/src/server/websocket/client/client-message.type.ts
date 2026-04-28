@@ -1,4 +1,5 @@
 export const ClientMessageType = {
+  LOGGED_IN: 'LOGGED_IN',
   QUEUE: 'QUEUE',
   DEQUEUE: 'DEQUEUE',
   ACCEPT_PROPOSAL: 'ACCEPT_PROPOSAL',

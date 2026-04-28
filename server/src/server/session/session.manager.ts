@@ -19,7 +19,14 @@ export class SessionManager {
   }
 
   public register(login: string, webSocket: WebSocket): void {
-    this.sessions[login] = { login, webSocket, state: SessionStateTypeEnum.ONLINE };
+    const previouslyRegistered = this.gameManager.hasGameSession(login);
+    if (previouslyRegistered) {
+      const previousSession = this.gameManager.getSession(login);
+      this.sessions[login] = { ...previousSession, webSocket };
+    } else {
+      this.sessions[login] = { login, webSocket, state: SessionStateTypeEnum.ONLINE };
+    }
+    setTimeout(() => this.sendSession(this.sessions[login]), 500);
     this.__printSessions();
   }
 
@@ -36,8 +43,8 @@ export class SessionManager {
         if (session.state === SessionStateTypeEnum.IN_GAME) {
           const gameSession = this.gameManager.getGameSession(login);
           if (gameSession) {
-            session.gameId = undefined;
-            const newGameSession = this.gameManager.updateGameSession(gameSession.id, session);
+            session.state = SessionStateTypeEnum.ONLINE;
+            const newGameSession: GameSession = this.gameManager.updateGameSession(gameSession.id, session);
             if (this.gameManager.isGameSessionIdle(newGameSession.id)) {
               this.sendMatchFinished(newGameSession);
             }
@@ -103,8 +110,6 @@ export class SessionManager {
     const gameSession = this.gameManager.getGameSession(login);
     if (gameSession) {
       session.state = SessionStateTypeEnum.ONLINE;
-      session.proposalId = undefined;
-      session.gameId = undefined;
       const newGameSession: GameSession = this.gameManager.updateGameSession(gameSession.id, session);
       if (this.gameManager.isGameSessionIdle(newGameSession.id)) {
         this.sendMatchFinished(newGameSession);
@@ -117,13 +122,12 @@ export class SessionManager {
     if (session.state !== SessionStateTypeEnum.ONLINE) {
       throw 'Must be in an online state to rejoin a game previously left';
     }
-    if (session.gameId !== undefined) {
-      throw 'still in a game, cannot rejoin it';
+    if (session.gameId === undefined) {
+      throw 'Must have a gameId to rejoin a game';
     }
     const gameSession = this.gameManager.getGameSession(login);
     if (gameSession) {
       session.state = SessionStateTypeEnum.IN_GAME;
-      session.gameId = gameSession.id;
       this.gameManager.updateGameSession(gameSession.id, session);
     } else {
       throw 'no gameSession found to rejoin';
@@ -136,6 +140,10 @@ export class SessionManager {
       throw 'Must be in a game to endTurn';
     }
     this.gameManager.receiveTurnEnd(session);
+  }
+
+  public sendSession(session: Session): void {
+    session.webSocket.send(JSON.stringify({ type: 'LOGGED_IN', gameId: session.gameId }));
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
