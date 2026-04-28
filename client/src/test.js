@@ -37,7 +37,9 @@ connectWsBtn.onclick = () => {
       currGameId = message.gameId;
       console.log('LOGGED_IN', currGameId);
       if (currGameId) {
-        updateGame(true);
+        rejoinGameBtn.disabled = false;
+        enterQueue.disabled = true;
+        leaveQueue.disabled = true;
       }
     }
     if (message.type === 'SEND_PROPOSAL') {
@@ -98,17 +100,23 @@ leaveQueue.onclick = () => {
 
 acceptProposal.onclick = () => {
   answeredProposal = true;
+  enterQueue.disabled = true;
+  leaveQueue.disabled = true;
   clientSent(login, 'ACCEPT_PROPOSAL', { proposalId: currProposalId });
 };
 
 declineProposal.onclick = () => {
   answeredProposal = true;
+  enterQueue.disabled = true;
+  leaveQueue.disabled = true;
   clientSent(login, 'DECLINE_PROPOSAL', { proposalId: currProposalId });
 };
 
 leaveGameBtn.onclick = () => {
   updateGame(false);
   rejoinGameBtn.disabled = false;
+  enterQueue.disabled = true;
+  leaveQueue.disabled = true;
   clientSent(login, 'LEAVE_GAME');
 };
 rejoinGameBtn.onclick = () => {

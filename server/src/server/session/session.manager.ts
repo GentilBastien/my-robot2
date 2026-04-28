@@ -26,8 +26,11 @@ export class SessionManager {
     } else {
       this.sessions[login] = { login, webSocket, state: SessionStateTypeEnum.ONLINE };
     }
-    setTimeout(() => this.sendSession(this.sessions[login]), 500);
     this.__printSessions();
+    /**
+     * out of scope of register function, so websocket can send the message
+     */
+    ((): void => this.sendSession(this.sessions[login]))();
   }
 
   public unregister(ws: WebSocket): void {
@@ -70,6 +73,8 @@ export class SessionManager {
     const session = this.sessions[login];
     if (session.state !== SessionStateTypeEnum.ONLINE) {
       throw 'Must be online to enter queue';
+    } else if (session.gameId !== undefined) {
+      throw 'Cannot join queue if a game must be re-joined first';
     }
     this.queueManager.add(login);
     session.state = SessionStateTypeEnum.IN_QUEUE;

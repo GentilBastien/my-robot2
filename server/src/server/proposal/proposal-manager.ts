@@ -3,6 +3,7 @@ import { SessionManager } from '@server/session/session.manager';
 import { Session } from '@server/session/session';
 
 export class ProposalManager {
+  private static PROPOSAL_TIMEOUT_MS = 15000;
   private readonly proposals: Record<string, GameProposal> = {};
   private readonly sessionManager: SessionManager;
 
@@ -32,7 +33,7 @@ export class ProposalManager {
       throw 'tempError, proposal has been declined already';
     }
     proposal.accepted.add(session.login);
-    if (this.proposalValidated(proposal)) {
+    if (this.isProposalCompleted(proposal)) {
       console.log('PROPOSAL FULLY ACCEPTED, MATCH ACCEPTED');
       this.sessionManager.sendGameProposalAccepted(proposal);
       this.removeProposal(proposal);
@@ -52,13 +53,13 @@ export class ProposalManager {
   }
 
   public timeOutProposal(proposal: GameProposal): void {
-    if (!this.proposalValidated(proposal)) {
+    if (!this.isProposalCompleted(proposal)) {
       this.sessionManager.sendGameProposalTimedOut(proposal);
       this.removeProposal(proposal);
     }
   }
 
-  private proposalValidated(proposal: GameProposal): boolean {
+  private isProposalCompleted(proposal: GameProposal): boolean {
     return proposal.logins.length === proposal.accepted.size;
   }
 
@@ -75,7 +76,7 @@ export class ProposalManager {
     const now = Date.now();
     for (const proposalId in this.proposals) {
       const gameProposal: GameProposal = this.proposals[proposalId];
-      if (now - gameProposal.createdAt > 15000) {
+      if (now - gameProposal.createdAt > ProposalManager.PROPOSAL_TIMEOUT_MS) {
         this.timeOutProposal(gameProposal);
       }
     }
