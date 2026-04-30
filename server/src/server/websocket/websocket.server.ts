@@ -4,17 +4,6 @@ import { WebsocketManager } from '@server/websocket/websocket.manager';
 
 const websocketManager = new WebsocketManager();
 
-//entering a queue make u go to /dashboard/queue
-//leaving the queue make you go to /dashboard
-
-//when going to /queue  the Client must do
-// const ws = new WebSocket("ws://localhost:8080/api/v1/game", [], {
-//   headers: {
-//     Authorization: "Bearer abc123"
-//   }
-// });
-//to upgrade the http requests to persistent tcp requests
-
 export function createWebsocketServer(server: Server): void {
   /**
    * Do not create an own HTTP server for websocket. Use the existing one.

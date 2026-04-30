@@ -49,7 +49,7 @@ function defineInitialTurnState(): TurnState {
   return {
     currentTurnNumber: 0,
     turnStateTypeEnum: TurnStateTypeEnum.PENDING,
-    currentTurnRobotId: '',
+    currentTurnRobotId: 'bast',
   };
 }
 

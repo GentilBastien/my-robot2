@@ -1,9 +1,11 @@
-export { ClientMessageType } from './server/websocket/client/client-message.type';
+export { ClientMessageType } from './server/websocket/client-message.type';
+export { ServerMessageType } from './server/websocket/server-message.type';
 export { LoginRequest } from './server/api/login/request';
 export { LoginResponse } from './server/api/login/response';
-export { ClientMessage } from './server/websocket/client/client-message';
+export { ClientMessage } from './server/websocket/client-message';
+export { ServerMessage } from './server/websocket/server-message';
 
-export { GameEvent, PathGameEvent, ActionGameEvent } from './server/websocket/client/game.event';
+export { GameEvent, PathGameEvent, ActionGameEvent } from './server/websocket/game.event';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';

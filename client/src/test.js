@@ -34,7 +34,7 @@ connectWsBtn.onclick = () => {
   websocket.onmessage = event => {
     const message = JSON.parse(event.data);
     if (message.type === 'LOGGED_IN') {
-      currGameId = message.gameId;
+      currGameId = message.payload.gameId;
       console.log('LOGGED_IN', currGameId);
       if (currGameId) {
         rejoinGameBtn.disabled = false;
@@ -45,7 +45,7 @@ connectWsBtn.onclick = () => {
     if (message.type === 'SEND_PROPOSAL') {
       console.log('SEND_PROPOSAL');
       updateProposal(true);
-      currProposalId = message.proposalId;
+      currProposalId = message.payload.proposalId;
     }
     if (message.type === 'PROPOSAL_TIMED_OUT') {
       console.log('PROPOSAL_TIMED_OUT');
@@ -54,9 +54,9 @@ connectWsBtn.onclick = () => {
       updateProposal(false);
     }
     if (message.type === 'PROPOSAL_DECLINED') {
-      console.log('PROPOSAL_DECLINED by ', message.loginDeclined);
-      enterQueue.disabled = login !== message.loginDeclined;
-      leaveQueue.disabled = login === message.loginDeclined;
+      console.log('PROPOSAL_DECLINED by ', message.payload.loginDeclined);
+      enterQueue.disabled = login !== message.payload.loginDeclined;
+      leaveQueue.disabled = login === message.payload.loginDeclined;
       updateProposal(false);
     }
     if (message.type === 'PROPOSAL_ACCEPTED') {
@@ -65,11 +65,11 @@ connectWsBtn.onclick = () => {
       leaveQueue.disabled = true;
       updateProposal(false);
       updateGame(true);
-      currGameId = message.gameId;
+      currGameId = message.payload.gameId;
     }
 
-    if (message.type === 'MATCH_FINISHED') {
-      console.log('MATCH_FINISHED');
+    if (message.type === 'GAME_FINISHED') {
+      console.log('GAME_FINISHED');
       enterQueue.disabled = false;
       leaveQueue.disabled = true;
       rejoinGameBtn.disabled = true;

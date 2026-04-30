@@ -1,8 +1,8 @@
 import { ClientMessageType } from './client-message.type';
 import { GameEvent } from './game.event';
 
-export interface ClientMessage<T extends GameEvent | Record<string, string>> {
+export interface ClientMessage<T extends GameEvent | Record<string, string | undefined>> {
   login: string;
   type: ClientMessageType;
-  payload: T;
+  payload?: T;
 }

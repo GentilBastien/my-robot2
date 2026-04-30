@@ -48,7 +48,7 @@ export class ProposalManager {
     }
     proposal.declined = true;
     proposal.loginDeclined = session.login;
-    this.sessionManager.sendGameProposalCancelled(proposal);
+    this.sessionManager.sendGameProposalDeclined(proposal);
     this.removeProposal(proposal);
   }
 
