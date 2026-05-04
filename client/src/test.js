@@ -12,6 +12,7 @@ const declineProposal = document.getElementById('decline-proposal-btn');
 const inGameSpan = document.getElementById('in-game-span');
 const leaveGameBtn = document.getElementById('leave-game-btn');
 const rejoinGameBtn = document.getElementById('rejoin-game-btn');
+const endTurnBtn = document.getElementById('end-turn-btn');
 
 let websocket = null;
 let logged = false;
@@ -123,6 +124,9 @@ rejoinGameBtn.onclick = () => {
   updateGame(true);
   rejoinGameBtn.disabled = true;
   clientSent(login, 'REJOIN_GAME');
+};
+endTurnBtn.onclick = () => {
+  clientSent(login, 'TURN_END');
 };
 
 function updateLogged(flag, login) {

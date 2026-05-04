@@ -19,7 +19,8 @@ export class Game {
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.initialGameState;
     this.gameCalculator = new GameCalculator(gameConfig);
-    this.gameCalculator.update(this.gameState);
+    this.gameCalculator.update_1(this.gameState);
+    this.gameCalculator.update_2(this.gameState);
 
     const comparator: Comparator<RequestStateEvent> = (item1: RequestStateEvent, item2: RequestStateEvent): number =>
       (item1.priority ?? 0) - (item2.priority ?? 0);
@@ -33,38 +34,47 @@ export class Game {
   private resolveGameEvent(gameRequestEvent: GameEvent): void {
     const requestEvent: RequestStateEvent = gameEventResolver(gameRequestEvent);
     this.pendingRequestEvents.add(requestEvent);
-    const responses: ResponseStateEvent[] = this.resolveAllPendingRequestEvents(this.gameState);
-    this.gameState = this.consumeAllResponseEvents(this.gameState, responses);
-    this.gameCalculator.update(this.gameState);
+    const reducers: Reducer[] = this.resolveAllPendingRequestEvents(this.gameState);
+    this.gameState = this.applyReducers(this.gameState, reducers);
+    this.gameCalculator.update_1(this.gameState);
   }
 
-  private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>): ResponseStateEvent[] {
+  private resolveAllPendingRequestEvents(readonlyGameState: Readonly<GameState>): Reducer[] {
     const responseEvents: ResponseStateEvent[] = [];
+    const reducers: Reducer[] = [];
     let currentRequestEvent: RequestStateEvent | undefined;
     do {
       currentRequestEvent = this.pendingRequestEvents.poll();
       if (currentRequestEvent === undefined) {
         break;
       }
+      //Impl Note : requestEvents are mapped to responseEvents, while keeping its ordering.
       const responseEventsFromRequest: ResponseStateEvent[] = requestStateEventResolver(
         this.gameCalculator,
         readonlyGameState,
         currentRequestEvent
       );
       responseEvents.push(...responseEventsFromRequest);
+      //Impl Note : responseEvents are mapped to reducers, while keeping its ordering.
+      const reducers123: Reducer[] = responseEventsFromRequest
+        .map(responseEvent =>
+          responseStateEventResolver(this.gameCalculator, readonlyGameState, responseEvent, this.pendingRequestEvents)
+        )
+        .filter(r => r !== null);
+      reducers.push(...reducers123);
     } while (this.pendingRequestEvents.elements.length > 0);
-    return responseEvents;
+    console.log('--------------------------------------------');
+    console.log(responseEvents);
+    console.log('--------------------------------------------');
+    return reducers;
   }
 
-  private consumeAllResponseEvents(
-    readonlyGameState: Readonly<GameState>,
-    responseEvents: ResponseStateEvent[]
-  ): GameState {
-    //Impl Note : responseEvents are mapped to reduces keeping its ordering.
-    const reducers: (Reducer | null)[] = responseEvents.map(responseEvent =>
-      responseStateEventResolver(this.gameCalculator, readonlyGameState, responseEvent, this.pendingRequestEvents)
-    );
-    //once reducers are filled and pendingEvents consumed, apply all of them in order
-    return reducers.reduce((state, reducer) => (reducer ? reducer(state) : state), readonlyGameState);
+  /**
+   * Apply all Reducers in order.
+   * @param readonlyGameState
+   * @param reducers
+   */
+  private applyReducers(readonlyGameState: Readonly<GameState>, reducers: Reducer[]): GameState {
+    return reducers.reduce((state, reducer) => reducer(state), readonlyGameState);
   }
 }

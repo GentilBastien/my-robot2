@@ -20,10 +20,6 @@ export interface RequestTurnEndStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.TURN_END;
 }
 
-export interface RequestAdvanceTurnStateEvent extends RequestStateEvent {
-  gameEventType: GameEventTypeEnum.ADVANCE_TURN;
-}
-
 export interface RequestRobotDestroyedStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.ROBOT_DESTROYED;
   targetRobotId: string;

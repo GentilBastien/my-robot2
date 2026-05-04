@@ -1,8 +1,8 @@
 export enum AttributesTypeEnum {
-  POW,
-  MOB,
-  CHS,
-  CPU,
-  ENE,
-  INTF,
+  POW = 'POWER',
+  MOB = 'MOBILITY',
+  CHS = 'CHASSIS',
+  CPU = 'CPU',
+  ENE = 'ENERGY',
+  INTF = 'INTERFACE',
 }

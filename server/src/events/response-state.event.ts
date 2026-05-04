@@ -24,12 +24,6 @@ export interface TurnEndResponseStateEvent extends ResponseStateEvent {
   turnRobotId: string;
 }
 
-export interface AdvanceTurnResponseStateEvent extends ResponseStateEvent {
-  gameEventType: GameEventTypeEnum.ADVANCE_TURN;
-  turnNumber: number;
-  turnRobotId: string;
-}
-
 export interface RobotDestroyedResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.ROBOT_DESTROYED;
   targetRobotId: string;

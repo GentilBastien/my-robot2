@@ -43,8 +43,11 @@ export class GameCalculator {
     this.cyclicList = new CyclicListStructure<InitiativeRobot>(robotComparator);
   }
 
-  public update(gameState: GameState): void {
+  public update_1(gameState: GameState): void {
     this.hexGrid.setAllCellItems(gameState.arenaState.cells);
+  }
+
+  public update_2(gameState: GameState): void {
     const robots: RobotState[] = Object.values(gameState.robots);
     for (const robot of robots) {
       this.cyclicList.insertItem({
@@ -53,6 +56,7 @@ export class GameCalculator {
         dead: robot.selfStates.includes(RobotStateTypeEnum.DEATH),
       });
     }
+    this.cyclicList.next();
   }
 
   public getPathCoordinateToTarget(

@@ -1,6 +1,5 @@
 import {
   AddEffectResponseStateEvent,
-  AdvanceTurnResponseStateEvent,
   DamageResponseStateEvent,
   HeatResponseStateEvent,
   HpResponseStateEvent,
@@ -20,7 +19,6 @@ import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { turnStartResponseStateCase } from '@resolvers-response/turn-start.response-state-case';
 import { turnEndResponseStateCase } from '@resolvers-response/turn-end.response-state-case';
-import { advanceTurnResponseStateCase } from '@resolvers-response/advance-turn.response-state-case';
 import { pathResponseStateCase } from '@resolvers-response/path.response-state-case';
 import { stepPathResponseStateCase } from '@resolvers-response/step-path.response-state-case';
 import { resourcesResponseStateCase } from '@resolvers-response/resources.response-state-case';
@@ -53,13 +51,6 @@ export function responseStateEventResolver(
           gameCalculator,
           readonlyGameState,
           responseEvent as TurnEndResponseStateEvent,
-          pendingRequestEvents
-        );
-      }
-      case GameEventTypeEnum.ADVANCE_TURN: {
-        return advanceTurnResponseStateCase(
-          gameCalculator,
-          responseEvent as AdvanceTurnResponseStateEvent,
           pendingRequestEvents
         );
       }

@@ -2,7 +2,7 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
-import { SessionStateTypeEnum } from 'shared';
+import { GameEventTypeEnum, SessionStateTypeEnum } from 'shared';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;
@@ -65,10 +65,14 @@ export class GameManager {
     return gs.sessions.every(session => session.state !== SessionStateTypeEnum.IN_GAME || session.gameId !== gs.id);
   }
 
-  public receiveTurnEnd(_session: Session): void {
-    // const gameSession: GameSession | undefined = this.gameSessions.find(
-    //   gameSession => !!gameSession.sessions.find(s => s.gameId === session.gameId)
-    // );
-    // console.log('received turn end, ', gameSession);
+  public receiveTurnEnd(session: Session): void {
+    if (session.gameId) {
+      const gameSession = this.gameSessions[session.gameId];
+      gameSession.game.receiveGameEventFromClient({
+        sourceRobotId: session.login,
+        gameEventType: GameEventTypeEnum.TURN_END,
+        actionTypeEnum: undefined,
+      });
+    }
   }
 }

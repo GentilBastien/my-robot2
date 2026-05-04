@@ -1,6 +1,5 @@
 import {
   RequestAddEffectStateEvent,
-  RequestAdvanceTurnStateEvent,
   RequestDamageStateEvent,
   RequestHeatStateEvent,
   RequestHpStateEvent,
@@ -16,7 +15,6 @@ import {
 } from '@events/request-state.event';
 import {
   AddEffectResponseStateEvent,
-  AdvanceTurnResponseStateEvent,
   PathResponseStateEvent,
   ResourcesResponseStateEvent,
   ResponseStateEvent,
@@ -29,7 +27,6 @@ import { GameEventTypeEnum, GameState } from 'shared';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { turnStartRequestStateCase } from '@resolvers-request/turn-start.request-state-case';
 import { turnEndRequestStateCase } from '@resolvers-request/turn-end.request-state-case';
-import { advanceTurnRequestStateCase } from '@resolvers-request/advance-turn.request-state-case';
 import { pathRequestStateCase } from '@resolvers-request/path.request-state-case';
 import { stepPathRequestStateCase } from '@resolvers-request/step-path.request-state-case';
 import { resourcesRequestStateCase } from '@resolvers-request/resources.request-state-case';
@@ -64,14 +61,6 @@ export function requestStateEventResolver(
         requestEvent as RequestTurnEndStateEvent
       );
       return [turnEndResponseStateEvent];
-    }
-    case GameEventTypeEnum.ADVANCE_TURN: {
-      const advanceTurnResponseStateEvent: AdvanceTurnResponseStateEvent = advanceTurnRequestStateCase(
-        gameCalculator,
-        readonlyGameState,
-        requestEvent as RequestAdvanceTurnStateEvent
-      );
-      return [advanceTurnResponseStateEvent];
     }
     case GameEventTypeEnum.ROBOT_DESTROYED: {
       const robotDestroyedResponseStateEvent: RobotDestroyedResponseStateEvent = robotDestroyedRequestStateCase(

@@ -1,9 +1,5 @@
 import { TurnEndResponseStateEvent } from '@events/response-state.event';
-import {
-  RequestAdvanceTurnStateEvent,
-  RequestResourcesStateEvent,
-  RequestStateEvent,
-} from '@events/request-state.event';
+import { RequestResourcesStateEvent, RequestStateEvent, RequestTurnStartStateEvent } from '@events/request-state.event';
 import { startTurnReducer } from '@reducers/turn.reducer';
 import { EffectState, GameEventTypeEnum, GameState, Reducer, TurnStateTypeEnum } from 'shared';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
@@ -49,11 +45,11 @@ export function turnEndResponseStateCase(
   };
   pendingRequestEvents.add(requestEndTurnResourcesStateEvent);
 
-  const requestAdvanceTurnStateEvent: RequestAdvanceTurnStateEvent = {
-    gameEventType: GameEventTypeEnum.ADVANCE_TURN,
+  const requestStartTurnStateEvent: RequestTurnStartStateEvent = {
+    gameEventType: GameEventTypeEnum.TURN_START,
     sourceRobotId: endTurnResponseStateEvent.turnRobotId,
   };
-  pendingRequestEvents.add(requestAdvanceTurnStateEvent);
+  pendingRequestEvents.add(requestStartTurnStateEvent);
 
   return startTurnReducer(TurnStateTypeEnum.FINISHED);
 }
