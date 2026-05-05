@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
+import { PathGameEvent, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
@@ -117,6 +117,11 @@ export class SessionManager {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to endTurn');
     this.gameManager.receiveTurnEnd(session);
+  }
+
+  public receivePathGameEvent(login: string, pathGameEvent: PathGameEvent): void {
+    const session = this.sessions[login];
+    this.gameManager.receivePath(session, pathGameEvent);
   }
 
   public sendSession(session: Session): void {

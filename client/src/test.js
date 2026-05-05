@@ -13,6 +13,7 @@ const inGameSpan = document.getElementById('in-game-span');
 const leaveGameBtn = document.getElementById('leave-game-btn');
 const rejoinGameBtn = document.getElementById('rejoin-game-btn');
 const endTurnBtn = document.getElementById('end-turn-btn');
+const movementTurnBtn = document.getElementById('movement-turn-btn');
 
 let websocket = null;
 let logged = false;
@@ -127,6 +128,9 @@ rejoinGameBtn.onclick = () => {
 };
 endTurnBtn.onclick = () => {
   clientSent(login, 'TURN_END');
+};
+movementTurnBtn.onclick = () => {
+  clientSent(login, 'PATH');
 };
 
 function updateLogged(flag, login) {

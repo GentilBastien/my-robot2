@@ -12,6 +12,7 @@ export function pathRequestStateCase(
   const enoughRemainingMovement =
     gameCalculator.getRobotState(readonlyGameState, requestPathStateEvent.sourceRobotId).resources.remainingMove >=
     gameCalculator.getPathCoordinateCost(requestPathStateEvent.path);
+  //TODO: check if movementType is allowed by the robot
   return {
     gameEventType: GameEventTypeEnum.PATH,
     movementType: requestPathStateEvent.movementType,

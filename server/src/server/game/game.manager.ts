@@ -2,7 +2,7 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
-import { GameEventTypeEnum, SessionStateTypeEnum } from 'shared';
+import { GameEventTypeEnum, PathGameEvent, SessionStateTypeEnum } from 'shared';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;
@@ -73,6 +73,13 @@ export class GameManager {
         gameEventType: GameEventTypeEnum.TURN_END,
         actionTypeEnum: undefined,
       });
+    }
+  }
+
+  public receivePath(session: Session, pathGameEvent: PathGameEvent): void {
+    if (session.gameId) {
+      const gameSession = this.gameSessions[session.gameId];
+      gameSession.game.receiveGameEventFromClient(pathGameEvent);
     }
   }
 }

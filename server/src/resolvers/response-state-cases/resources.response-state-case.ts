@@ -48,7 +48,7 @@ function decrementsOverheatingByValue(resourcesState: ResourcesState, value: num
   return incrementsValue(0, resourcesState.maxOverheating, resourcesState.overheating, value);
 }
 
-function computeCooling(isOverheating: boolean, coolingDown: number) {
+function computeCooling(isOverheating: boolean, coolingDown: number): number {
   return isOverheating ? Math.ceil(coolingDown / 2) : coolingDown;
 }
 

@@ -49,6 +49,9 @@ export class WebsocketManager {
         this.sessionManager.receiveTurnEnd(login);
         break;
       }
+      case ClientMessageType.PATH: {
+        this.sessionManager.receivePathGameEvent(login, payload);
+      }
     }
   }
 }

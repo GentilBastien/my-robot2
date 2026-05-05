@@ -28,10 +28,8 @@ export function turnEndResponseStateCase(
     ...effectStatesFromCell,
   ].flatMap(effectState => {
     const effect: Effect = gameCalculator.getEffect(effectState);
-    const trigger: EffectTrigger =
-      effectState.remainingTurns <= 0 ? EffectTrigger.ON_EXPIRE : EffectTrigger.ON_TURN_END;
     return effect.handle({
-      trigger,
+      trigger: EffectTrigger.ON_TURN_END,
       effectState,
       readonlyGameState,
       gameCalculator,
