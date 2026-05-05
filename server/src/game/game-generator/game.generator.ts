@@ -39,7 +39,7 @@ function defineRobotStates(_gameProposal: GameProposal): Record<string, RobotSta
   //TODO fetch RobotState[] from gameProposal.logins
   return {
     bast: defineRandomRobot('bast'),
-    raph: defineRandomRobot('wass'),
+    wass: defineRandomRobot('wass'),
   };
 }
 
@@ -104,7 +104,7 @@ function defineRandomRobot(name: string): RobotState {
       totalSubActions: 1,
     },
     selfStates: [],
-    coordinates: { x: 4, y: -3, z: -1 },
+    coordinates: { x: 0, y: 0, z: 0 },
     statistics: {
       hp: 10,
       accuracy: 10,

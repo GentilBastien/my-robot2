@@ -211,10 +211,10 @@ export class GameCalculator {
   }
 
   public newTurnState(gameState: Readonly<GameState>): TurnState {
-    const robotToPlay = this.cyclicList.nextItem;
+    const robotToPlay = this.cyclicList.currentItem;
     if (robotToPlay) {
       return {
-        turnStateTypeEnum: TurnStateTypeEnum.PENDING,
+        turnStateTypeEnum: TurnStateTypeEnum.STARTED,
         currentTurnNumber: gameState.turnState.currentTurnNumber + 1,
         currentTurnRobotId: robotToPlay.id,
       };
@@ -222,8 +222,8 @@ export class GameCalculator {
     throw new Error('Temp error');
   }
 
-  public advanceTurn(): void {
-    this.cyclicList.next();
+  public advanceTurn(): InitiativeRobot {
+    return this.cyclicList.next();
   }
 
   public getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {

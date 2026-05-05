@@ -8,12 +8,14 @@ export function turnStartRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestTurnStartStateEvent: RequestTurnStartStateEvent
 ): TurnStartResponseStateEvent {
+  //sourceRobotId of requestTurnStartStateEvent is the id of the robot that previously played.
   const newTurnState = gameCalculator.newTurnState(readonlyGameState);
-  const allowed = newTurnState.currentTurnRobotId === requestTurnStartStateEvent.sourceRobotId;
+  // const allowed = newTurnState.currentTurnRobotId === requestTurnStartStateEvent.sourceRobotId;
+  const allowed = true;
   return {
     gameEventType: GameEventTypeEnum.TURN_START,
     responseValidated: allowed,
-    sourceRobotId: requestTurnStartStateEvent.sourceRobotId,
+    sourceRobotId: newTurnState.currentTurnRobotId,
     turnNumber: newTurnState.currentTurnNumber,
     turnRobotId: newTurnState.currentTurnRobotId,
   };

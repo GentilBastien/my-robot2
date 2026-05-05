@@ -45,6 +45,7 @@ export function turnEndResponseStateCase(
   };
   pendingRequestEvents.add(requestEndTurnResourcesStateEvent);
 
+  gameCalculator.advanceTurn();
   const requestStartTurnStateEvent: RequestTurnStartStateEvent = {
     gameEventType: GameEventTypeEnum.TURN_START,
     sourceRobotId: endTurnResponseStateEvent.turnRobotId,
