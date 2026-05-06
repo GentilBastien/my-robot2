@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import { HexagonalGridStructure } from './hexagonal-grid.structure';
 import { HexagonalCellError } from '../hexagonal-cell/hexagonal-cell.error';
 import { HexagonalGridError } from './hexagonal-grid.error';
-import { PathCoordinate, Weight } from 'shared';
+import { PathCostCoordinate, Weight } from 'shared';
 import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structure';
 
 type Land = Weight & { landType: number };
@@ -539,7 +539,7 @@ describe('HexagonalGridStructure', () => {
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 0, z: 0 });
     const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
     const result = grid.shortestPathTo(start, target);
-    const expected: PathCoordinate = {
+    const expected: PathCostCoordinate = {
       coordinatesPath: [
         { x: 0, y: 0, z: 0 },
         { x: 0, y: 1, z: -1 },
@@ -557,7 +557,7 @@ describe('HexagonalGridStructure', () => {
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 4, y: 0, z: -4 });
     const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: -1, y: 2, z: -1 });
     const result = grid.shortestPathTo(start, target);
-    const expected: PathCoordinate = {
+    const expected: PathCostCoordinate = {
       coordinatesPath: [
         { x: 4, y: 0, z: -4 },
         { x: 3, y: 0, z: -3 },
@@ -577,7 +577,7 @@ describe('HexagonalGridStructure', () => {
     const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 1, z: -2 });
     const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 3, z: -4 });
     const result = grid.shortestPathTo(start, target);
-    const expected: PathCoordinate = {
+    const expected: PathCostCoordinate = {
       coordinatesPath: [
         { x: 1, y: 1, z: -2 },
         { x: 0, y: 2, z: -2 },

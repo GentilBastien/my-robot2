@@ -1,6 +1,6 @@
 export enum MovementTypeEnum {
-  WALKED,
-  HOVERED,
-  JUMPED,
-  TELEPORTED,
+  WALKED = 'WALKED',
+  HOVERED = 'HOVERED',
+  JUMPED = 'JUMPED',
+  TELEPORTED = 'TELEPORTED',
 }

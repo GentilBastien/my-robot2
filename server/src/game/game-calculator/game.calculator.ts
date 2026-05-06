@@ -8,13 +8,14 @@ import {
   Coordinates,
   EffectState,
   GameState,
-  PathCoordinate,
+  MovementTypeEnum,
+  PathCostCoordinate,
   ResourcesState,
   RobotState,
   RobotStateTypeEnum,
   StatisticsState,
   StatisticsTypeEnum,
-  StepPathCoordinate,
+  StepPathCostCoordinate,
   TurnState,
   TurnStateTypeEnum,
 } from 'shared';
@@ -63,13 +64,13 @@ export class GameCalculator {
     gameState: Readonly<GameState>,
     robotId: string,
     target: Coordinates
-  ): PathCoordinate | null {
+  ): PathCostCoordinate | null {
     const startCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
     const targetCell = this.hexGrid.getCellAt(target);
     return this.hexGrid.shortestPathTo(startCell, targetCell);
   }
 
-  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCoordinate[] {
+  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCostCoordinate[] {
     const robotState = this.getRobotState(gameState, robotId);
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
@@ -230,7 +231,25 @@ export class GameCalculator {
     return this.getRobotState(gameState, robotId).coordinates;
   }
 
-  public getPathCoordinateCost(pathCoordinate: PathCoordinate): number {
+  public mapPathToPathWithCost(path: Coordinates[]): PathCostCoordinate {
+    //TODO: impl function
+    return {
+      costs: [],
+      coordinatesPath: [],
+    };
+  }
+
+  public movementTypeAllowedForRobot(
+    gameState: Readonly<GameState>,
+    robotId: string,
+    movementType: MovementTypeEnum
+  ): boolean {
+    //TODO: impl function
+    // const robot = this.getRobotState(gameState, robotId);
+    return true;
+  }
+
+  public getPathCoordinateCost(pathCoordinate: PathCostCoordinate): number {
     let sum = 0;
     for (let i = 1; i < pathCoordinate.costs.length; i++) {
       sum += pathCoordinate.costs[i];
@@ -238,13 +257,13 @@ export class GameCalculator {
     return sum;
   }
 
-  public splitPathInSteps(path: PathCoordinate): StepPathCoordinate[] {
-    const stepPathCoordinates: StepPathCoordinate[] = [];
+  public splitPathInSteps(path: PathCostCoordinate): StepPathCostCoordinate[] {
+    const stepPathCoordinates: StepPathCostCoordinate[] = [];
     for (let i = 0; i < path.coordinatesPath.length - 1; i++) {
       const startCoordinates: Coordinates = path.coordinatesPath[i];
       const endCoordinates: Coordinates = path.coordinatesPath[i + 1];
       const stepCost: number = path.costs[i + 1];
-      const stepPathCoordinate: StepPathCoordinate = {
+      const stepPathCoordinate: StepPathCostCoordinate = {
         startCoordinates,
         endCoordinates,
         cost: stepCost,
@@ -254,7 +273,7 @@ export class GameCalculator {
     return stepPathCoordinates;
   }
 
-  public pathCoordinateIsOneStep(pathCoordinate: PathCoordinate): StepPathCoordinate | undefined {
+  public pathCoordinateIsOneStep(pathCoordinate: PathCostCoordinate): StepPathCostCoordinate | undefined {
     if (pathCoordinate.coordinatesPath.length === 2 && pathCoordinate.costs.length === 2) {
       return {
         startCoordinates: pathCoordinate.coordinatesPath[0],

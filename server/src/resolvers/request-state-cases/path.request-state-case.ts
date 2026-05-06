@@ -1,5 +1,5 @@
 import { RequestPathStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum, GameState } from 'shared';
+import { GameEventTypeEnum, GameState, PathCostCoordinate } from 'shared';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PathResponseStateEvent } from '@events/response-state.event';
 
@@ -8,16 +8,22 @@ export function pathRequestStateCase(
   readonlyGameState: Readonly<GameState>,
   requestPathStateEvent: RequestPathStateEvent
 ): PathResponseStateEvent {
-  const isRobotTurn = gameCalculator.isRobotTurn(requestPathStateEvent.sourceRobotId);
-  const enoughRemainingMovement =
-    gameCalculator.getRobotState(readonlyGameState, requestPathStateEvent.sourceRobotId).resources.remainingMove >=
-    gameCalculator.getPathCoordinateCost(requestPathStateEvent.path);
-  //TODO: check if movementType is allowed by the robot
+  const robotId: string = requestPathStateEvent.sourceRobotId;
+  const isRobotTurn = gameCalculator.isRobotTurn(robotId);
+  const pathWithCosts: PathCostCoordinate = gameCalculator.mapPathToPathWithCost(requestPathStateEvent.path);
+  const pathCost: number = gameCalculator.getPathCoordinateCost(pathWithCosts);
+  const robotRemainingMove = gameCalculator.getRobotState(readonlyGameState, robotId).resources.remainingMove;
+  const enoughRemainingMovement = robotRemainingMove >= pathCost;
+  const movementTypeAllowed: boolean = gameCalculator.movementTypeAllowedForRobot(
+    readonlyGameState,
+    robotId,
+    requestPathStateEvent.movementType
+  );
   return {
     gameEventType: GameEventTypeEnum.PATH,
     movementType: requestPathStateEvent.movementType,
-    responseValidated: isRobotTurn && enoughRemainingMovement,
+    responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed,
     sourceRobotId: requestPathStateEvent.sourceRobotId,
-    path: requestPathStateEvent.path,
+    path: pathWithCosts,
   };
 }

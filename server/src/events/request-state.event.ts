@@ -1,11 +1,11 @@
 import {
+  Coordinates,
   DamageTypeEnum,
   EffectState,
   GameEvent,
   GameEventTypeEnum,
   MovementTypeEnum,
-  PathCoordinate,
-  StepPathCoordinate,
+  StepPathCostCoordinate,
 } from 'shared';
 
 export interface RequestStateEvent extends GameEvent {
@@ -29,13 +29,13 @@ export interface RequestRobotDestroyedStateEvent extends RequestStateEvent {
 export interface RequestPathStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.PATH;
   movementType: MovementTypeEnum;
-  path: PathCoordinate;
+  path: Coordinates[];
 }
 
 export interface RequestStepPathStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.STEP_PATH;
   movementType: MovementTypeEnum;
-  stepPath: StepPathCoordinate;
+  stepPath: StepPathCostCoordinate;
 }
 
 export interface RequestResourcesStateEvent extends RequestStateEvent {

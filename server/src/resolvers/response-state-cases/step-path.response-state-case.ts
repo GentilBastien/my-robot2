@@ -23,13 +23,13 @@ export function stepPathResponseStateCase(
   const newPendingRequestStateEvents: RequestStateEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
     const effect: Effect = gameCalculator.getEffect(effectState);
     return effect.handle({
-      trigger: EffectTrigger.ON_APPLY,
+      trigger: EffectTrigger.ON_SURFACE,
       effectState,
+      coordinates: stepPathResponseStateEvent.stepPath.endCoordinates,
       readonlyGameState,
       gameCalculator,
     });
   });
-  //TODO: This is wrong, it must add a RequestAddEffect instead of "applying" it right now. here, we don't persist the effect in state
   pendingRequestEvents.addAll(newPendingRequestStateEvents);
   return remainingMovementReducer(stepPathResponseStateEvent.sourceRobotId, newRemainingMove);
 }

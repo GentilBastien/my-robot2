@@ -1,6 +1,6 @@
 import { PathResponseStateEvent } from '@events/response-state.event';
 import { RequestStateEvent, RequestStepPathStateEvent } from '@events/request-state.event';
-import { GameEventTypeEnum, GameState, MovementTypeEnum, PathCoordinate, StepPathCoordinate } from 'shared';
+import { GameEventTypeEnum, GameState, MovementTypeEnum, PathCostCoordinate, StepPathCostCoordinate } from 'shared';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 
@@ -14,8 +14,8 @@ export function pathResponseStateCase(
   switch (pathResponseStateEvent.movementType) {
     case MovementTypeEnum.JUMPED:
     case MovementTypeEnum.TELEPORTED: {
-      const pathCoordinate: PathCoordinate = pathResponseStateEvent.path;
-      const pathCoordsAsOneStep: StepPathCoordinate | undefined =
+      const pathCoordinate: PathCostCoordinate = pathResponseStateEvent.path;
+      const pathCoordsAsOneStep: StepPathCostCoordinate | undefined =
         gameCalculator.pathCoordinateIsOneStep(pathCoordinate);
       if (pathCoordsAsOneStep) {
         const stepPath: RequestStepPathStateEvent = {
@@ -32,7 +32,7 @@ export function pathResponseStateCase(
     case MovementTypeEnum.HOVERED:
     case MovementTypeEnum.WALKED:
     default: {
-      const steps: StepPathCoordinate[] = gameCalculator.splitPathInSteps(pathResponseStateEvent.path);
+      const steps: StepPathCostCoordinate[] = gameCalculator.splitPathInSteps(pathResponseStateEvent.path);
       const requestStepPathStateEvents: RequestStepPathStateEvent[] = steps.map(
         (stepPath, index): RequestStepPathStateEvent => ({
           gameEventType: GameEventTypeEnum.STEP_PATH,

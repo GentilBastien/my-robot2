@@ -1,4 +1,4 @@
-import { Comparator, Coordinates, PathCoordinate, Weight } from 'shared';
+import { Comparator, Coordinates, PathCostCoordinate, Weight } from 'shared';
 import { HexagonalGridStructureInterface } from '@structures/hexagonal-grid/hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 import { HexagonalGridError } from '@structures/hexagonal-grid/hexagonal-grid.error';
@@ -89,15 +89,18 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     );
   }
 
-  public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[] {
-    const visitedPaths: PathCoordinate[] = [];
+  public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCostCoordinate[] {
+    const visitedPaths: PathCostCoordinate[] = [];
     this.possibleTargets_NewMove(start, visitedPaths, -start.weight, maxCost);
     return visitedPaths.filter(
       path => !arrayHasDuplicates(path.coordinatesPath, cell => `${cell.x}.${cell.y}.${cell.z}`)
     );
   }
 
-  public shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate | null {
+  public shortestPathTo(
+    start: HexagonalCellStructure<T>,
+    target: HexagonalCellStructure<T>
+  ): PathCostCoordinate | null {
     const cellWeightFromStartComparator: Comparator<HexagonalCellStructure<T>> = (
       cell1: HexagonalCellStructure<T>,
       cell2: HexagonalCellStructure<T>
@@ -143,17 +146,17 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
 
   private possibleTargets_NewMove(
     cellCandidate: HexagonalCellStructure<T>,
-    visitedPaths: PathCoordinate[],
+    visitedPaths: PathCostCoordinate[],
     costFromStart: number,
     maxCostFromStart: number,
-    pathToCandidate?: PathCoordinate
+    pathToCandidate?: PathCostCoordinate
   ): void {
     const costCandidate: number = costFromStart + cellCandidate.weight;
     if (costCandidate <= maxCostFromStart) {
       //candidate is valid, add it in the valid cells and check its adjacent cells.
       const basePath: Coordinates[] = pathToCandidate?.coordinatesPath ?? [];
       const baseCost: number[] = pathToCandidate?.costs ?? [];
-      const path: PathCoordinate = {
+      const path: PathCostCoordinate = {
         coordinatesPath: [...basePath, cellCandidate.coordinates],
         costs: [...baseCost, cellCandidate.weight],
       };

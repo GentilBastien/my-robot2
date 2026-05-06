@@ -1,4 +1,4 @@
-import { Coordinates, PathCoordinate, Weight } from 'shared';
+import { Coordinates, PathCostCoordinate, Weight } from 'shared';
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 
 export interface HexagonalGridStructureInterface<T extends Weight> {
@@ -78,12 +78,12 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @param start The starting cell.
    * @param maxCost The maximum cost allowed from the starting cell.
    */
-  possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCoordinate[];
+  possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCostCoordinate[];
 
   /**
    * Returns the shortest path between two cells.
    * @param start The starting cell.
    * @param target The target cell.
    */
-  shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCoordinate | null;
+  shortestPathTo(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): PathCostCoordinate | null;
 }

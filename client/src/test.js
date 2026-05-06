@@ -13,7 +13,7 @@ const inGameSpan = document.getElementById('in-game-span');
 const leaveGameBtn = document.getElementById('leave-game-btn');
 const rejoinGameBtn = document.getElementById('rejoin-game-btn');
 const endTurnBtn = document.getElementById('end-turn-btn');
-const movementTurnBtn = document.getElementById('movement-turn-btn');
+const pathBtn = document.getElementById('path-btn');
 
 let websocket = null;
 let logged = false;
@@ -129,8 +129,17 @@ rejoinGameBtn.onclick = () => {
 endTurnBtn.onclick = () => {
   clientSent(login, 'TURN_END');
 };
-movementTurnBtn.onclick = () => {
-  clientSent(login, 'PATH');
+pathBtn.onclick = () => {
+  clientSent(login, 'PATH', {
+    gameEventType: 'PATH',
+    movementType: 'WALKED',
+    sourceRobotId: login,
+    coordinates: [
+      { x: 1, y: 0, z: -1 },
+      { x: 2, y: 0, z: -2 },
+      { x: 2, y: 1, z: -3 },
+    ],
+  });
 };
 
 function updateLogged(flag, login) {

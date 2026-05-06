@@ -4,7 +4,7 @@ import { Coordinates } from './coordinates';
  * Defines the cells that must be crossed to make this path.
  * This path may have a cost.
  */
-export interface PathCoordinate {
+export interface PathCostCoordinate {
   coordinatesPath: Coordinates[];
   costs: number[];
 }
@@ -15,7 +15,7 @@ export interface PathCoordinate {
  * a direct movement transition. For example, it can be a teleportation movement or a simple jump
  * from a cell to another. Cost defines the cost to make this moves.
  */
-export interface StepPathCoordinate {
+export interface StepPathCostCoordinate {
   startCoordinates: Coordinates;
   endCoordinates: Coordinates;
   cost: number;
