@@ -1,6 +1,6 @@
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { RequestStateEvent } from '@events/request-state.event';
-import { Comparator, GameEvent, GameState, Reducer } from 'shared';
+import { Comparator, GameEvent, GameState, PathCostCoordinate, Reducer } from 'shared';
 import { requestStateEventResolver } from '@resolvers/request-state-event.resolver';
 import { responseStateEventResolver } from '@resolvers/response-state-event.resolver';
 import { gameEventResolver } from '@resolvers/game-event.resolver';
@@ -27,7 +27,11 @@ export class Game {
     this.pendingRequestEvents = new PriorityListStructure(comparator);
   }
 
-  public receiveGameEventFromClient(gameRequestEvent: GameEvent): void {
+  public getPossibleTargets(robotId: string): PathCostCoordinate[] {
+    return this.gameCalculator.getPossiblePaths(this.gameState, robotId);
+  }
+
+  public receiveGameEventFromClient<GAME_EVENT extends GameEvent>(gameRequestEvent: GAME_EVENT): void {
     this.resolveGameEvent(gameRequestEvent);
   }
 
@@ -54,6 +58,9 @@ export class Game {
         readonlyGameState,
         currentRequestEvent
       );
+      //TODO: the readonly gamestate canet be reused sur chaque itération, il faut utiliser le nouveau gameState
+      // temporaire pour résolve le prochain évent. CAD faire ce que j'ai fait sur les reducers mais sur toute
+      // la stack en 1 seul call (pas en 2 méthodes)
       responseEvents.push(...responseEventsFromRequest);
       //Impl Note : responseEvents are mapped to reducers, while keeping its ordering.
       const reducers123: Reducer[] = responseEventsFromRequest

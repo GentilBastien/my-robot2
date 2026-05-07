@@ -4,6 +4,7 @@ import {
   RequestHeatStateEvent,
   RequestHpStateEvent,
   RequestManaStateEvent,
+  RequestMovementStateEvent,
   RequestPathStateEvent,
   RequestRemoveEffectStateEvent,
   RequestResourcesStateEvent,
@@ -15,6 +16,7 @@ import {
 } from '@events/request-state.event';
 import {
   AddEffectResponseStateEvent,
+  MovementResponseStateEvent,
   PathResponseStateEvent,
   ResourcesResponseStateEvent,
   ResponseStateEvent,
@@ -39,6 +41,7 @@ import { hpRequestStateCase } from '@resolvers-request/hp.request-state-case';
 import { heatRequestStateCase } from '@resolvers-request/heat.request-state-case';
 import { damageRequestStateCase } from '@resolvers-request/damage.request-state-case';
 import { robotDestroyedRequestStateCase } from '@resolvers-request/robot-destroyed.request-state-case';
+import { movementRequestStateCase } from '@resolvers-request/movement.request-state-case';
 
 export function requestStateEventResolver(
   gameCalculator: GameCalculator,
@@ -83,6 +86,12 @@ export function requestStateEventResolver(
         requestEvent as RequestStepPathStateEvent
       );
       return [stepPathResponseStateEvent];
+    }
+    case GameEventTypeEnum.MOVEMENT: {
+      const movementResponseStateEvent: MovementResponseStateEvent = movementRequestStateCase(
+        requestEvent as RequestMovementStateEvent
+      );
+      return [movementResponseStateEvent];
     }
     case GameEventTypeEnum.RESOURCES: {
       const resourcesResponseStateEvent: ResourcesResponseStateEvent = resourcesRequestStateCase(

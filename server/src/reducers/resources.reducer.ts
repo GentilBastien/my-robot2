@@ -16,7 +16,7 @@ export const updateResourcesState =
   };
 
 export const remainingMovementReducer =
-  (robotId: string, newRemainingMovement: number): Reducer =>
+  (robotId: string, moveCost: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return {
       ...gameState,
@@ -26,7 +26,7 @@ export const remainingMovementReducer =
           ...gameState.robots[robotId],
           resources: {
             ...gameState.robots[robotId].resources,
-            remainingMove: newRemainingMovement,
+            remainingMove: gameState.robots[robotId].resources.remainingMove - moveCost,
           },
         },
       },
@@ -52,7 +52,7 @@ export const hpReducer =
   };
 
 export const shieldReducer =
-  (robotId: string, newShield: number): Reducer =>
+  (robotId: string, shieldCost: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return {
       ...gameState,
@@ -62,7 +62,7 @@ export const shieldReducer =
           ...gameState.robots[robotId],
           resources: {
             ...gameState.robots[robotId].resources,
-            shield: newShield,
+            shield: gameState.robots[robotId].resources.shield - shieldCost,
           },
         },
       },

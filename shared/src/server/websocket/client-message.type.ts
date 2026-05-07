@@ -7,6 +7,7 @@ export const ClientMessageType = {
   LEAVE_GAME: 'LEAVE_GAME',
   REJOIN_GAME: 'REJOIN_GAME',
   TURN_END: 'TURN_END',
+  POSSIBLE_PATHS: 'POSSIBLE_PATHS',
   PATH: 'PATH',
   ACTION: 'ACTION',
 } as const;

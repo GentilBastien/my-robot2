@@ -60,21 +60,27 @@ export class GameCalculator {
     this.cyclicList.next();
   }
 
-  public getPathCoordinateToTarget(
+  public getShortestPathTo(
     gameState: Readonly<GameState>,
     robotId: string,
     target: Coordinates
   ): PathCostCoordinate | null {
-    const startCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
+    const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
+    const startCell = this.hexGrid.getCellAt(robotCoordinates);
     const targetCell = this.hexGrid.getCellAt(target);
     return this.hexGrid.shortestPathTo(startCell, targetCell);
   }
 
-  public getPossibleTargets(gameState: Readonly<GameState>, robotId: string): PathCostCoordinate[] {
+  public getPossiblePaths(gameState: Readonly<GameState>, robotId: string): PathCostCoordinate[] {
     const robotState = this.getRobotState(gameState, robotId);
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
+    console.log(robotState.resources.remainingMove);
     return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
+  }
+
+  public getCellStateAtCoordinates(coordinates: Coordinates): CellState {
+    return this.hexGrid.getCellAt(coordinates).getItemOrThrow();
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
@@ -95,10 +101,6 @@ export class GameCalculator {
 
   public getRobotStatisticState(gameState: Readonly<GameState>, robotId: string): StatisticsState {
     return gameState.robots[robotId].statistics;
-  }
-
-  public getCellStateAtCoordinates(coordinates: Coordinates): CellState {
-    return this.hexGrid.getCellAt(coordinates).getItemOrThrow();
   }
 
   public getPlayingRobotId(): string {
@@ -232,11 +234,19 @@ export class GameCalculator {
   }
 
   public mapPathToPathWithCost(path: Coordinates[]): PathCostCoordinate {
-    //TODO: impl function
+    const hexCells = path.map(coordinates => this.hexGrid.getCellAt(coordinates));
     return {
-      costs: [],
-      coordinatesPath: [],
+      costs: hexCells.map(hexCell => hexCell.weight),
+      coordinatesPath: path,
     };
+  }
+
+  public getPathCoordinateCost(pathCoordinate: PathCostCoordinate): number {
+    let sum = 0;
+    for (let i = 1; i < pathCoordinate.costs.length; i++) {
+      sum += pathCoordinate.costs[i];
+    }
+    return sum;
   }
 
   public movementTypeAllowedForRobot(
@@ -247,14 +257,6 @@ export class GameCalculator {
     //TODO: impl function
     // const robot = this.getRobotState(gameState, robotId);
     return true;
-  }
-
-  public getPathCoordinateCost(pathCoordinate: PathCostCoordinate): number {
-    let sum = 0;
-    for (let i = 1; i < pathCoordinate.costs.length; i++) {
-      sum += pathCoordinate.costs[i];
-    }
-    return sum;
   }
 
   public splitPathInSteps(path: PathCostCoordinate): StepPathCostCoordinate[] {

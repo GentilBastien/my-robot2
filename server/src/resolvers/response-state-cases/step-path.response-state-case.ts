@@ -1,6 +1,6 @@
 import { StepPathResponseStateEvent } from '@events/response-state.event';
-import { RequestStateEvent } from '@events/request-state.event';
-import { EffectState, GameState, Reducer } from 'shared';
+import { RequestMovementStateEvent, RequestStateEvent } from '@events/request-state.event';
+import { EffectState, GameEventTypeEnum, GameState, Reducer } from 'shared';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -13,13 +13,22 @@ export function stepPathResponseStateCase(
   stepPathResponseStateEvent: StepPathResponseStateEvent,
   pendingRequestEvents: PriorityListStructure<RequestStateEvent>
 ): Reducer {
-  const newRemainingMove: number =
-    gameCalculator.getRobotResourcesState(readonlyGameState, stepPathResponseStateEvent.sourceRobotId).remainingMove -
-    stepPathResponseStateEvent.stepPath.cost;
+  const remainingMove: number = gameCalculator.getRobotResourcesState(
+    readonlyGameState,
+    stepPathResponseStateEvent.sourceRobotId
+  ).remainingMove;
+  const newRemainingMove: number = remainingMove - stepPathResponseStateEvent.stepPath.cost;
   const effectStatesFromCoordinates: EffectState[] = gameCalculator.getEffectStatesAtCoordinates(
     readonlyGameState,
     stepPathResponseStateEvent.stepPath.endCoordinates
   );
+  const requestMovementStateEvent: RequestMovementStateEvent = {
+    gameEventType: GameEventTypeEnum.MOVEMENT,
+    sourceRobotId: stepPathResponseStateEvent.sourceRobotId,
+    coordinates: stepPathResponseStateEvent.stepPath.endCoordinates,
+  };
+  pendingRequestEvents.add(requestMovementStateEvent);
+
   const newPendingRequestStateEvents: RequestStateEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
     const effect: Effect = gameCalculator.getEffect(effectState);
     return effect.handle({

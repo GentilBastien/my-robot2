@@ -4,6 +4,7 @@ import {
   HeatResponseStateEvent,
   HpResponseStateEvent,
   ManaResponseStateEvent,
+  MovementResponseStateEvent,
   PathResponseStateEvent,
   RemoveEffectResponseStateEvent,
   ResourcesResponseStateEvent,
@@ -29,6 +30,7 @@ import { hpResponseStateCase } from '@resolvers-response/hp.response-state-case'
 import { heatResponseStateCase } from '@resolvers-response/heat.response-state-case';
 import { damageResponseStateCase } from '@resolvers-response/damage.response-state-case';
 import { robotDestroyedResponseStateCase } from '@resolvers-response/robot-destroyed.response-state-case';
+import { movementResponseStateCase } from '@resolvers-response/movement.response-state-case';
 
 export function responseStateEventResolver(
   gameCalculator: GameCalculator,
@@ -73,6 +75,9 @@ export function responseStateEventResolver(
           responseEvent as StepPathResponseStateEvent,
           pendingRequestEvents
         );
+      }
+      case GameEventTypeEnum.MOVEMENT: {
+        return movementResponseStateCase(responseEvent as MovementResponseStateEvent);
       }
       case GameEventTypeEnum.RESOURCES: {
         return resourcesResponseStateCase(

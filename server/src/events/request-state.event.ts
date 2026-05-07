@@ -38,6 +38,11 @@ export interface RequestStepPathStateEvent extends RequestStateEvent {
   stepPath: StepPathCostCoordinate;
 }
 
+export interface RequestMovementStateEvent extends RequestStateEvent {
+  gameEventType: GameEventTypeEnum.MOVEMENT;
+  coordinates: Coordinates;
+}
+
 export interface RequestResourcesStateEvent extends RequestStateEvent {
   gameEventType: GameEventTypeEnum.RESOURCES;
 }

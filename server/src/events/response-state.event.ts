@@ -1,4 +1,5 @@
 import {
+  Coordinates,
   DamageTypeEnum,
   EffectState,
   GameEvent,
@@ -40,6 +41,11 @@ export interface StepPathResponseStateEvent extends ResponseStateEvent {
   gameEventType: GameEventTypeEnum.STEP_PATH;
   movementType: MovementTypeEnum;
   stepPath: StepPathCostCoordinate;
+}
+
+export interface MovementResponseStateEvent extends ResponseStateEvent {
+  gameEventType: GameEventTypeEnum.MOVEMENT;
+  coordinates: Coordinates;
 }
 
 export interface ResourcesResponseStateEvent extends ResponseStateEvent {

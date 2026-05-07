@@ -9,6 +9,10 @@ export interface GameEvent {
   sourceRobotId: string;
 }
 
+export interface TurnEndGameEvent extends GameEvent {
+  gameEventType: GameEventTypeEnum.TURN_END;
+}
+
 export interface PathGameEvent extends GameEvent {
   gameEventType: GameEventTypeEnum.PATH;
   movementType: MovementTypeEnum;

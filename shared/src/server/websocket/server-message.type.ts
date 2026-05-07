@@ -5,6 +5,7 @@ export const ServerMessageType = {
   PROPOSAL_DECLINED: 'PROPOSAL_DECLINED',
   PROPOSAL_TIMED_OUT: 'PROPOSAL_TIMED_OUT',
   GAME_FINISHED: 'GAME_FINISHED',
+  POSSIBLE_PATHS: 'POSSIBLE_PATHS',
 } as const;
 
 export type ServerMessageType = (typeof ServerMessageType)[keyof typeof ServerMessageType];

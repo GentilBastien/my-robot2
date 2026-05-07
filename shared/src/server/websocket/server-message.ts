@@ -1,6 +1,6 @@
 import { ServerMessageType } from './server-message.type';
 
-export interface ServerMessage<T extends Record<string, string | undefined>> {
+export interface ServerMessage<T> {
   type: ServerMessageType;
   payload?: T;
 }

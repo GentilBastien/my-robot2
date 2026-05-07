@@ -9,8 +9,7 @@ export function gameEventResolver(gameEvent: GameEvent): RequestStateEvent {
     case GameEventTypeEnum.TURN_END: {
       return turnEndGameCase(gameEvent);
     }
-    case GameEventTypeEnum.PATH:
-    case GameEventTypeEnum.STEP_PATH: {
+    case GameEventTypeEnum.PATH: {
       return pathGameCase(gameEvent as PathGameEvent);
     }
     case GameEventTypeEnum.ACTION: {

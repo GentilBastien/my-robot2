@@ -17,19 +17,21 @@ import { Game } from '@game/game';
 import { GameConfig } from '@game/game.config';
 
 export function createNewGame(gameProposal: GameProposal): Game {
+  const width = 10;
+  const height = 10;
   const gameConfig: GameConfig = {
-    initialGameState: defineGameState(gameProposal),
-    mapHeight: 10,
-    mapWidth: 10,
+    initialGameState: defineGameState(gameProposal, width, height),
+    mapWidth: width,
+    mapHeight: height,
   };
   return new Game(gameConfig);
 }
 
-function defineGameState(gameProposal: GameProposal): GameState {
+function defineGameState(gameProposal: GameProposal, mapWidth: number, mapHeight: number): GameState {
   return {
     state: GameStateTypeEnum.PENDING,
     turnState: defineInitialTurnState(),
-    arenaState: defineInitialArenaState(),
+    arenaState: defineInitialArenaState(mapWidth, mapHeight),
     effects: defineInitialEffectState(),
     robots: defineRobotStates(gameProposal),
   };
@@ -38,8 +40,8 @@ function defineGameState(gameProposal: GameProposal): GameState {
 function defineRobotStates(_gameProposal: GameProposal): Record<string, RobotState> {
   //TODO fetch RobotState[] from gameProposal.logins
   return {
-    bast: defineRandomRobot('bast'),
-    wass: defineRandomRobot('wass'),
+    bast: temp_defineRandomRobot('bast'),
+    wass: temp_defineRandomRobot('wass'),
   };
 }
 
@@ -51,9 +53,9 @@ function defineInitialTurnState(): TurnState {
   };
 }
 
-function defineInitialArenaState(): ArenaState {
+function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaState {
   return {
-    cells: Array.from({ length: 100 }).map((_, index) => ({
+    cells: Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
       id: index.toString(),
       weight: 2,
       attributes: {
@@ -71,7 +73,7 @@ function defineInitialEffectState(): EffectState[] {
   return [];
 }
 
-function defineRandomRobot(name: string): RobotState {
+function temp_defineRandomRobot(name: string): RobotState {
   return {
     id: name,
     name: name,
@@ -85,6 +87,7 @@ function defineRandomRobot(name: string): RobotState {
     },
     resources: {
       remainingMove: 4,
+      totalMove: 4,
       coolingDown: 10,
       energyModules: 3,
       mana: 100,
@@ -100,7 +103,6 @@ function defineRandomRobot(name: string): RobotState {
       remainingSubActions: 1,
       shield: 50,
       totalActions: 1,
-      totalMove: 20,
       totalSubActions: 1,
     },
     selfStates: [],

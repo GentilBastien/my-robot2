@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { PathGameEvent, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
+import { Coordinates, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
@@ -119,16 +119,13 @@ export class SessionManager {
     this.gameManager.receiveTurnEnd(session);
   }
 
-  public receivePathGameEvent(login: string, pathGameEvent: PathGameEvent): void {
+  public receivePathGameEvent(login: string, path: Coordinates[]): void {
     const session = this.sessions[login];
-    this.gameManager.receivePath(session, pathGameEvent);
+    this.gameManager.receivePath(session, path);
   }
 
   public sendSession(session: Session): void {
-    this.sendToSession<{ gameId: string | undefined }>(session, {
-      type: ServerMessageType.LOGGED_IN,
-      payload: { gameId: session.gameId },
-    });
+    this.sendToSession(session, { type: ServerMessageType.LOGGED_IN, payload: { gameId: session.gameId } });
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {
@@ -140,10 +137,7 @@ export class SessionManager {
         session.proposalId = gameProposal.id;
       },
       session =>
-        this.sendToSession<{ proposalId: string }>(session, {
-          type: ServerMessageType.SEND_PROPOSAL,
-          payload: { proposalId: gameProposal.id },
-        })
+        this.sendToSession(session, { type: ServerMessageType.SEND_PROPOSAL, payload: { proposalId: gameProposal.id } })
     );
   }
 
@@ -157,7 +151,7 @@ export class SessionManager {
       },
 
       session =>
-        this.sendToSession<{ gameId: string }>(session, {
+        this.sendToSession(session, {
           type: ServerMessageType.PROPOSAL_ACCEPTED,
           payload: { gameId: gameProposal.id },
         })
@@ -177,7 +171,7 @@ export class SessionManager {
         }
       },
       session =>
-        this.sendToSession<{ loginDeclined: string | undefined }>(session, {
+        this.sendToSession(session, {
           type: ServerMessageType.PROPOSAL_DECLINED,
           payload: { loginDeclined: gameProposal.loginDeclined },
         })
@@ -209,6 +203,13 @@ export class SessionManager {
       },
       session => this.sendToSession(session, { type: ServerMessageType.GAME_FINISHED })
     );
+  }
+
+  public receiveAndSendPossiblePaths(login: string): void {
+    const session = this.sessions[login];
+    this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to get possible paths');
+    const possiblePaths = this.gameManager.getPossiblePaths(session);
+    this.sendToSession(session, { type: ServerMessageType.POSSIBLE_PATHS, payload: { possiblePaths } });
   }
 
   //UTILS
@@ -252,10 +253,7 @@ export class SessionManager {
     return sessions;
   }
 
-  private sendToSession<T extends Record<string, string | undefined>>(
-    session: Session,
-    message: ServerMessage<T>
-  ): void {
+  private sendToSession<T>(session: Session, message: ServerMessage<T>): void {
     session.webSocket.send(JSON.stringify(message));
   }
 }

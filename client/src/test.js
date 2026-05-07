@@ -14,6 +14,11 @@ const leaveGameBtn = document.getElementById('leave-game-btn');
 const rejoinGameBtn = document.getElementById('rejoin-game-btn');
 const endTurnBtn = document.getElementById('end-turn-btn');
 const pathBtn = document.getElementById('path-btn');
+const askPossiblePathBtn = document.getElementById('ask-possible-paths-btn');
+
+const movementInputX = document.getElementById('movement-input-x');
+const movementInputY = document.getElementById('movement-input-y');
+const movementInputZ = document.getElementById('movement-input-z');
 
 let websocket = null;
 let logged = false;
@@ -24,12 +29,13 @@ let currProposalId = undefined;
 let answeredProposal = false;
 let inGame = false;
 let currGameId = undefined;
+let oneCoolPath = [];
 
 connectWsBtn.onclick = () => {
   login = connectWsInput.value;
   websocket = new WebSocket('ws://localhost:8080/api/v1/game?login=' + login);
 
-  websocket.onopen = _ => {
+  websocket.onopen = () => {
     updateLogged(true, login);
     console.log('onOpen !');
   };
@@ -77,6 +83,12 @@ connectWsBtn.onclick = () => {
       rejoinGameBtn.disabled = true;
       updateGame(false);
       currGameId = undefined;
+    }
+
+    if (message.type === 'POSSIBLE_PATHS') {
+      console.log('possiblePaths from: ' + login, message.payload.possiblePaths);
+      const possiblePaths = message.payload.possiblePaths;
+      oneCoolPath = possiblePaths[possiblePaths.length - 1];
     }
   };
 };
@@ -131,15 +143,11 @@ endTurnBtn.onclick = () => {
 };
 pathBtn.onclick = () => {
   clientSent(login, 'PATH', {
-    gameEventType: 'PATH',
-    movementType: 'WALKED',
-    sourceRobotId: login,
-    coordinates: [
-      { x: 1, y: 0, z: -1 },
-      { x: 2, y: 0, z: -2 },
-      { x: 2, y: 1, z: -3 },
-    ],
+    path: oneCoolPath.coordinatesPath,
   });
+};
+askPossiblePathBtn.onclick = () => {
+  clientSent(login, 'POSSIBLE_PATHS');
 };
 
 function updateLogged(flag, login) {
@@ -190,4 +198,12 @@ function clientSent(login, type, payload) {
       payload,
     })
   );
+}
+
+function getCoordinatesFromPossiblePathInput() {
+  return {
+    x: movementInputX.value ?? 0,
+    y: movementInputY.value ?? 0,
+    z: movementInputZ.value ?? 0,
+  };
 }

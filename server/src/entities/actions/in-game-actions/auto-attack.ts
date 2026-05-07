@@ -11,6 +11,10 @@ export class AutoAttack implements Action {
   public actionCost = 1;
 
   public onUse(_: ActionContext): ResponseStateEvent[] {
+    //Request Mana
+    //Request EnergyModules
+    //Request Effects
+    //Request Damage
     return [];
   }
 }
