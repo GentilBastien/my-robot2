@@ -13,8 +13,8 @@ import {
   TurnStateTypeEnum,
 } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
-import { Game } from '@game/game';
 import { GameConfig } from '@game/game.config';
+import { Game } from '@game/game';
 
 export function createNewGame(gameProposal: GameProposal): Game {
   const width = 10;

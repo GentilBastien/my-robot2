@@ -1,5 +1,6 @@
-import { ResponseStateEvent } from '@events/response-state.event';
 import { ActionContext } from '@entities/actions/action-context';
+import { ResponseEvent } from '@events/response.event';
+import { AbstractActionRequestEvent } from '@events/action/action-event-list-impl/abstract-action.request-event';
 
 export interface Action {
   manaCost?: number;
@@ -9,5 +10,5 @@ export interface Action {
   baseAmount: number;
   actionCost?: number;
   subActionCost?: number;
-  onUse(actionContext: ActionContext): ResponseStateEvent[];
+  onUse(actionContext: ActionContext<AbstractActionRequestEvent>): ResponseEvent[];
 }

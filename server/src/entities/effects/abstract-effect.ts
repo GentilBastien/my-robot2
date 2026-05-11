@@ -1,82 +1,57 @@
 import { Effect, EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
-import { EffectCategoryTypeEnum, GameEventTypeEnum } from 'shared';
+import { EffectCategoryTypeEnum } from 'shared';
 import { EffectContext } from '@entities/effects/effect-context';
-import {
-  RequestAddEffectStateEvent,
-  RequestRemoveEffectStateEvent,
-  RequestStateEvent,
-} from '@events/request-state.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
+import { RequestEvent } from '@events/request.event';
 
 export abstract class AbstractEffect implements Effect {
-  private readonly _id: string;
   private readonly _type: EffectCategoryTypeEnum;
   private readonly _ticking: EffectTickingConfig;
   private readonly _stacking: EffectStackingConfig;
 
-  protected constructor(
-    id: string,
-    type: EffectCategoryTypeEnum,
-    ticking: EffectTickingConfig,
-    stacking: EffectStackingConfig
-  ) {
-    this._id = id;
+  protected constructor(type: EffectCategoryTypeEnum, ticking: EffectTickingConfig, stacking: EffectStackingConfig) {
     this._type = type;
     this._ticking = ticking;
     this._stacking = stacking;
   }
 
-  protected _handleOnApply = (_effectContext: EffectContext): RequestStateEvent[] => {
+  protected _handleOnApply = (_effectContext: EffectContext): RequestEvent[] => {
     // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
     return [];
   };
 
-  protected _handleOnSurface = (_effectContext: EffectContext): RequestStateEvent[] => {
-    const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    const addEffect: RequestAddEffectStateEvent = {
-      sourceRobotId: effectState.sourceRobotId,
-      gameEventType: GameEventTypeEnum.ADD_EFFECT,
-      actionTypeEnum: undefined,
-      priority: 0,
-      effectState: {
-        sourceRobotId: effectState.sourceRobotId,
-        id: '',
-        stacks: 0,
-        targetCoordinates: coordinates,
-        effectId: effectState.id,
-        remainingTurns: 10,
-        lastedTurns: 0,
-      },
-    };
-    return [addEffect];
-  };
-
-  protected _handleOnAction = (_effectContext: EffectContext): RequestStateEvent[] => {
+  protected _handleOnSurface = (_effectContext: EffectContext): RequestEvent[] => {
     // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
     return [];
   };
 
-  protected _handleOnTurnStart = (_effectContext: EffectContext): RequestStateEvent[] => {
+  protected _handleOnAction = (_effectContext: EffectContext): RequestEvent[] => {
     // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
     return [];
   };
 
-  protected _handleOnTurnEnd = (_effectContext: EffectContext): RequestStateEvent[] => {
+  protected _handleOnTurnStart = (_effectContext: EffectContext): RequestEvent[] => {
     // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
     return [];
   };
 
-  protected _handleOnExpire = (effectContext: EffectContext): RequestStateEvent[] => {
-    const effectState = effectContext.effectState;
-    const requestRemoveEffectStateEvent: RequestRemoveEffectStateEvent = {
-      gameEventType: GameEventTypeEnum.REMOVE_EFFECT,
-      effectStateId: effectState.id,
-      sourceRobotId: effectState.sourceRobotId,
-    };
-    return [requestRemoveEffectStateEvent];
+  protected _handleOnTurnEnd = (_effectContext: EffectContext): RequestEvent[] => {
+    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
+    return [];
   };
 
-  public handle(context: EffectContext): RequestStateEvent[] {
+  protected _handleOnExpire = (_effectContext: EffectContext): RequestEvent[] => {
+    // const effectState = effectContext.effectState;
+    // const requestRemoveEffectStateEvent: RequestRemoveEffectStateEvent = {
+    //   gameEventType: GameEventTypeEnum.REMOVE_EFFECT,
+    //   effectStateId: effectState.id,
+    //   sourceRobotId: effectState.sourceRobotId,
+    // };
+    // return [requestRemoveEffectStateEvent];
+    return [];
+  };
+
+  public handle(context: EffectContext): RequestEvent[] {
     switch (context.trigger) {
       case EffectTrigger.ON_APPLY:
         return this._handleOnApply(context);
@@ -93,10 +68,6 @@ export abstract class AbstractEffect implements Effect {
       default:
         return [];
     }
-  }
-
-  public get id(): string {
-    return this._id;
   }
 
   public get type(): EffectCategoryTypeEnum {

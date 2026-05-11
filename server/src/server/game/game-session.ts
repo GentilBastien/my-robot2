@@ -1,5 +1,5 @@
 import { Session } from '@server/session/session';
-import { Game } from '@game/game';
+import { Game } from '../../OLDCODE/game';
 
 export interface GameSession {
   id: string;

@@ -1,13 +1,12 @@
 import { EffectCategoryTypeEnum } from 'shared';
-import { RequestStateEvent } from '@events/request-state.event';
 import { EffectContext } from '@entities/effects/effect-context';
+import { RequestEvent } from '@events/request.event';
 
 export interface Effect {
-  readonly id: string;
   readonly type: EffectCategoryTypeEnum;
   readonly ticking: EffectTickingConfig;
   readonly stacking: EffectStackingConfig;
-  handle(context: EffectContext): RequestStateEvent[];
+  handle(context: EffectContext): RequestEvent[];
 }
 
 export interface EffectTickingConfig {

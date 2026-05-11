@@ -3,6 +3,8 @@ import { AbstractEffect } from '@entities/effects/abstract-effect';
 import { EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
 
 export class EffectFire extends AbstractEffect {
+  public static readonly ID = 'EffectFire';
+
   constructor() {
     const ticking: EffectTickingConfig = {
       totalTurns: 5,
@@ -14,6 +16,6 @@ export class EffectFire extends AbstractEffect {
       maxStacks: 5,
       refreshDuration: true,
     };
-    super('EffectFire', EffectCategoryTypeEnum.NEGATIVE, ticking, stacking);
+    super(EffectCategoryTypeEnum.NEGATIVE, ticking, stacking);
   }
 }

@@ -1,4 +1,4 @@
-import { Game } from '@game/game';
+import { Game } from './OLDCODE/game';
 import { createServer } from '@server/server';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { createNewGame } from '@game/game-generator/game.generator';
