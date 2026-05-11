@@ -58,9 +58,6 @@ export class Game {
         readonlyGameState,
         currentRequestEvent
       );
-      //TODO: the readonly gamestate canet be reused sur chaque itération, il faut utiliser le nouveau gameState
-      // temporaire pour résolve le prochain évent. CAD faire ce que j'ai fait sur les reducers mais sur toute
-      // la stack en 1 seul call (pas en 2 méthodes)
       responseEvents.push(...responseEventsFromRequest);
       //Impl Note : responseEvents are mapped to reducers, while keeping its ordering.
       const reducers123: Reducer[] = responseEventsFromRequest
