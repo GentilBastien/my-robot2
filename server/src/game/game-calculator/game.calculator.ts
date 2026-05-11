@@ -21,11 +21,11 @@ import {
 } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { Effect } from '@entities/effects/effect';
-import { allEffects } from '@entities/effects/in-game-effects/in-game-effects';
 import { Action } from '@entities/actions/action';
-import { allActions } from '@entities/actions/in-game-actions/in-game-actions';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 import { GameConfig } from '../game.config';
+import { actionList } from '@entities/actions/action-list/action.list';
+import { effectList } from '@entities/effects/effect-list/effect.list';
 
 interface InitiativeRobot {
   id: string;
@@ -116,7 +116,7 @@ export class GameCalculator {
   }
 
   public getAction(actionTypeEnum: ActionTypeEnum): Action {
-    const actionFound = allActions.get(actionTypeEnum);
+    const actionFound = actionList.get(actionTypeEnum);
     if (actionFound) {
       return actionFound;
     }
@@ -124,7 +124,7 @@ export class GameCalculator {
   }
 
   public getEffect(effectState: EffectState): Effect {
-    return allEffects[effectState.effectId];
+    return effectList[effectState.effectId];
   }
 
   public getEffectStateById(gameState: Readonly<GameState>, effectStateId: string): EffectState {

@@ -1,5 +1,5 @@
 import { ContextEvent } from '@events/context.event';
-import { ActionResponseEvent } from '@events/action/action.response-event';
+import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
 import { Action } from '@entities/actions/action';
 import { ActionTypeEnum } from 'shared';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
@@ -34,5 +34,5 @@ export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
     });
   }
 
-  public abstract mapToResponse(context: ContextEvent): ActionResponseEvent;
+  public abstract mapToResponse(context: ContextEvent): AbstractActionResponseEvent;
 }

@@ -65,7 +65,7 @@ export class GameManager {
 
   /**
    * Returns true if all client left the current {@link GameSession}.
-   * That implies the client is not in a IN_GAME state or is in a different game.
+   * That implies the client is not in an IN_GAME state or is in a different game.
    * @param gameSessionId The id of the {@link GameSession}.
    */
   public isGameSessionIdle(gameSessionId: string): boolean {
