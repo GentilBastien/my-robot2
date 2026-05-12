@@ -1,6 +1,8 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { ActionTypeEnum, Reducer } from 'shared';
+import { RequestEvent } from '@events/request.event';
+import { Action } from '@entities/actions/action';
 
 export abstract class AbstractActionResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -11,6 +13,15 @@ export abstract class AbstractActionResponseEvent implements ResponseEvent {
     this.sourceRobotId = sourceRobotId;
     this.actionTypeEnum = actionTypeEnum;
     this.responseValidated = responseValidated;
+  }
+
+  public getResponseEvents(context: ContextEvent): RequestEvent[] {
+    const action: Action = context.gameCalculator.getAction(this.actionTypeEnum);
+    return action.onUse({
+      actionResponseEvent: this,
+      gameState: context.gameState,
+      gameCalculator: context.gameCalculator,
+    });
   }
 
   public abstract mapToReducer(_context: ContextEvent): Reducer | null;

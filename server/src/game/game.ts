@@ -28,30 +28,23 @@ export class Game {
   private resolveAllSubEvents(request: RequestEvent): GameState {
     let tempGameState: GameState = this.gameState;
     const pendingRequests: RequestEvent[] = [request];
-    do {
+    while (pendingRequests.length > 0) {
       const firstRequest = pendingRequests.shift();
       if (firstRequest) {
-        tempGameState = this.resolveEventAndQueue(firstRequest, pendingRequests);
+        tempGameState = this.resolveEventAndQueue(firstRequest, tempGameState, pendingRequests);
       }
-    } while (pendingRequests.length > 0);
+    }
     return tempGameState;
   }
 
-  private resolveEventAndQueue(request: RequestEvent, pendingRequests: RequestEvent[]): GameState {
-    const response = request.mapToResponse({
-      gameState: this.gameState,
-      gameCalculator: this.gameCalculator,
-      pendingRequests,
-    });
-    const reducer = response.mapToReducer({
-      gameState: this.gameState,
-      gameCalculator: this.gameCalculator,
-      pendingRequests,
-    });
-    if (reducer !== null) {
-      return reducer(this.gameState);
-    } else {
-      return this.gameState;
-    }
+  private resolveEventAndQueue(
+    request: RequestEvent,
+    currentState: GameState,
+    pendingRequests: RequestEvent[]
+  ): GameState {
+    const context = { gameState: currentState, gameCalculator: this.gameCalculator, pendingRequests };
+    const response = request.mapToResponse(context);
+    const reducer = response.mapToReducer(context);
+    return reducer ? reducer(currentState) : currentState;
   }
 }

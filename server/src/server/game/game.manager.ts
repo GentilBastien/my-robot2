@@ -2,15 +2,9 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
-import {
-  Coordinates,
-  GameEventTypeEnum,
-  MovementTypeEnum,
-  PathCostCoordinate,
-  PathGameEvent,
-  SessionStateTypeEnum,
-} from 'shared';
-import { TurnEndGameEvent } from 'shared/dist/server/websocket/game.event';
+import { Coordinates, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
+import { TurnEndRequestEvent } from '@events/turn-end/turn-end.request-event';
+import { PathRequestEvent } from '@events/path/path.request-event';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;
@@ -76,10 +70,8 @@ export class GameManager {
   public receiveTurnEnd(session: Session): void {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
-      return gameSession.game.receiveGameEventFromClient<TurnEndGameEvent>({
-        gameEventType: GameEventTypeEnum.TURN_END,
-        sourceRobotId: session.login,
-      });
+      const turnEndRequestEvent = new TurnEndRequestEvent(session.login);
+      return gameSession.game.resolveEvent(turnEndRequestEvent);
     }
     throw 'no gameId';
   }
@@ -95,12 +87,8 @@ export class GameManager {
   public receivePath(session: Session, path: Coordinates[]): void {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
-      return gameSession.game.receiveGameEventFromClient<PathGameEvent>({
-        gameEventType: GameEventTypeEnum.PATH,
-        sourceRobotId: session.login,
-        movementType: MovementTypeEnum.WALKED,
-        path,
-      });
+      const turnEndRequestEvent = new PathRequestEvent(session.login, MovementTypeEnum.WALKED, path);
+      return gameSession.game.resolveEvent(turnEndRequestEvent);
     }
     throw 'no gameId';
   }
