@@ -15,7 +15,7 @@ export abstract class AbstractActionResponseEvent implements ResponseEvent {
     this.responseValidated = responseValidated;
   }
 
-  public getResponseEvents(context: ContextEvent): RequestEvent[] {
+  public getRequestEventsOnUse(context: ContextEvent): RequestEvent[] {
     const action: Action = context.gameCalculator.getAction(this.actionTypeEnum);
     return action.onUse({
       actionResponseEvent: this,
