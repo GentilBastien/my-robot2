@@ -10,33 +10,28 @@ export class AutoAttackActionRequestEvent
 {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
-  damage: number;
   damageType: DamageTypeEnum.ENERGETIC;
-  hasEnergyModule: boolean;
+  damage: number;
   targetRobotId: string;
+  hasEnergyModule: boolean;
 
-  constructor(
-    sourceRobotId: string,
-    actionTypeEnum: ActionTypeEnum.AUTO_ATTACK,
-    damage: number,
-    damageType: DamageTypeEnum.ENERGETIC,
-    hasEnergyModule: boolean,
-    targetRobotId: string
-  ) {
-    super(sourceRobotId, actionTypeEnum);
+  constructor(sourceRobotId: string, targetRobotId: string, damage: number, hasEnergyModule: boolean) {
+    super(sourceRobotId, ActionTypeEnum.AUTO_ATTACK);
     this.sourceRobotId = sourceRobotId;
-    this.actionTypeEnum = actionTypeEnum;
+    this.actionTypeEnum = ActionTypeEnum.AUTO_ATTACK;
     this.damage = damage;
-    this.damageType = damageType;
+    this.damageType = DamageTypeEnum.ENERGETIC;
     this.hasEnergyModule = hasEnergyModule;
     this.targetRobotId = targetRobotId;
   }
 
-  public mapToResponse(_context: ContextEvent): AutoAttackActionResponseEvent {
+  public mapToResponse(context: ContextEvent): AutoAttackActionResponseEvent {
     return new AutoAttackActionResponseEvent({
-      sourceRobotId: '',
-      actionTypeEnum: this.actionTypeEnum,
-      responseValidated: true,
+      sourceRobotId: this.sourceRobotId,
+      targetRobotId: this.targetRobotId,
+      responseValidated: super.isActionAllowed(context),
+      damage: this.damage,
+      hasEnergyModule: this.hasEnergyModule,
     });
   }
 }

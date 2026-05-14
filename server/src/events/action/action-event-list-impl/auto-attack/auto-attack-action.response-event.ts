@@ -1,6 +1,6 @@
 import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
 import { ContextEvent } from '@events/context.event';
-import { ActionTypeEnum, Reducer } from 'shared';
+import { ActionTypeEnum, DamageTypeEnum, Reducer } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
 
@@ -10,6 +10,10 @@ export class AutoAttackActionResponseEvent
 {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
+  damageType: DamageTypeEnum.ENERGETIC;
+  damage: number;
+  targetRobotId: string;
+  hasEnergyModule: boolean;
   responseValidated: boolean;
 
   public mapToReducer(context: ContextEvent): Reducer | null {
@@ -23,12 +27,18 @@ export class AutoAttackActionResponseEvent
 
   public constructor(parameters: {
     sourceRobotId: string;
-    actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
+    targetRobotId: string;
     responseValidated: boolean;
+    damage: number;
+    hasEnergyModule: boolean;
   }) {
-    super(parameters.sourceRobotId, parameters.actionTypeEnum, parameters.responseValidated);
+    super(parameters.sourceRobotId, ActionTypeEnum.AUTO_ATTACK, parameters.responseValidated);
+    this.targetRobotId = parameters.targetRobotId;
+    this.actionTypeEnum = ActionTypeEnum.AUTO_ATTACK;
+    this.damageType = DamageTypeEnum.ENERGETIC;
     this.sourceRobotId = parameters.sourceRobotId;
-    this.actionTypeEnum = parameters.actionTypeEnum;
     this.responseValidated = parameters.responseValidated;
+    this.damage = parameters.damage;
+    this.hasEnergyModule = parameters.hasEnergyModule;
   }
 }

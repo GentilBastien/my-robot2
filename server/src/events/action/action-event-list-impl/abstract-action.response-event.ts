@@ -1,10 +1,10 @@
 import { ContextEvent } from '@events/context.event';
-import { ResponseEvent } from '@events/response.event';
 import { ActionTypeEnum, Reducer } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Action } from '@entities/actions/action';
+import { ActionResponseEvent } from '@events/action/action.event-list';
 
-export abstract class AbstractActionResponseEvent implements ResponseEvent {
+export abstract class AbstractActionResponseEvent implements ActionResponseEvent {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum;
   responseValidated: boolean;
