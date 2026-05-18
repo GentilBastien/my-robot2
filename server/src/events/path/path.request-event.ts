@@ -26,9 +26,14 @@ export class PathRequestEvent implements RequestEvent {
       this.sourceRobotId,
       this.movementType
     );
+    const pathResultsInMovement: boolean = context.gameCalculator.pathResultsInMovement(
+      context.gameState,
+      this.sourceRobotId,
+      this.path
+    );
     return new PathResponseEvent({
       movementType: this.movementType,
-      responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed,
+      responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathResultsInMovement,
       sourceRobotId: this.sourceRobotId,
       path: pathWithCosts,
     });

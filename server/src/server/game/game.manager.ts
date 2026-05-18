@@ -79,7 +79,7 @@ export class GameManager {
   public getPossiblePaths(session: Session): PathCostCoordinate[] {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
-      return gameSession.game.getPossibleTargets(session.login);
+      return gameSession.game.getPossiblePaths(session.login);
     }
     throw 'no gameId';
   }

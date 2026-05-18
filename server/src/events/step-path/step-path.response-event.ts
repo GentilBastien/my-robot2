@@ -39,6 +39,7 @@ export class StepPathResponseEvent implements ResponseEvent {
       this.sourceRobotId
     ).remainingMove;
     const newRemainingMove: number = remainingMove - this.stepPath.cost;
+    console.log(remainingMove, this.stepPath.cost, newRemainingMove);
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
   }
 

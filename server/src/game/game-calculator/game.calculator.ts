@@ -75,7 +75,7 @@ export class GameCalculator {
     const robotState = this.getRobotState(gameState, robotId);
     const robotCoordinates = this.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
-    console.log(robotState.resources.remainingMove);
+    console.log('getPossiblePaths remaining move: ', robotState.resources.remainingMove);
     return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
   }
 
@@ -116,7 +116,7 @@ export class GameCalculator {
   }
 
   public getAction(actionTypeEnum: ActionTypeEnum): Action {
-    const actionFound = actionList.get(actionTypeEnum);
+    const actionFound: Action | undefined = actionList[actionTypeEnum];
     if (actionFound) {
       return actionFound;
     }
@@ -257,6 +257,18 @@ export class GameCalculator {
     //TODO: impl function
     // const robot = this.getRobotState(gameState, robotId);
     return true;
+  }
+
+  /**
+   * Returns true if the given path will actually result in a movement.
+   * Moving to the same coordinate where the robot already is will be considered as no movement.
+   */
+  public pathResultsInMovement(gameState: Readonly<GameState>, robotId: string, coordinates: Coordinates[]): boolean {
+    if (coordinates.length === 0) {
+      return false;
+    }
+    const robotCoordinates: Coordinates = this.getRobotCoordinates(gameState, robotId);
+    return coordinates.length > 1 || !this.hexGrid.getCellAt(robotCoordinates).isLocatedAt(coordinates[0]);
   }
 
   public splitPathInSteps(path: PathCostCoordinate): StepPathCostCoordinate[] {

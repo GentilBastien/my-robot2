@@ -16,7 +16,7 @@ export const updateResourcesState =
   };
 
 export const remainingMovementReducer =
-  (robotId: string, moveCost: number): Reducer =>
+  (robotId: string, newRemainingMove: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return {
       ...gameState,
@@ -26,7 +26,7 @@ export const remainingMovementReducer =
           ...gameState.robots[robotId],
           resources: {
             ...gameState.robots[robotId].resources,
-            remainingMove: gameState.robots[robotId].resources.remainingMove - moveCost,
+            remainingMove: newRemainingMove,
           },
         },
       },
