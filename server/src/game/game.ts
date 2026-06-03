@@ -2,6 +2,7 @@ import { GameState, PathCostCoordinate, Reducer } from 'shared';
 import { GameConfig } from '@game/game.config';
 import { RequestEvent } from '@events/request.event';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
+import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
@@ -29,9 +30,9 @@ export class Game {
 
   private resolveAllSubEvents(request: RequestEvent): GameState {
     let tempGameState: GameState = this.gameState;
-    const pendingRequests: RequestEvent[] = [request];
-    while (pendingRequests.length > 0) {
-      const firstRequest = pendingRequests.shift();
+    const pendingRequests = new ArrayIndexStructure<RequestEvent>([request]);
+    while (pendingRequests.size() > 0) {
+      const firstRequest = pendingRequests.consumeFirst();
       if (firstRequest) {
         tempGameState = this.resolveEventAndQueue(firstRequest, tempGameState, pendingRequests);
       }
@@ -42,7 +43,7 @@ export class Game {
   private resolveEventAndQueue(
     request: RequestEvent,
     currentState: GameState,
-    pendingRequests: RequestEvent[]
+    pendingRequests: ArrayIndexStructure<RequestEvent>
   ): GameState {
     const context = { gameState: currentState, gameCalculator: this.gameCalculator, pendingRequests };
     const response = request.mapToResponse(context);

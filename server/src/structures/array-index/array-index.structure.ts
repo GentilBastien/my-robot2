@@ -5,8 +5,12 @@ import { resolveMaybeArray } from 'shared/dist/types/maybe';
 export class ArrayIndexStructure<T> implements ArrayIndexStructureInterface<T> {
   private elements: T[];
 
-  constructor() {
-    this.elements = [];
+  constructor(elements?: T[]) {
+    this.elements = elements ?? [];
+  }
+
+  public size(): number {
+    return this.elements.length;
   }
 
   public consumeFirst(): T | undefined {

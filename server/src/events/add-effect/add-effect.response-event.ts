@@ -25,7 +25,7 @@ export class AddEffectResponseEvent implements ResponseEvent {
       gameState: context.gameState,
       gameCalculator: context.gameCalculator,
     });
-    context.pendingRequests.push(...newEffectsFromApply);
+    context.pendingRequests.insertEnd(newEffectsFromApply);
 
     if (alreadyAffected) {
       return updateEffectState(alreadyAffected);

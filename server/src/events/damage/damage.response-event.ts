@@ -26,7 +26,7 @@ export class DamageResponseEvent implements ResponseEvent {
 
     const isDestroyed = newHp === 0;
     if (isDestroyed) {
-      context.pendingRequests.push(
+      context.pendingRequests.insertEnd(
         new RobotDestroyedRequestEvent(
           this.sourceRobotId,
           this.targetRobotId,

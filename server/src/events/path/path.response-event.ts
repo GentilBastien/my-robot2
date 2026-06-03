@@ -18,7 +18,7 @@ export class PathResponseEvent implements ResponseEvent {
         );
         if (pathCoordsAsOneStep) {
           const stepPath = new StepPathRequestEvent(this.sourceRobotId, this.movementType, pathCoordsAsOneStep);
-          context.pendingRequests.push(stepPath);
+          context.pendingRequests.insertEnd(stepPath);
         }
         break;
       }
@@ -29,7 +29,7 @@ export class PathResponseEvent implements ResponseEvent {
         const requestStepPathStateEvents: StepPathRequestEvent[] = steps.map(
           stepPath => new StepPathRequestEvent(this.sourceRobotId, this.movementType, stepPath)
         );
-        context.pendingRequests.push(...requestStepPathStateEvents);
+        context.pendingRequests.insertEnd(requestStepPathStateEvents);
       }
     }
     return null;

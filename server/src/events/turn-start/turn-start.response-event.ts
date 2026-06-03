@@ -34,7 +34,7 @@ export class TurnStartResponseEvent implements ResponseEvent {
       }
     );
 
-    context.pendingRequests.push(...requestEventsFromEffects);
+    context.pendingRequests.insertEnd(requestEventsFromEffects);
     return startTurnReducer(TurnStateTypeEnum.STARTED);
   }
 

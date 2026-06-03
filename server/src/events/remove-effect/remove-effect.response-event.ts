@@ -21,7 +21,7 @@ export class RemoveEffectResponseEvent implements ResponseEvent {
       gameState: context.gameState,
       gameCalculator: context.gameCalculator,
     });
-    context.pendingRequests.push(...newEffectsWhenExpired);
+    context.pendingRequests.insertEnd(newEffectsWhenExpired);
 
     return removeEffectState(this.effectStateId);
   }

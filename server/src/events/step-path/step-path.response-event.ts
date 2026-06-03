@@ -20,7 +20,7 @@ export class StepPathResponseEvent implements ResponseEvent {
     );
 
     const requestMovementStateEvent = new MovementRequestEvent(this.sourceRobotId, this.stepPath.endCoordinates);
-    context.pendingRequests.push(requestMovementStateEvent);
+    context.pendingRequests.insertEnd(requestMovementStateEvent);
 
     const newPendingRequestStateEvents: RequestEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
       const effect: Effect = context.gameCalculator.getEffect(effectState);
@@ -32,14 +32,13 @@ export class StepPathResponseEvent implements ResponseEvent {
         gameCalculator: context.gameCalculator,
       });
     });
-    context.pendingRequests.push(...newPendingRequestStateEvents);
+    context.pendingRequests.insertEnd(newPendingRequestStateEvents);
 
     const remainingMove: number = context.gameCalculator.getRobotResourcesState(
       context.gameState,
       this.sourceRobotId
     ).remainingMove;
     const newRemainingMove: number = remainingMove - this.stepPath.cost;
-    console.log(remainingMove, this.stepPath.cost, newRemainingMove);
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
   }
 

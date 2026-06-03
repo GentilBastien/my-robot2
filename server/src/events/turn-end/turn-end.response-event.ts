@@ -35,15 +35,15 @@ export class TurnEndResponseEvent implements ResponseEvent {
         });
       }
     );
-    context.pendingRequests.push(...requestStateEventsFromEffects);
+    context.pendingRequests.insertEnd(requestStateEventsFromEffects);
 
     const resourcesRequestEvent: ResourcesRequestEvent = new ResourcesRequestEvent(this.turnRobotId);
-    context.pendingRequests.push(resourcesRequestEvent);
+    context.pendingRequests.insertEnd(resourcesRequestEvent);
 
     context.gameCalculator.advanceTurn();
 
     const turnStartRequestEvent = new TurnStartRequestEvent(this.turnRobotId);
-    context.pendingRequests.push(turnStartRequestEvent);
+    context.pendingRequests.insertEnd(turnStartRequestEvent);
 
     return startTurnReducer(TurnStateTypeEnum.FINISHED);
   }

@@ -19,7 +19,7 @@ export class AutoAttackActionResponseEvent
   public mapToReducer(context: ContextEvent): Reducer | null {
     if (this.responseValidated) {
       const requestEventsFromAction: RequestEvent[] = this.getRequestEventsOnUse(context);
-      context.pendingRequests.push(...requestEventsFromAction);
+      context.pendingRequests.insertEnd(requestEventsFromAction);
     }
 
     return null;
