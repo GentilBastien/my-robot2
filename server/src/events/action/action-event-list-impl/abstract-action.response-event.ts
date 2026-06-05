@@ -1,5 +1,5 @@
 import { ContextEvent } from '@events/context.event';
-import { ActionTypeEnum, Reducer } from 'shared';
+import { ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Action } from '@entities/actions/action';
 import { ActionResponseEvent } from '@events/action/action.event-list';
@@ -24,5 +24,5 @@ export abstract class AbstractActionResponseEvent implements ActionResponseEvent
     });
   }
 
-  public abstract mapToReducer(_context: ContextEvent): Reducer | null;
+  public abstract mapToReducer(_context: ContextEvent): MaybeArray<Reducer>;
 }

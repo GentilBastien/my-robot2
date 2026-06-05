@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { EffectState, Reducer, TurnStateTypeEnum } from 'shared';
+import { EffectState, MaybeArray, Reducer, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -12,7 +12,7 @@ export class TurnStartResponseEvent implements ResponseEvent {
   turnNumber: number;
   turnRobotId: string;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectStatesFromRobot: EffectState[] = context.gameCalculator.getEffectStatesFromRobot(
       context.gameState,
       this.turnRobotId

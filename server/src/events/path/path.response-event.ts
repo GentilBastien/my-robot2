@@ -1,6 +1,6 @@
 import { ResponseEvent } from '@events/response.event';
 import { ContextEvent } from '@events/context.event';
-import { MovementTypeEnum, PathCostCoordinate, Reducer, StepPathCostCoordinate } from 'shared';
+import { MaybeArray, MovementTypeEnum, PathCostCoordinate, Reducer, StepPathCostCoordinate } from 'shared';
 import { StepPathRequestEvent } from '@events/step-path/step-path.request-event';
 
 export class PathResponseEvent implements ResponseEvent {
@@ -9,7 +9,7 @@ export class PathResponseEvent implements ResponseEvent {
   movementType: MovementTypeEnum;
   path: PathCostCoordinate;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     switch (this.movementType) {
       case MovementTypeEnum.JUMPED:
       case MovementTypeEnum.TELEPORTED: {
@@ -32,7 +32,7 @@ export class PathResponseEvent implements ResponseEvent {
         context.pendingRequests.insertEnd(requestStepPathStateEvents);
       }
     }
-    return null;
+    return [];
   }
 
   public constructor(parameters: {

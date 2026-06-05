@@ -3,6 +3,7 @@ import { GameConfig } from '@game/game.config';
 import { RequestEvent } from '@events/request.event';
 import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
+import { resolveMaybeArray } from 'shared/dist/types/maybe';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
@@ -48,7 +49,12 @@ export class Game {
     const context = { gameState: currentState, gameCalculator: this.gameCalculator, pendingRequests };
     const response = request.mapToResponse(context);
     console.log(response);
-    const reducer: Reducer | null = response.responseValidated ? response.mapToReducer(context) : null;
-    return reducer ? reducer(currentState) : currentState;
+    if (response.responseValidated) {
+      const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
+      for (const reducer of reducers) {
+        currentState = reducer(currentState);
+      }
+    }
+    return currentState;
   }
 }

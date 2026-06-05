@@ -259,6 +259,12 @@ export class GameCalculator {
     return true;
   }
 
+  public getVisibleCells(gameState: Readonly<GameState>, robotId: string) {
+    const aze = this.getRobotCoordinates(gameState, robotId);
+    const qsd = this.hexGrid.getCellAt(aze);
+    this.hexGrid.getCellsInRange(qsd, 2);
+  }
+
   /**
    * Returns true if the given path will actually result in a movement.
    * Moving to the same coordinate where the robot already is will be considered as no movement.

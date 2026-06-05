@@ -1,6 +1,6 @@
 import { ResponseEvent } from '@events/response.event';
 import { ContextEvent } from '@events/context.event';
-import { EffectState, Reducer } from 'shared';
+import { EffectState, MaybeArray, Reducer } from 'shared';
 import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -11,7 +11,7 @@ export class AddEffectResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   effectState: EffectState;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effect: Effect = context.gameCalculator.getEffect(this.effectState);
 
     const alreadyAffected: EffectState | undefined = context.gameCalculator.getEffectStateIfTargetAlreadyAffectedBy(

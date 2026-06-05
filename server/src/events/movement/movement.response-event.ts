@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { Coordinates, Reducer } from 'shared';
+import { Coordinates, MaybeArray, Reducer } from 'shared';
 import { updateCoordinates } from '@reducers/robot.reducer';
 
 export class MovementResponseEvent implements ResponseEvent {
@@ -8,7 +8,7 @@ export class MovementResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   coordinates: Coordinates;
 
-  public mapToReducer(_context: ContextEvent): Reducer | null {
+  public mapToReducer(_context: ContextEvent): MaybeArray<Reducer> {
     return updateCoordinates(this.sourceRobotId, this.coordinates);
   }
 

@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { ActionTypeEnum, DamageTypeEnum, Reducer } from 'shared';
+import { ActionTypeEnum, DamageTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RobotDestroyedRequestEvent } from '@events/robot-destroyed/robot-destroyed.request-event';
 import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
 
@@ -15,7 +15,7 @@ export class DamageResponseEvent implements ResponseEvent {
   isCritical: boolean;
   armorEfficiency: number;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const { hp, shield } = context.gameCalculator.getRobotResourcesState(context.gameState, this.targetRobotId);
 
     const damageToShield = Math.min(this.damageDealt, shield);

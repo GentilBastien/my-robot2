@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { Reducer } from 'shared';
+import { MaybeArray, Reducer } from 'shared';
 import { valueInRange } from '@utils/function.utils';
 import { manaReducer } from '@reducers/resources.reducer';
 
@@ -9,7 +9,7 @@ export class ManaResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   value: number;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
     const newManaValue = valueInRange(0, resourcesState.maxMana, resourcesState.mana + this.value);
     return manaReducer(this.sourceRobotId, newManaValue);

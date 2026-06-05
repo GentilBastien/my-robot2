@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { ActionTypeEnum, Reducer, RobotStateTypeEnum } from 'shared';
+import { ActionTypeEnum, MaybeArray, Reducer, RobotStateTypeEnum } from 'shared';
 import { updateSelfStates } from '@reducers/robot.reducer';
 
 export class RobotDestroyedResponseEvent implements ResponseEvent {
@@ -10,7 +10,7 @@ export class RobotDestroyedResponseEvent implements ResponseEvent {
   actionType: ActionTypeEnum;
   cause: string;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const robotDestroyedSelfStates = context.gameState.robots[this.targetRobotId].selfStates;
     const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEATH);
     return updateSelfStates(this.targetRobotId, addedDeathState);

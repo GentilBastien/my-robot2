@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { EffectState, MovementTypeEnum, Reducer, StepPathCostCoordinate } from 'shared';
+import { EffectState, MaybeArray, MovementTypeEnum, Reducer, StepPathCostCoordinate } from 'shared';
 import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -13,7 +13,7 @@ export class StepPathResponseEvent implements ResponseEvent {
   movementType: MovementTypeEnum;
   stepPath: StepPathCostCoordinate;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectStatesFromCoordinates: EffectState[] = context.gameCalculator.getEffectStatesAtCoordinates(
       context.gameState,
       this.stepPath.endCoordinates

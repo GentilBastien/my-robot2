@@ -3,37 +3,41 @@ import { ArrayIndexStructureInterface } from '@structures/array-index/array-inde
 import { resolveMaybeArray } from 'shared/dist/types/maybe';
 
 export class ArrayIndexStructure<T> implements ArrayIndexStructureInterface<T> {
-  private elements: T[];
+  private readonly _elements: T[];
 
   constructor(elements?: T[]) {
-    this.elements = elements ?? [];
+    this._elements = elements ?? [];
+  }
+
+  public get elements(): T[] {
+    return this._elements;
   }
 
   public size(): number {
-    return this.elements.length;
+    return this._elements.length;
   }
 
   public consumeFirst(): T | undefined {
-    return this.elements.shift();
+    return this._elements.shift();
   }
 
   public insertStart(element: MaybeArray<T>): void {
     const elements: T[] = resolveMaybeArray(element);
-    this.elements.unshift(...elements);
+    this._elements.unshift(...elements);
   }
 
   public insertEnd(element: MaybeArray<T>): void {
     const elements: T[] = resolveMaybeArray(element);
-    this.elements.push(...elements);
+    this._elements.push(...elements);
   }
 
   public insertBefore(index: number, element: MaybeArray<T>): void {
     const elements: T[] = resolveMaybeArray(element);
-    this.elements.splice(index - 1, 0, ...elements);
+    this._elements.splice(index, 0, ...elements);
   }
 
   public insertAfter(index: number, element: MaybeArray<T>): void {
     const elements: T[] = resolveMaybeArray(element);
-    this.elements.splice(index, 0, ...elements);
+    this._elements.splice(index + 1, 0, ...elements);
   }
 }

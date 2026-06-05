@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { EffectState, Reducer } from 'shared';
+import { EffectState, MaybeArray, Reducer } from 'shared';
 import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -11,7 +11,7 @@ export class RemoveEffectResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   effectStateId: string;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectState: EffectState = context.gameCalculator.getEffectStateById(context.gameState, this.effectStateId);
     const effect: Effect = context.gameCalculator.getEffect(effectState);
 

@@ -58,6 +58,7 @@ function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaStat
     cells: Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
       id: index.toString(),
       weight: 2,
+      visibleByRobotsId: [],
       attributes: {
         baseAttribute: BaseAttribute.GRASS,
         topographyAttribute: TopographyAttribute.FLAT,

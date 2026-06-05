@@ -1,13 +1,13 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { Reducer, ResourcesState } from 'shared';
+import { MaybeArray, Reducer, ResourcesState } from 'shared';
 import { updateResourcesState } from '@reducers/resources.reducer';
 
 export class ResourcesResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
 
-  public mapToReducer(context: ContextEvent): Reducer | null {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const resourcesState: ResourcesState = context.gameCalculator.getRobotResourcesState(
       context.gameState,
       this.sourceRobotId

@@ -38,4 +38,9 @@ export interface StatisticsState {
    * Move speed.
    */
   moveSpeed: number;
+
+  /**
+   * Vision.
+   */
+  vision: number;
 }

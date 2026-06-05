@@ -5,4 +5,5 @@ export interface CellState extends Weight {
   id: string;
   weight: number;
   attributes: CellAttributeState;
+  visibleBy: string[];
 }
