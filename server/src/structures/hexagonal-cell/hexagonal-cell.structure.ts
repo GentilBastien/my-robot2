@@ -112,7 +112,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return deepEquals(this._item, otherCell._item);
   }
 
-  public getItemOrThrow(): T {
+  public get item(): T {
     if (this._item) {
       return this._item;
     }

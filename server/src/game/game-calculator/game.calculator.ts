@@ -80,7 +80,7 @@ export class GameCalculator {
   }
 
   public getCellStateAtCoordinates(coordinates: Coordinates): CellState {
-    return this.hexGrid.getCellAt(coordinates).getItemOrThrow();
+    return this.hexGrid.getCellAt(coordinates).item;
   }
 
   public getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
@@ -259,10 +259,10 @@ export class GameCalculator {
     return true;
   }
 
-  public getVisibleCells(gameState: Readonly<GameState>, robotId: string) {
-    const aze = this.getRobotCoordinates(gameState, robotId);
-    const qsd = this.hexGrid.getCellAt(aze);
-    this.hexGrid.getCellsInRange(qsd, 2);
+  public getVisibleCells(gameState: Readonly<GameState>, robotId: string): string[] {
+    const robotHexCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
+    const robotVisionHexCells = this.hexGrid.getCellsInRange(robotHexCell, 2);
+    return robotVisionHexCells.map(hexCell => hexCell.item.id);
   }
 
   /**

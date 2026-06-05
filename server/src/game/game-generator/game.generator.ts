@@ -58,7 +58,7 @@ function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaStat
     cells: Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
       id: index.toString(),
       weight: 2,
-      visibleByRobotsId: [],
+      visibleBy: [],
       attributes: {
         baseAttribute: BaseAttribute.GRASS,
         topographyAttribute: TopographyAttribute.FLAT,
@@ -117,6 +117,7 @@ function temp_defineRandomRobot(name: string): RobotState {
       dodge: 10,
       moveSpeed: 10,
       reduction: 10,
+      vision: 2,
     },
   };
 }

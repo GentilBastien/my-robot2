@@ -97,7 +97,7 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
    * Get the item in this wrapper. Throws if no item found.
    * @throws {noItemError} If the list is empty.
    */
-  getItemOrThrow(): T;
+  item: T;
 
   /**
    * Get the item in this wrapper. Returns a default value of no item found.

@@ -47,7 +47,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     if (!found) throw HexagonalGridError.noCellFoundError;
     let previousItem = null;
     if (found.hasItem()) {
-      previousItem = found.getItemOrThrow();
+      previousItem = found.item;
     }
     found.setItem(item);
     return previousItem;
