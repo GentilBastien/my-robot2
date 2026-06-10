@@ -259,10 +259,24 @@ export class GameCalculator {
     return true;
   }
 
-  public getVisibleCells(gameState: Readonly<GameState>, robotId: string): string[] {
+  /**
+   * Loop through all the possible sources of visibility and get the visible cells and flat them with no duplicates.
+   */
+  public getVisibleCells(gameState: Readonly<GameState>, robotId: string): Set<string> {
+    const proximityVision = this.getVisibleCellsByProximity(gameState, robotId);
+    const droidProbeVision = this.getVisibleCellsFromDroidProbe();
+    const allVisibilityCells = [proximityVision, droidProbeVision].flat();
+    return new Set<string>(allVisibilityCells);
+  }
+
+  public getVisibleCellsByProximity(gameState: Readonly<GameState>, robotId: string): string[] {
     const robotHexCell = this.hexGrid.getCellAt(this.getRobotCoordinates(gameState, robotId));
     const robotVisionHexCells = this.hexGrid.getCellsInRange(robotHexCell, 2);
     return robotVisionHexCells.map(hexCell => hexCell.item.id);
+  }
+
+  public getVisibleCellsFromDroidProbe(): string[] {
+    return [];
   }
 
   /**

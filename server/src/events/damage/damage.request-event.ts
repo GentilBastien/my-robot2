@@ -26,6 +26,7 @@ export class DamageRequestEvent implements RequestEvent {
   }
 
   public mapToResponse(context: ContextEvent): DamageResponseEvent {
+    //TODO: The damage logic should lives in gameCalculator
     let damageDealt: number;
     let isCritical: boolean;
     let defArmor: number;
