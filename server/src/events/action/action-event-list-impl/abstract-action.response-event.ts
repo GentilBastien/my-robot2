@@ -9,9 +9,9 @@ export abstract class AbstractActionResponseEvent implements ActionResponseEvent
   actionTypeEnum: ActionTypeEnum;
   responseValidated: boolean;
 
-  protected constructor(sourceRobotId: string, actionTypeEnum: ActionTypeEnum, responseValidated: boolean) {
-    this.sourceRobotId = sourceRobotId;
+  protected constructor(actionTypeEnum: ActionTypeEnum, sourceRobotId: string, responseValidated: boolean) {
     this.actionTypeEnum = actionTypeEnum;
+    this.sourceRobotId = sourceRobotId;
     this.responseValidated = responseValidated;
   }
 

@@ -1,7 +1,7 @@
 import { AbstractActionRequestEvent } from '@events/action/action-event-list-impl/abstract-action.request-event';
 import { ContextEvent } from '@events/context.event';
 import { AutoAttackActionResponseEvent } from '@events/action/action-event-list-impl/auto-attack/auto-attack-action.response-event';
-import { ActionTypeEnum, DamageTypeEnum } from 'shared';
+import { ActionTypeEnum } from 'shared';
 import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
 
 export class AutoAttackActionRequestEvent
@@ -10,7 +10,7 @@ export class AutoAttackActionRequestEvent
 {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
-  damageType: DamageTypeEnum.ENERGETIC;
+
   damage: number;
   targetRobotId: string;
   hasEnergyModule: boolean;
@@ -20,7 +20,6 @@ export class AutoAttackActionRequestEvent
     this.sourceRobotId = sourceRobotId;
     this.actionTypeEnum = ActionTypeEnum.AUTO_ATTACK;
     this.damage = damage;
-    this.damageType = DamageTypeEnum.ENERGETIC;
     this.hasEnergyModule = hasEnergyModule;
     this.targetRobotId = targetRobotId;
   }

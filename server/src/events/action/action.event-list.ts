@@ -1,4 +1,4 @@
-import { ActionTypeEnum, DamageTypeEnum } from 'shared';
+import { ActionTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { ResponseEvent } from '@events/response.event';
 import { SourceEvent } from '@events/source.event';
@@ -21,8 +21,15 @@ export interface ZoneAction extends SourceEvent {
 }
 
 export interface DamageAction extends SourceEvent {
-  damageType: DamageTypeEnum;
   damage: number;
+}
+
+export interface HealAction extends SourceEvent {
+  heal: number;
+}
+
+export interface ShieldAction extends SourceEvent {
+  heal: number;
 }
 
 export interface UpgradedAction extends SourceEvent {

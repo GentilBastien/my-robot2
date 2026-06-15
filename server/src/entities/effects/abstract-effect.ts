@@ -4,6 +4,9 @@ import { EffectContext } from '@entities/effects/effect-context';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { RequestEvent } from '@events/request.event';
 
+/**
+ * Handler methods should not call each other.
+ */
 export abstract class AbstractEffect implements Effect {
   private readonly _type: EffectCategoryTypeEnum;
   private readonly _ticking: EffectTickingConfig;

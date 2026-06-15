@@ -1,10 +1,21 @@
-import { CellState, GameState } from 'shared';
+import { CellState, GameState, Reducer } from 'shared';
 
-export function updateCellState(gameState: Readonly<GameState>, cellState: CellState): GameState {
-  return {
-    ...gameState,
-    arenaState: {
-      cells: [], //TODO
-    },
+export const updateCellState =
+  (robotId: string, visibleCellSet: Set<string>): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    const cells: CellState[] = gameState.arenaState.cells.map((cell: CellState) => {
+      const visibleBy = cell.visibleBy.filter(id => id !== robotId);
+      if (visibleCellSet.has(cell.id)) {
+        visibleBy.push(robotId);
+      }
+      return { ...cell, visibleBy };
+    });
+
+    return {
+      ...gameState,
+      arenaState: {
+        ...gameState.arenaState,
+        cells,
+      },
+    };
   };
-}

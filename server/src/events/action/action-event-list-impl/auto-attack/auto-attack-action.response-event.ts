@@ -1,18 +1,18 @@
 import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
 import { ContextEvent } from '@events/context.event';
-import { ActionTypeEnum, DamageTypeEnum, MaybeArray, Reducer } from 'shared';
+import { ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
+import { energyModulesReducer, remainingActionsReducer, remainingSubActionsReducer } from '@reducers/resources.reducer';
 
 export class AutoAttackActionResponseEvent
   extends AbstractActionResponseEvent
   implements DamageAction, TargetedAction, UpgradedAction
 {
-  sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
-  damageType: DamageTypeEnum.ENERGETIC;
-  damage: number;
+  sourceRobotId: string;
   targetRobotId: string;
+  damage: number;
   hasEnergyModule: boolean;
   responseValidated: boolean;
 
@@ -21,7 +21,12 @@ export class AutoAttackActionResponseEvent
       const requestEventsFromAction: RequestEvent[] = this.getRequestEventsOnUse(context);
       context.pendingRequests.insertEnd(requestEventsFromAction);
     }
-    return [];
+    //TODO, impl the good reducers. This is an example.
+    return [
+      remainingActionsReducer(this.sourceRobotId, 1),
+      remainingSubActionsReducer(this.sourceRobotId, 2),
+      energyModulesReducer(this.sourceRobotId, 4),
+    ];
   }
 
   public constructor(parameters: {
@@ -31,13 +36,12 @@ export class AutoAttackActionResponseEvent
     damage: number;
     hasEnergyModule: boolean;
   }) {
-    super(parameters.sourceRobotId, ActionTypeEnum.AUTO_ATTACK, parameters.responseValidated);
-    this.targetRobotId = parameters.targetRobotId;
+    super(ActionTypeEnum.AUTO_ATTACK, parameters.sourceRobotId, parameters.responseValidated);
     this.actionTypeEnum = ActionTypeEnum.AUTO_ATTACK;
-    this.damageType = DamageTypeEnum.ENERGETIC;
     this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
+    this.targetRobotId = parameters.targetRobotId;
     this.damage = parameters.damage;
     this.hasEnergyModule = parameters.hasEnergyModule;
+    this.responseValidated = parameters.responseValidated;
   }
 }

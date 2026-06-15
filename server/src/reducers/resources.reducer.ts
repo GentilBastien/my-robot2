@@ -15,6 +15,60 @@ export const updateResourcesState =
     };
   };
 
+export const remainingActionsReducer =
+  (robotId: string, newRemainingActions: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            remainingActions: newRemainingActions,
+          },
+        },
+      },
+    };
+  };
+
+export const remainingSubActionsReducer =
+  (robotId: string, newRemainingSubActions: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            remainingSubActions: newRemainingSubActions,
+          },
+        },
+      },
+    };
+  };
+
+export const energyModulesReducer =
+  (robotId: string, newEnergyModules: number): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return {
+      ...gameState,
+      robots: {
+        ...gameState.robots,
+        [robotId]: {
+          ...gameState.robots[robotId],
+          resources: {
+            ...gameState.robots[robotId].resources,
+            energyModules: newEnergyModules,
+          },
+        },
+      },
+    };
+  };
+
 export const remainingMovementReducer =
   (robotId: string, newRemainingMove: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
