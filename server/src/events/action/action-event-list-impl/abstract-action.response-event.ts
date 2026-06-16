@@ -15,14 +15,16 @@ export abstract class AbstractActionResponseEvent implements ActionResponseEvent
     this.responseValidated = responseValidated;
   }
 
-  public getRequestEventsOnUse(context: ContextEvent): RequestEvent[] {
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const action: Action = context.gameCalculator.getAction(this.actionTypeEnum);
-    return action.onUse({
+    const requestEventsFromAction: RequestEvent[] = action.onUse({
       actionResponseEvent: this,
       gameState: context.gameState,
       gameCalculator: context.gameCalculator,
     });
+    if (this.responseValidated) {
+      context.pendingRequests.insertEnd(requestEventsFromAction);
+    }
+    return [];
   }
-
-  public abstract mapToReducer(_context: ContextEvent): MaybeArray<Reducer>;
 }

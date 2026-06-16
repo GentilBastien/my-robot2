@@ -9,6 +9,18 @@ export class PathResponseEvent implements ResponseEvent {
   movementType: MovementTypeEnum;
   path: PathCostCoordinate;
 
+  public constructor(parameters: {
+    sourceRobotId: string;
+    responseValidated: boolean;
+    movementType: MovementTypeEnum;
+    path: PathCostCoordinate;
+  }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.movementType = parameters.movementType;
+    this.path = parameters.path;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     switch (this.movementType) {
       case MovementTypeEnum.JUMPED:
@@ -33,17 +45,5 @@ export class PathResponseEvent implements ResponseEvent {
       }
     }
     return [];
-  }
-
-  public constructor(parameters: {
-    sourceRobotId: string;
-    responseValidated: boolean;
-    movementType: MovementTypeEnum;
-    path: PathCostCoordinate;
-  }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.movementType = parameters.movementType;
-    this.path = parameters.path;
   }
 }

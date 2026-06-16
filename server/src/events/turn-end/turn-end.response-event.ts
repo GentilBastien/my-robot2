@@ -14,6 +14,18 @@ export class TurnEndResponseEvent implements ResponseEvent {
   turnNumber: number;
   turnRobotId: string;
 
+  public constructor(parameters: {
+    sourceRobotId: string;
+    responseValidated: boolean;
+    turnNumber: number;
+    turnRobotId: string;
+  }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.turnNumber = parameters.turnNumber;
+    this.turnRobotId = parameters.turnRobotId;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectStatesFromRobot: EffectState[] = context.gameCalculator.getEffectStatesFromRobot(
       context.gameState,
@@ -46,17 +58,5 @@ export class TurnEndResponseEvent implements ResponseEvent {
     context.pendingRequests.insertEnd(turnStartRequestEvent);
 
     return startTurnReducer(TurnStateTypeEnum.FINISHED);
-  }
-
-  public constructor(parameters: {
-    sourceRobotId: string;
-    responseValidated: boolean;
-    turnNumber: number;
-    turnRobotId: string;
-  }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.turnNumber = parameters.turnNumber;
-    this.turnRobotId = parameters.turnRobotId;
   }
 }

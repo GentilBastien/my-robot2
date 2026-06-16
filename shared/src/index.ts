@@ -13,7 +13,7 @@ export { EffectCategoryTypeEnum } from './enums/effect-category-type.enum';
 export { GameStateTypeEnum } from './enums/game-state-type.enum';
 export { SessionStateTypeEnum } from './enums/session-state-type.enum';
 export { RobotStateTypeEnum } from './enums/robot-state-type.enum';
-export { DamageTypeEnum } from './enums/damage-type.enum';
+export { ActionResultTypeEnum } from './enums/action-result-type.enum';
 export { ActionTypeEnum } from './enums/action-type.enum';
 export { ActionCostTypeEnum } from './enums/action-cost-type.enum';
 export { GameEventTypeEnum } from './enums/game-event-type.enum';

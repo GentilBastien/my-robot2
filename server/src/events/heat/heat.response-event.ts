@@ -9,6 +9,12 @@ export class HeatResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   value: number;
 
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; value: number }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.value = parameters.value;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
 
@@ -16,12 +22,6 @@ export class HeatResponseEvent implements ResponseEvent {
     const newOverheatingValue = valueInRange(0, resourcesState.maxOverheating, resourcesState.overheating + delta);
 
     return heatReducer(this.sourceRobotId, newOverheatingValue);
-  }
-
-  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; value: number }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.value = parameters.value;
   }
 
   private computeCooling(isOverheating: boolean, value: number): number {

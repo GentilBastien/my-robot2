@@ -1,26 +1,26 @@
 import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { DamageResponseEvent } from '@events/damage/damage.response-event';
-import { ActionTypeEnum, AttributesTypeEnum, DamageTypeEnum, StatisticsTypeEnum } from 'shared';
+import { ActionResultTypeEnum, ActionTypeEnum, AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
 import { diceRolls } from '@utils/dice.utils';
 
 export class DamageRequestEvent implements RequestEvent {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum;
-  damageType: DamageTypeEnum;
+  actionResultTypeEnum: ActionResultTypeEnum;
   targetRobotId: string;
   baseDamage: number;
 
   constructor(
     sourceRobotId: string,
     actionTypeEnum: ActionTypeEnum,
-    damageType: DamageTypeEnum,
+    actionResultTypeEnum: ActionResultTypeEnum,
     targetRobotId: string,
     baseDamage: number
   ) {
     this.sourceRobotId = sourceRobotId;
     this.actionTypeEnum = actionTypeEnum;
-    this.damageType = damageType;
+    this.actionResultTypeEnum = actionResultTypeEnum;
     this.targetRobotId = targetRobotId;
     this.baseDamage = baseDamage;
   }

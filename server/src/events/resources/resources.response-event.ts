@@ -7,6 +7,11 @@ export class ResourcesResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
 
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const resourcesState: ResourcesState = context.gameCalculator.getRobotResourcesState(
       context.gameState,
@@ -57,10 +62,5 @@ export class ResourcesResponseEvent implements ResponseEvent {
    */
   private incrementsValue(min: number, max: number, current: number, incr: number): number {
     return Math.max(min, Math.min(current + incr, max));
-  }
-
-  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
   }
 }

@@ -9,15 +9,15 @@ export class ManaResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   value: number;
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
-    const newManaValue = valueInRange(0, resourcesState.maxMana, resourcesState.mana + this.value);
-    return manaReducer(this.sourceRobotId, newManaValue);
-  }
-
   public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; value: number }) {
     this.sourceRobotId = parameters.sourceRobotId;
     this.responseValidated = parameters.responseValidated;
     this.value = parameters.value;
+  }
+
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+    const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
+    const newManaValue = valueInRange(0, resourcesState.maxMana, resourcesState.mana + this.value);
+    return manaReducer(this.sourceRobotId, newManaValue);
   }
 }

@@ -11,6 +11,12 @@ export class RemoveEffectResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   effectStateId: string;
 
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; effectStateId: string }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.effectStateId = parameters.effectStateId;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectState: EffectState = context.gameCalculator.getEffectStateById(context.gameState, this.effectStateId);
     const effect: Effect = context.gameCalculator.getEffect(effectState);
@@ -24,11 +30,5 @@ export class RemoveEffectResponseEvent implements ResponseEvent {
     context.pendingRequests.insertEnd(newEffectsWhenExpired);
 
     return removeEffectState(this.effectStateId);
-  }
-
-  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; effectStateId: string }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.effectStateId = parameters.effectStateId;
   }
 }

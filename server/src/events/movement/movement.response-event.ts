@@ -9,6 +9,12 @@ export class MovementResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   coordinates: Coordinates;
 
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; coordinates: Coordinates }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.coordinates = parameters.coordinates;
+  }
+
   public mapToReducer(_context: ContextEvent): MaybeArray<Reducer> {
     const updateCoordinatesReducer: Reducer = updateCoordinates(this.sourceRobotId, this.coordinates);
     const newVisibleCells: Set<string> = _context.gameCalculator.getVisibleCells(
@@ -18,11 +24,5 @@ export class MovementResponseEvent implements ResponseEvent {
     const updateCellsReducer: Reducer = updateCellState(this.sourceRobotId, newVisibleCells);
 
     return [updateCoordinatesReducer, updateCellsReducer];
-  }
-
-  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; coordinates: Coordinates }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.coordinates = parameters.coordinates;
   }
 }

@@ -11,6 +11,12 @@ export class AddEffectResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   effectState: EffectState;
 
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; effectState: EffectState }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.effectState = parameters.effectState;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effect: Effect = context.gameCalculator.getEffect(this.effectState);
 
@@ -32,11 +38,5 @@ export class AddEffectResponseEvent implements ResponseEvent {
     } else {
       return addEffectState(this.effectState);
     }
-  }
-
-  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; effectState: EffectState }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.effectState = parameters.effectState;
   }
 }

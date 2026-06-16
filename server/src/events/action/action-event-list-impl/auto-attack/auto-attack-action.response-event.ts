@@ -1,9 +1,6 @@
 import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
-import { ContextEvent } from '@events/context.event';
-import { ActionTypeEnum, MaybeArray, Reducer } from 'shared';
-import { RequestEvent } from '@events/request.event';
+import { ActionTypeEnum } from 'shared';
 import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
-import { energyModulesReducer, remainingActionsReducer, remainingSubActionsReducer } from '@reducers/resources.reducer';
 
 export class AutoAttackActionResponseEvent
   extends AbstractActionResponseEvent
@@ -15,19 +12,6 @@ export class AutoAttackActionResponseEvent
   damage: number;
   hasEnergyModule: boolean;
   responseValidated: boolean;
-
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    if (this.responseValidated) {
-      const requestEventsFromAction: RequestEvent[] = this.getRequestEventsOnUse(context);
-      context.pendingRequests.insertEnd(requestEventsFromAction);
-    }
-    //TODO, impl the good reducers. This is an example.
-    return [
-      remainingActionsReducer(this.sourceRobotId, 1),
-      remainingSubActionsReducer(this.sourceRobotId, 2),
-      energyModulesReducer(this.sourceRobotId, 4),
-    ];
-  }
 
   public constructor(parameters: {
     sourceRobotId: string;

@@ -106,7 +106,7 @@ export const hpReducer =
   };
 
 export const shieldReducer =
-  (robotId: string, shieldCost: number): Reducer =>
+  (robotId: string, newShield: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return {
       ...gameState,
@@ -116,7 +116,7 @@ export const shieldReducer =
           ...gameState.robots[robotId],
           resources: {
             ...gameState.robots[robotId].resources,
-            shield: gameState.robots[robotId].resources.shield - shieldCost,
+            shield: newShield,
           },
         },
       },

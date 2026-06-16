@@ -2,9 +2,9 @@ import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer } from 'shared';
 import { valueInRange } from '@utils/function.utils';
-import { hpReducer } from '@reducers/resources.reducer';
+import { shieldReducer } from '@reducers/resources.reducer';
 
-export class HpResponseEvent implements ResponseEvent {
+export class ShieldResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
   value: number;
@@ -17,7 +17,7 @@ export class HpResponseEvent implements ResponseEvent {
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
-    const newHpValue = valueInRange(0, resourcesState.maxHp, resourcesState.hp + this.value);
-    return hpReducer(this.sourceRobotId, newHpValue);
+    const newHpValue = valueInRange(0, Number.MAX_VALUE, resourcesState.shield + this.value);
+    return shieldReducer(this.sourceRobotId, newHpValue);
   }
 }

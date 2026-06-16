@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { ActionTypeEnum, DamageTypeEnum, MaybeArray, Reducer } from 'shared';
+import { ActionResultTypeEnum, ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RobotDestroyedRequestEvent } from '@events/robot-destroyed/robot-destroyed.request-event';
 import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
 
@@ -9,11 +9,33 @@ export class DamageResponseEvent implements ResponseEvent {
   responseValidated: boolean;
   actionTypeEnum: ActionTypeEnum;
   targetRobotId: string;
-  damageType: DamageTypeEnum;
+  damageType: ActionResultTypeEnum;
   damageDealt: number;
   isDodged: boolean;
   isCritical: boolean;
   armorEfficiency: number;
+
+  public constructor(parameters: {
+    sourceRobotId: string;
+    responseValidated: boolean;
+    actionTypeEnum: ActionTypeEnum;
+    targetRobotId: string;
+    damageType: ActionResultTypeEnum;
+    damageDealt: number;
+    isDodged: boolean;
+    isCritical: boolean;
+    armorEfficiency: number;
+  }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.actionTypeEnum = parameters.actionTypeEnum;
+    this.targetRobotId = parameters.targetRobotId;
+    this.damageType = parameters.damageType;
+    this.damageDealt = parameters.damageDealt;
+    this.isDodged = parameters.isDodged;
+    this.isCritical = parameters.isCritical;
+    this.armorEfficiency = parameters.armorEfficiency;
+  }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const { hp, shield } = context.gameCalculator.getRobotResourcesState(context.gameState, this.targetRobotId);
@@ -39,27 +61,5 @@ export class DamageResponseEvent implements ResponseEvent {
     if (newShield === shield) return hpReducer(this.targetRobotId, newHp);
     if (newHp === hp) return shieldReducer(this.targetRobotId, newShield);
     return hpAndShieldReducer(this.targetRobotId, newHp);
-  }
-
-  public constructor(parameters: {
-    sourceRobotId: string;
-    responseValidated: boolean;
-    actionTypeEnum: ActionTypeEnum;
-    targetRobotId: string;
-    damageType: DamageTypeEnum;
-    damageDealt: number;
-    isDodged: boolean;
-    isCritical: boolean;
-    armorEfficiency: number;
-  }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.actionTypeEnum = parameters.actionTypeEnum;
-    this.targetRobotId = parameters.targetRobotId;
-    this.damageType = parameters.damageType;
-    this.damageDealt = parameters.damageDealt;
-    this.isDodged = parameters.isDodged;
-    this.isCritical = parameters.isCritical;
-    this.armorEfficiency = parameters.armorEfficiency;
   }
 }

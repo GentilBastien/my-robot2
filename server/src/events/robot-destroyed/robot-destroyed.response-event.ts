@@ -10,12 +10,6 @@ export class RobotDestroyedResponseEvent implements ResponseEvent {
   actionType: ActionTypeEnum;
   cause: string;
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const robotDestroyedSelfStates = context.gameState.robots[this.targetRobotId].selfStates;
-    const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEATH);
-    return updateSelfStates(this.targetRobotId, addedDeathState);
-  }
-
   public constructor(parameters: {
     sourceRobotId: string;
     responseValidated: boolean;
@@ -28,5 +22,11 @@ export class RobotDestroyedResponseEvent implements ResponseEvent {
     this.targetRobotId = parameters.targetRobotId;
     this.actionType = parameters.actionTypeEnum;
     this.cause = parameters.cause;
+  }
+
+  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+    const robotDestroyedSelfStates = context.gameState.robots[this.targetRobotId].selfStates;
+    const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEATH);
+    return updateSelfStates(this.targetRobotId, addedDeathState);
   }
 }

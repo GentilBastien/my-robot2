@@ -13,6 +13,18 @@ export class StepPathResponseEvent implements ResponseEvent {
   movementType: MovementTypeEnum;
   stepPath: StepPathCostCoordinate;
 
+  public constructor(parameters: {
+    sourceRobotId: string;
+    responseValidated: boolean;
+    movementType: MovementTypeEnum;
+    stepPath: StepPathCostCoordinate;
+  }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.movementType = parameters.movementType;
+    this.stepPath = parameters.stepPath;
+  }
+
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const effectStatesFromCoordinates: EffectState[] = context.gameCalculator.getEffectStatesAtCoordinates(
       context.gameState,
@@ -40,17 +52,5 @@ export class StepPathResponseEvent implements ResponseEvent {
     ).remainingMove;
     const newRemainingMove: number = remainingMove - this.stepPath.cost;
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
-  }
-
-  public constructor(parameters: {
-    sourceRobotId: string;
-    responseValidated: boolean;
-    movementType: MovementTypeEnum;
-    stepPath: StepPathCostCoordinate;
-  }) {
-    this.sourceRobotId = parameters.sourceRobotId;
-    this.responseValidated = parameters.responseValidated;
-    this.movementType = parameters.movementType;
-    this.stepPath = parameters.stepPath;
   }
 }
