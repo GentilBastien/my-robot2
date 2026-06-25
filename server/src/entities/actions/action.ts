@@ -1,7 +1,7 @@
 import { ActionContext } from '@entities/actions/action-context';
 import { RequestEvent } from '@events/request.event';
 import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
-import { ActionResultTypeEnum } from 'shared';
+import { ActionElementTypeEnum } from 'shared';
 import { HpRequestEvent } from '@events/hp/hp.request-event';
 import { ShieldRequestEvent } from '@events/shield/shield.request-event';
 import { ManaRequestEvent } from '@events/mana/mana.request-event';
@@ -10,7 +10,7 @@ import { HeatRequestEvent } from '@events/heat/heat.request-event';
 import { ActionCostRequestEvent } from '@events/action-cost/action-cost.request-event';
 
 export abstract class Action {
-  actionResultTypeEnum: ActionResultTypeEnum = ActionResultTypeEnum.ENERGETIC;
+  actionElementTypeEnum: ActionElementTypeEnum = ActionElementTypeEnum.ENERGETIC;
   baseAmount = 0;
   range = 1;
   needVision = true;

@@ -1,8 +1,8 @@
-import { ActionResultTypeEnum } from 'shared';
+import { ActionElementTypeEnum } from 'shared';
 import { Action } from '@entities/actions/action';
 
 export class AutoAttack extends Action {
-  public actionResultTypeEnum = ActionResultTypeEnum.ENERGETIC;
+  public actionElementTypeEnum = ActionElementTypeEnum.ENERGETIC;
   public baseAmount = 10;
 
   public needVision = true;

@@ -1,0 +1,10 @@
+export enum ActionElementTypeEnum {
+  ENERGETIC = 'ENERGETIC',
+  IONIC = 'IONIC',
+  EMP = 'EMP',
+  CORROSIVE = 'CORROSIVE',
+  SURCHARGE = 'SURCHARGE',
+  FIRE = 'FIRE',
+  ORGANIC = 'ORGANIC',
+  PROGRAM = 'PROGRAM',
+}

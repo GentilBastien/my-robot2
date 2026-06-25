@@ -6,6 +6,8 @@ import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { remainingMovementReducer } from '@reducers/resources.reducer';
 import { MovementRequestEvent } from '@events/movement/movement.request-event';
+import { getEffect, getEffectStatesAtCoordinates } from '@calculators/effect.calculator';
+import { getRobotResourcesState } from '@calculators/robot.calculator';
 
 export class StepPathResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -26,7 +28,7 @@ export class StepPathResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effectStatesFromCoordinates: EffectState[] = context.gameCalculator.getEffectStatesAtCoordinates(
+    const effectStatesFromCoordinates: EffectState[] = getEffectStatesAtCoordinates(
       context.gameState,
       this.stepPath.endCoordinates
     );
@@ -35,7 +37,7 @@ export class StepPathResponseEvent implements ResponseEvent {
     context.pendingRequests.insertEnd(requestMovementStateEvent);
 
     const newPendingRequestStateEvents: RequestEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
-      const effect: Effect = context.gameCalculator.getEffect(effectState);
+      const effect: Effect = getEffect(effectState);
       return effect.handle({
         trigger: EffectTrigger.ON_SURFACE,
         effectState,
@@ -46,10 +48,7 @@ export class StepPathResponseEvent implements ResponseEvent {
     });
     context.pendingRequests.insertEnd(newPendingRequestStateEvents);
 
-    const remainingMove: number = context.gameCalculator.getRobotResourcesState(
-      context.gameState,
-      this.sourceRobotId
-    ).remainingMove;
+    const remainingMove: number = getRobotResourcesState(context.gameState, this.sourceRobotId).remainingMove;
     const newRemainingMove: number = remainingMove - this.stepPath.cost;
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
   }

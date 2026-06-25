@@ -2,6 +2,7 @@ import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { PathResponseEvent } from '@events/path/path.response-event';
 import { Coordinates, MovementTypeEnum, PathCostCoordinate } from 'shared';
+import { getRobotState } from '@calculators/robot.calculator';
 
 export class PathRequestEvent implements RequestEvent {
   sourceRobotId: string;
@@ -18,8 +19,7 @@ export class PathRequestEvent implements RequestEvent {
     const isRobotTurn = context.gameCalculator.isRobotTurn(this.sourceRobotId);
     const pathWithCosts: PathCostCoordinate = context.gameCalculator.mapPathToPathWithCost(this.path);
     const pathCost: number = context.gameCalculator.getPathCoordinateCost(pathWithCosts);
-    const robotRemainingMove = context.gameCalculator.getRobotState(context.gameState, this.sourceRobotId).resources
-      .remainingMove;
+    const robotRemainingMove = getRobotState(context.gameState, this.sourceRobotId).resources.remainingMove;
     const enoughRemainingMovement = robotRemainingMove >= pathCost;
     const movementTypeAllowed: boolean = context.gameCalculator.movementTypeAllowedForRobot(
       context.gameState,

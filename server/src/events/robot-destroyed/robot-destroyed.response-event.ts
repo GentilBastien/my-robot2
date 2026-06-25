@@ -26,7 +26,7 @@ export class RobotDestroyedResponseEvent implements ResponseEvent {
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const robotDestroyedSelfStates = context.gameState.robots[this.targetRobotId].selfStates;
-    const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEATH);
+    const addedDeathState = robotDestroyedSelfStates.concat(RobotStateTypeEnum.DEAD);
     return updateSelfStates(this.targetRobotId, addedDeathState);
   }
 }

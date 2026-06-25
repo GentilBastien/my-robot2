@@ -209,14 +209,14 @@ describe('HexagonalCellStructure', () => {
     //given
     const land1 = new HexagonalCellStructure({ weight: 1 });
     //then
-    expect(land1.getItem()).toStrictEqual({ weight: 1 });
+    expect(land1.item).toStrictEqual({ weight: 1 });
   });
 
   test('HexagonalCell getItemOrThrow throws an error', () => {
     //given
     const land1 = new HexagonalCellStructure();
     //then
-    expect(() => land1.getItem()).toThrow(HexagonalCellError.noItemErrorMessage);
+    expect(() => land1.item).toThrow(HexagonalCellError.noItemErrorMessage);
   });
 
   test('HexagonalCell getItemOrDefault gets the item', () => {

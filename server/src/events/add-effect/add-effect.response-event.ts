@@ -5,6 +5,7 @@ import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { addEffectState, updateEffectState } from '@reducers/effect.reducer';
+import { getEffect, getEffectStateIfTargetAlreadyAffectedBy } from '@calculators/effect.calculator';
 
 export class AddEffectResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -18,9 +19,9 @@ export class AddEffectResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effect: Effect = context.gameCalculator.getEffect(this.effectState);
+    const effect: Effect = getEffect(this.effectState);
 
-    const alreadyAffected: EffectState | undefined = context.gameCalculator.getEffectStateIfTargetAlreadyAffectedBy(
+    const alreadyAffected: EffectState | undefined = getEffectStateIfTargetAlreadyAffectedBy(
       context.gameState,
       this.effectState
     );

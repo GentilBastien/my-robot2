@@ -2,25 +2,22 @@ import { AbstractActionRequestEvent } from '@events/action/action-event-list-imp
 import { ContextEvent } from '@events/context.event';
 import { AutoAttackActionResponseEvent } from '@events/action/action-event-list-impl/auto-attack/auto-attack-action.response-event';
 import { ActionTypeEnum } from 'shared';
-import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
+import { DamageAction, TargetedAction } from '@events/action/action.event-list';
 
-export class AutoAttackActionRequestEvent
-  extends AbstractActionRequestEvent
-  implements DamageAction, TargetedAction, UpgradedAction
-{
+export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent implements DamageAction, TargetedAction {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
+  hasEnergyModule: boolean;
 
   damage: number;
   targetRobotId: string;
-  hasEnergyModule: boolean;
 
   constructor(sourceRobotId: string, targetRobotId: string, damage: number, hasEnergyModule: boolean) {
-    super(sourceRobotId, ActionTypeEnum.AUTO_ATTACK);
+    super(sourceRobotId, ActionTypeEnum.AUTO_ATTACK, hasEnergyModule);
     this.sourceRobotId = sourceRobotId;
     this.actionTypeEnum = ActionTypeEnum.AUTO_ATTACK;
-    this.damage = damage;
     this.hasEnergyModule = hasEnergyModule;
+    this.damage = damage;
     this.targetRobotId = targetRobotId;
   }
 

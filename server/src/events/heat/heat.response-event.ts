@@ -3,6 +3,7 @@ import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer } from 'shared';
 import { valueInRange } from '@utils/function.utils';
 import { heatReducer } from '@reducers/resources.reducer';
+import { getRobotResourcesState } from '@calculators/robot.calculator';
 
 export class HeatResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -16,7 +17,7 @@ export class HeatResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const resourcesState = context.gameCalculator.getRobotResourcesState(context.gameState, this.sourceRobotId);
+    const resourcesState = getRobotResourcesState(context.gameState, this.sourceRobotId);
 
     const delta = this.computeCooling(resourcesState.isOverheating, this.value);
     const newOverheatingValue = valueInRange(0, resourcesState.maxOverheating, resourcesState.overheating + delta);

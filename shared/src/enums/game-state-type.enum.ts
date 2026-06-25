@@ -1,5 +1,5 @@
 export enum GameStateTypeEnum {
-  PENDING,
-  STARTED,
-  FINISHED,
+  PENDING = 'PENDING',
+  STARTED = 'STARTED',
+  FINISHED = 'FINISHED',
 }

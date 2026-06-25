@@ -1,44 +1,45 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { ActionResultTypeEnum, ActionTypeEnum, MaybeArray, Reducer } from 'shared';
+import { ActionElementTypeEnum, ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RobotDestroyedRequestEvent } from '@events/robot-destroyed/robot-destroyed.request-event';
 import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
+import { getRobotResourcesState } from '@calculators/robot.calculator';
 
 export class DamageResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
   actionTypeEnum: ActionTypeEnum;
   targetRobotId: string;
-  damageType: ActionResultTypeEnum;
+  actionElementTypeEnum: ActionElementTypeEnum;
   damageDealt: number;
   isDodged: boolean;
   isCritical: boolean;
-  armorEfficiency: number;
+  defArmor: number;
 
   public constructor(parameters: {
     sourceRobotId: string;
     responseValidated: boolean;
     actionTypeEnum: ActionTypeEnum;
     targetRobotId: string;
-    damageType: ActionResultTypeEnum;
+    actionElementTypeEnum: ActionElementTypeEnum;
     damageDealt: number;
     isDodged: boolean;
     isCritical: boolean;
-    armorEfficiency: number;
+    defArmor: number;
   }) {
     this.sourceRobotId = parameters.sourceRobotId;
     this.responseValidated = parameters.responseValidated;
     this.actionTypeEnum = parameters.actionTypeEnum;
     this.targetRobotId = parameters.targetRobotId;
-    this.damageType = parameters.damageType;
+    this.actionElementTypeEnum = parameters.actionElementTypeEnum;
     this.damageDealt = parameters.damageDealt;
     this.isDodged = parameters.isDodged;
     this.isCritical = parameters.isCritical;
-    this.armorEfficiency = parameters.armorEfficiency;
+    this.defArmor = parameters.defArmor;
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const { hp, shield } = context.gameCalculator.getRobotResourcesState(context.gameState, this.targetRobotId);
+    const { hp, shield } = getRobotResourcesState(context.gameState, this.targetRobotId);
 
     const damageToShield = Math.min(this.damageDealt, shield);
     const damageToHp = this.damageDealt - damageToShield;

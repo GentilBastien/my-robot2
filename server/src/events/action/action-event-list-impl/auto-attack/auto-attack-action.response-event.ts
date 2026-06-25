@@ -1,11 +1,8 @@
 import { AbstractActionResponseEvent } from '@events/action/action-event-list-impl/abstract-action.response-event';
 import { ActionTypeEnum } from 'shared';
-import { DamageAction, TargetedAction, UpgradedAction } from '@events/action/action.event-list';
+import { DamageAction, TargetedAction } from '@events/action/action.event-list';
 
-export class AutoAttackActionResponseEvent
-  extends AbstractActionResponseEvent
-  implements DamageAction, TargetedAction, UpgradedAction
-{
+export class AutoAttackActionResponseEvent extends AbstractActionResponseEvent implements DamageAction, TargetedAction {
   actionTypeEnum: ActionTypeEnum.AUTO_ATTACK;
   sourceRobotId: string;
   targetRobotId: string;

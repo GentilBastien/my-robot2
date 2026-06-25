@@ -8,10 +8,12 @@ import { ActionRequestEvent } from '@events/action/action.event-list';
 export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum;
+  hasEnergyModule: boolean;
 
-  protected constructor(sourceRobotId: string, actionTypeEnum: ActionTypeEnum) {
+  protected constructor(sourceRobotId: string, actionTypeEnum: ActionTypeEnum, hasEnergyModule: boolean) {
     this.sourceRobotId = sourceRobotId;
     this.actionTypeEnum = actionTypeEnum;
+    this.hasEnergyModule = hasEnergyModule;
   }
 
   public isActionAllowed(context: ContextEvent): boolean {

@@ -1,9 +1,9 @@
 import { GameState, PathCostCoordinate, Reducer } from 'shared';
 import { GameConfig } from '@game/game.config';
 import { RequestEvent } from '@events/request.event';
-import { GameCalculator } from '@game/game-calculator/game.calculator';
 import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
 import { resolveMaybeArray } from 'shared/dist/types/maybe';
+import { GameCalculator } from '@calculators/game.calculator';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.

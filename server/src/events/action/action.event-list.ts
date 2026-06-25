@@ -5,6 +5,7 @@ import { SourceEvent } from '@events/source.event';
 
 export interface ActionRequestEvent extends RequestEvent {
   actionTypeEnum: ActionTypeEnum;
+  hasEnergyModule: boolean;
 }
 
 export interface ActionResponseEvent extends ResponseEvent {
@@ -30,8 +31,4 @@ export interface HealAction extends SourceEvent {
 
 export interface ShieldAction extends SourceEvent {
   heal: number;
-}
-
-export interface UpgradedAction extends SourceEvent {
-  hasEnergyModule: boolean;
 }

@@ -1,6 +1,6 @@
 export enum RobotStateTypeEnum {
-  DEATH,
-  ROOTED,
-  SLOWED,
-  BLINDED,
+  DEAD = 'DEAD',
+  ROOTED = 'ROOTED',
+  SLOWED = 'SLOWED',
+  BLINDED = 'BLINDED',
 }
