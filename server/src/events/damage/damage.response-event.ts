@@ -3,7 +3,7 @@ import { ResponseEvent } from '@events/response.event';
 import { ActionElementTypeEnum, ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RobotDestroyedRequestEvent } from '@events/robot-destroyed/robot-destroyed.request-event';
 import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
-import { getRobotResourcesState } from '@calculators/robot.calculator';
+import { robotCalculator } from '@calculators/robot.calculator';
 
 export class DamageResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -39,7 +39,7 @@ export class DamageResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const { hp, shield } = getRobotResourcesState(context.gameState, this.targetRobotId);
+    const { hp, shield } = robotCalculator.getRobotResourcesState(context.gameState, this.targetRobotId);
 
     const damageToShield = Math.min(this.damageDealt, shield);
     const damageToHp = this.damageDealt - damageToShield;

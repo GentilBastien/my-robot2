@@ -2,7 +2,7 @@ import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer, ResourcesState } from 'shared';
 import { updateResourcesState } from '@reducers/resources.reducer';
-import { getRobotResourcesState } from '@calculators/robot.calculator';
+import { robotCalculator } from '@calculators/robot.calculator';
 
 export class ResourcesResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -14,7 +14,10 @@ export class ResourcesResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const resourcesState: ResourcesState = getRobotResourcesState(context.gameState, this.sourceRobotId);
+    const resourcesState: ResourcesState = robotCalculator.getRobotResourcesState(
+      context.gameState,
+      this.sourceRobotId
+    );
 
     const { regenHp, regenMana, coolingDown, isOverheating, maxOverheating, totalActions, totalSubActions, totalMove } =
       resourcesState;

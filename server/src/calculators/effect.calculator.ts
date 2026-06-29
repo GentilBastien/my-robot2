@@ -1,13 +1,22 @@
 import { Coordinates, EffectState, GameState } from 'shared';
 import { effectList } from '@entities/effects/effect-list/effect.list';
 import { Effect } from '@entities/effects/effect';
-import { getRobotCoordinates } from '@calculators/robot.calculator';
+import { robotCalculator } from '@calculators/robot.calculator';
 
-export function getEffect(effectState: EffectState): Effect {
+export const effectCalculator = {
+  getEffect: getEffect,
+  getEffectStateById: getEffectStateById,
+  getEffectStatesFromRobot: getEffectStatesFromRobot,
+  getEffectStatesFromRobotCell: getEffectStatesFromRobotCell,
+  getEffectStatesAtCoordinates: getEffectStatesAtCoordinates,
+  getEffectStateIfTargetAlreadyAffectedBy: getEffectStateIfTargetAlreadyAffectedBy,
+};
+
+function getEffect(effectState: EffectState): Effect {
   return effectList[effectState.effectId];
 }
 
-export function getEffectStateById(gameState: Readonly<GameState>, effectStateId: string): EffectState {
+function getEffectStateById(gameState: Readonly<GameState>, effectStateId: string): EffectState {
   const effectStateFound: EffectState | undefined = gameState.effects.find(eff => eff.id === effectStateId);
   if (effectStateFound) {
     return effectStateFound;
@@ -15,23 +24,23 @@ export function getEffectStateById(gameState: Readonly<GameState>, effectStateId
   throw 'temp error';
 }
 
-export function getEffectStatesFromRobot(gameState: Readonly<GameState>, robotId: string): EffectState[] {
+function getEffectStatesFromRobot(gameState: Readonly<GameState>, robotId: string): EffectState[] {
   return gameState.effects.filter(effect => effect.sourceRobotId === robotId);
 }
 
-export function getEffectStatesFromRobotCell(gameState: Readonly<GameState>, robotId: string): EffectState[] {
-  const robotCoordinates = getRobotCoordinates(gameState, robotId);
+function getEffectStatesFromRobotCell(gameState: Readonly<GameState>, robotId: string): EffectState[] {
+  const robotCoordinates = robotCalculator.getRobotCoordinates(gameState, robotId);
   return getEffectStatesAtCoordinates(gameState, robotCoordinates);
 }
 
-export function getEffectStatesAtCoordinates(gameState: Readonly<GameState>, coordinates: Coordinates): EffectState[] {
+function getEffectStatesAtCoordinates(gameState: Readonly<GameState>, coordinates: Coordinates): EffectState[] {
   return gameState.effects.filter(effectState => effectState.targetCoordinates === coordinates);
 }
 
 /**
  * Returns the (possible) previously equal affected EffectState;
  */
-export function getEffectStateIfTargetAlreadyAffectedBy(
+function getEffectStateIfTargetAlreadyAffectedBy(
   gameState: Readonly<GameState>,
   newEffectState: EffectState
 ): EffectState | undefined {

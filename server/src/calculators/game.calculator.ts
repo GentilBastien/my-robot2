@@ -19,7 +19,7 @@ import { Action } from '@entities/actions/action';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 import { GameConfig } from '@game/game.config';
 import { actionList } from '@entities/actions/action-list/action.list';
-import { getRobotCoordinates, getRobotResourcesState, getRobotState } from '@calculators/robot.calculator';
+import { robotCalculator } from '@calculators/robot.calculator';
 
 interface InitiativeRobot {
   id: string;
@@ -59,15 +59,15 @@ export class GameCalculator {
     robotId: string,
     target: Coordinates
   ): PathCostCoordinate | null {
-    const robotCoordinates = getRobotCoordinates(gameState, robotId);
+    const robotCoordinates = robotCalculator.getRobotCoordinates(gameState, robotId);
     const startCell = this.hexGrid.getCellAt(robotCoordinates);
     const targetCell = this.hexGrid.getCellAt(target);
     return this.hexGrid.shortestPathTo(startCell, targetCell);
   }
 
   public getPossiblePaths(gameState: Readonly<GameState>, robotId: string): PathCostCoordinate[] {
-    const robotState = getRobotState(gameState, robotId);
-    const robotCoordinates = getRobotCoordinates(gameState, robotId);
+    const robotState = robotCalculator.getRobotState(gameState, robotId);
+    const robotCoordinates = robotCalculator.getRobotCoordinates(gameState, robotId);
     const robotCell = this.hexGrid.getCellAt(robotCoordinates);
     console.log('getPossiblePaths remaining move: ', robotState.resources.remainingMove);
     return this.hexGrid.possiblePaths(robotCell, robotState.resources.remainingMove);
@@ -103,7 +103,7 @@ export class GameCalculator {
   }
 
   public getPlayingRobotState(gameState: Readonly<GameState>): RobotState {
-    return getRobotState(gameState, this.getPlayingRobotId());
+    return robotCalculator.getRobotState(gameState, this.getPlayingRobotId());
   }
 
   public hasEnoughMana(resourcesState: ResourcesState, action: Action): boolean {
@@ -123,7 +123,7 @@ export class GameCalculator {
     if (!isRobotTurn) {
       response.wrongTurn = { robotTurnId: this.getPlayingRobotId() };
     }
-    const resourcesState = getRobotResourcesState(gameState, robotId);
+    const resourcesState = robotCalculator.getRobotResourcesState(gameState, robotId);
     const isRobotOverheating = resourcesState.isOverheating;
     if (isRobotOverheating) {
       response.robotOverheating = { overheating: resourcesState.overheating };
@@ -200,7 +200,7 @@ export class GameCalculator {
   }
 
   public getVisibleCellsByProximity(gameState: Readonly<GameState>, robotId: string): string[] {
-    const robotHexCell = this.hexGrid.getCellAt(getRobotCoordinates(gameState, robotId));
+    const robotHexCell = this.hexGrid.getCellAt(robotCalculator.getRobotCoordinates(gameState, robotId));
     const robotVisionHexCells = this.hexGrid.getCellsInRange(robotHexCell, 2);
     return robotVisionHexCells.map(hexCell => hexCell.item.id);
   }
@@ -217,7 +217,7 @@ export class GameCalculator {
     if (coordinates.length === 0) {
       return false;
     }
-    const robotCoordinates: Coordinates = getRobotCoordinates(gameState, robotId);
+    const robotCoordinates: Coordinates = robotCalculator.getRobotCoordinates(gameState, robotId);
     return coordinates.length > 1 || !this.hexGrid.getCellAt(robotCoordinates).isLocatedAt(coordinates[0]);
   }
 

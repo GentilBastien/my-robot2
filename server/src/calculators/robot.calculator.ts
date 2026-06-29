@@ -10,19 +10,31 @@ import {
   StatisticsTypeEnum,
 } from 'shared';
 
-export function getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
+export const robotCalculator = {
+  getRobotState: getRobotState,
+  getRobotCoordinates: getRobotCoordinates,
+  getRobotSelfStates: getRobotSelfStates,
+  getRobotResourcesState: getRobotResourcesState,
+  getRobotAttributeState: getRobotAttributeState,
+  getRobotStatisticState: getRobotStatisticState,
+  getRobotAttributeValue: getRobotAttributeValue,
+  getRobotStatisticValue: getRobotStatisticValue,
+  getRobotAttributeModifier: getRobotAttributeModifier,
+};
+
+function getRobotState(gameState: Readonly<GameState>, robotId: string): RobotState {
   return gameState.robots[robotId];
 }
 
-export function getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
+function getRobotCoordinates(gameState: Readonly<GameState>, robotId: string): Coordinates {
   return getRobotState(gameState, robotId).coordinates;
 }
 
-export function getRobotSelfStates(gameState: Readonly<GameState>, robotId: string): RobotStateTypeEnum[] {
+function getRobotSelfStates(gameState: Readonly<GameState>, robotId: string): RobotStateTypeEnum[] {
   return gameState.robots[robotId].selfStates;
 }
 
-export function getRobotResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
+function getRobotResourcesState(gameState: Readonly<GameState>, robotId: string): ResourcesState {
   return gameState.robots[robotId].resources;
 }
 
@@ -30,11 +42,11 @@ function getRobotAttributeState(gameState: Readonly<GameState>, robotId: string)
   return gameState.robots[robotId].attributes;
 }
 
-export function getRobotStatisticState(gameState: Readonly<GameState>, robotId: string): StatisticsState {
+function getRobotStatisticState(gameState: Readonly<GameState>, robotId: string): StatisticsState {
   return gameState.robots[robotId].statistics;
 }
 
-export function getRobotAttributeValue(
+function getRobotAttributeValue(
   gameState: Readonly<GameState>,
   robotId: string,
   attributesTypeEnum: AttributesTypeEnum
@@ -56,7 +68,7 @@ export function getRobotAttributeValue(
   }
 }
 
-export function getRobotStatisticValue(
+function getRobotStatisticValue(
   gameState: Readonly<GameState>,
   robotId: string,
   statisticsTypeEnum: StatisticsTypeEnum
@@ -82,7 +94,7 @@ export function getRobotStatisticValue(
   }
 }
 
-export function getRobotAttributeModifier(
+function getRobotAttributeModifier(
   gameState: Readonly<GameState>,
   robotId: string,
   attributesTypeEnum: AttributesTypeEnum
