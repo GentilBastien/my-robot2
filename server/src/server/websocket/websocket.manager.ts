@@ -57,6 +57,10 @@ export class WebsocketManager {
         this.sessionManager.receivePathGameEvent(login, payload.path);
         break;
       }
+      case ClientMessageType.ACTION: {
+        this.sessionManager.receiveAction(login, payload);
+        break;
+      }
     }
   }
 }

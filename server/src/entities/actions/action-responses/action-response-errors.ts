@@ -1,5 +1,6 @@
 export interface ActionResponseErrors {
   wrongTurn?: { robotTurnId: string };
+  actionUnavailable?: { conditions: string[] };
   robotOverheating?: { overheating: number };
   noEnoughAction?: { cost: number; available: number };
   noEnoughMana?: { cost: number; available: number };

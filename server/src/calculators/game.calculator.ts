@@ -26,7 +26,9 @@ interface InitiativeRobot {
   initiative: number;
   dead: boolean;
 }
-
+//TODO: Do a single "GameStateHandler" that has hexGrid and cycleList and methods to update it
+//TODO: Do RobotValidator, TurnValidator, etc that declares static methods that takes a CONTEXT object as parameter
+//TODO: The CONTEXT object has the state, the pendingRequests, and the GameStateHandler
 export class GameCalculator {
   private readonly hexGrid: HexagonalGridStructure<CellState>;
   private readonly cyclicList: CyclicListStructure<InitiativeRobot>;
@@ -122,6 +124,10 @@ export class GameCalculator {
     const isRobotTurn = this.isRobotTurn(robotId);
     if (!isRobotTurn) {
       response.wrongTurn = { robotTurnId: this.getPlayingRobotId() };
+    }
+    const hasAction = true; //TODO hasAction in playbook
+    if (!hasAction) {
+      response.actionUnavailable = { conditions: ['Lvl 23 min', 'requires propulsors'] };
     }
     const resourcesState = robotCalculator.getRobotResourcesState(gameState, robotId);
     const isRobotOverheating = resourcesState.isOverheating;

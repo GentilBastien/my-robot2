@@ -16,14 +16,9 @@ export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
     this.hasEnergyModule = hasEnergyModule;
   }
 
-  public isActionAllowed(context: ContextEvent): boolean {
+  public isActionAllowed(context: ContextEvent): ActionResponseErrors {
     const action: Action = context.gameCalculator.getAction(this.actionTypeEnum);
-    const actionResponseErrors: ActionResponseErrors = context.gameCalculator.robotAllowedForAction(
-      context.gameState,
-      this.sourceRobotId,
-      action
-    );
-    return Object.keys(actionResponseErrors).length === 0;
+    return context.gameCalculator.robotAllowedForAction(context.gameState, this.sourceRobotId, action);
   }
 
   public abstract mapToResponse(context: ContextEvent): AbstractActionResponseEvent;

@@ -3,6 +3,7 @@ import { ContextEvent } from '@events/context.event';
 import { AutoAttackActionResponseEvent } from '@events/action/action-event-list-impl/auto-attack/auto-attack-action.response-event';
 import { ActionTypeEnum } from 'shared';
 import { DamageAction, TargetedAction } from '@events/action/action.event-list';
+import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 
 export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent implements DamageAction, TargetedAction {
   sourceRobotId: string;
@@ -22,10 +23,12 @@ export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent imp
   }
 
   public mapToResponse(context: ContextEvent): AutoAttackActionResponseEvent {
+    const actionResponseErrors: ActionResponseErrors = super.isActionAllowed(context);
     return new AutoAttackActionResponseEvent({
       sourceRobotId: this.sourceRobotId,
       targetRobotId: this.targetRobotId,
-      responseValidated: super.isActionAllowed(context),
+      responseValidated: Object.keys(actionResponseErrors).length === 0,
+      actionResponseErrors,
       damage: this.damage,
       hasEnergyModule: this.hasEnergyModule,
     });

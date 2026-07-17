@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { Coordinates, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
+import { ActionGameEvent, Coordinates, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
@@ -124,6 +124,11 @@ export class SessionManager {
     this.gameManager.receivePath(session, path);
   }
 
+  public receiveAction(login: string, actionGameEvent: ActionGameEvent): void {
+    const session = this.sessions[login];
+    this.gameManager.receiveAction(session, actionGameEvent);
+  }
+
   public sendSession(session: Session): void {
     this.sendToSession(session, { type: ServerMessageType.LOGGED_IN, payload: { gameId: session.gameId } });
   }
@@ -136,8 +141,7 @@ export class SessionManager {
         session.state = SessionStateTypeEnum.PROPOSAL_ASKING;
         session.proposalId = gameProposal.id;
       },
-      session =>
-        this.sendToSession(session, { type: ServerMessageType.SEND_PROPOSAL, payload: { proposalId: gameProposal.id } })
+      { type: ServerMessageType.SEND_PROPOSAL, payload: { proposalId: gameProposal.id } }
     );
   }
 
@@ -149,12 +153,10 @@ export class SessionManager {
         session.proposalId = undefined;
         session.gameId = gameProposal.id;
       },
-
-      session =>
-        this.sendToSession(session, {
-          type: ServerMessageType.PROPOSAL_ACCEPTED,
-          payload: { gameId: gameProposal.id },
-        })
+      {
+        type: ServerMessageType.PROPOSAL_ACCEPTED,
+        payload: { gameId: gameProposal.id },
+      }
     );
     this.gameManager.createGame(gameProposal, sessions);
   }
@@ -170,11 +172,10 @@ export class SessionManager {
           this.joinQueue(session);
         }
       },
-      session =>
-        this.sendToSession(session, {
-          type: ServerMessageType.PROPOSAL_DECLINED,
-          payload: { loginDeclined: gameProposal.loginDeclined },
-        })
+      {
+        type: ServerMessageType.PROPOSAL_DECLINED,
+        payload: gameProposal.loginDeclined,
+      }
     );
   }
 
@@ -189,7 +190,9 @@ export class SessionManager {
           this.leaveQueue(session);
         }
       },
-      session => this.sendToSession(session, { type: ServerMessageType.PROPOSAL_TIMED_OUT })
+      {
+        type: ServerMessageType.PROPOSAL_TIMED_OUT,
+      }
     );
   }
 
@@ -201,7 +204,9 @@ export class SessionManager {
         session.proposalId = undefined;
         session.gameId = undefined;
       },
-      session => this.sendToSession(session, { type: ServerMessageType.GAME_FINISHED })
+      {
+        type: ServerMessageType.GAME_FINISHED,
+      }
     );
   }
 
@@ -242,14 +247,14 @@ export class SessionManager {
     }
   }
 
-  private updateSessionsAndSend(
+  private updateSessionsAndSend<T>(
     logins: string[],
     updateSessionFn: (session: Session) => void,
-    sendFn: (session: Session) => void
+    message: ServerMessage<T>
   ): Session[] {
     const sessions = logins.map(login => this.sessions[login]).filter(s => s !== undefined);
     sessions.forEach(session => updateSessionFn(session));
-    sessions.forEach(session => sendFn(session));
+    sessions.forEach(session => this.sendToSession(session, message));
     return sessions;
   }
 
