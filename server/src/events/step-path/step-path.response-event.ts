@@ -39,7 +39,7 @@ export class StepPathResponseEvent implements ResponseEvent {
     const newPendingRequestStateEvents: RequestEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
       const effect: Effect = effectCalculator.getEffect(effectState);
       return effect.handle({
-        trigger: EffectTrigger.ON_SURFACE,
+        trigger: EffectTrigger.ON_APPLY,
         effectState,
         coordinates: this.stepPath.endCoordinates,
         gameState: context.gameState,

@@ -28,6 +28,9 @@ export class TurnEndResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+    /**
+     * At the end of the turn, get the effects from the robot ending turn, and the effects from the cell it is on.
+     */
     const effectStatesFromRobot: EffectState[] = effectCalculator.getEffectStatesFromRobot(
       context.gameState,
       this.turnRobotId

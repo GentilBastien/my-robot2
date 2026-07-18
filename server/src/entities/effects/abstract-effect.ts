@@ -32,11 +32,6 @@ export abstract class AbstractEffect implements Effect {
     return this.generalHandle(effectContext);
   };
 
-  protected _handleOnSurface = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
-  };
-
   protected _handleOnAction = (effectContext: EffectContext): RequestEvent[] => {
     // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
     return this.generalHandle(effectContext);
@@ -67,8 +62,6 @@ export abstract class AbstractEffect implements Effect {
     switch (context.trigger) {
       case EffectTrigger.ON_APPLY:
         return this._handleOnApply(context);
-      case EffectTrigger.ON_SURFACE:
-        return this._handleOnSurface(context);
       case EffectTrigger.ON_ACTION:
         return this._handleOnAction(context);
       case EffectTrigger.ON_TURN_START:
