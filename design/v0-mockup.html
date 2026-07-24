@@ -1,0 +1,1260 @@
+<!doctype html>
+<!--
+  MyRobot2 — v0 design preview (Login → Queue → Proposal → Combat)
+
+  Static HTML/CSS(+light inline JS) mockup, NOT wired to the real WebSocket
+  client in client/src. Built directly on the tokens declared in
+  ../design-system (colors, typography, mixins, breakpoints) so promoting
+  these values into the real app later is copy-paste, not re-derivation.
+
+  Documented assumptions (see plan for rationale — cheap to revise, this is a v0):
+  - No "stunned" visual: RobotStateTypeEnum has no STUNNED value even though
+    GameSpecifications.md mentions stun.
+  - Effect name/color mapping (EFFECT_DISPLAY_MAP below) is a placeholder —
+    EffectState.effectId is opaque in `shared`, no real lookup exists yet.
+  - Proposal screen has no opponent preview (SEND_PROPOSAL payload only
+    carries a proposalId).
+  - The bottom-bar "Action" button stays a single generic control — the real
+    client only exposes one undifferentiated action today.
+  - No fog-of-war/visibility rendering (CellState.visibleBy) at v0.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyRobot2 — Design Preview</title>
+    <style>
+      /* ============================================================
+         TOKENS — 1:1 translation of design-system/tokens/*.scss
+         ============================================================ */
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Bold.ttf') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-BoldItalic.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Italic.ttf') format('truetype');
+        font-weight: 500;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Medium.ttf') format('truetype');
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-MediumItalic.ttf') format('truetype');
+        font-weight: 600;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Regular.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-SemiBold.ttf') format('truetype');
+        font-weight: 650;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-SemiBoldItalic.ttf') format('truetype');
+        font-weight: 650;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Bold.ttf') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-BoldItalic.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Italic.ttf') format('truetype');
+        font-weight: 500;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Regular.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      :root {
+        /* tokens/_colors.scss */
+        --color-primary: #00eaff;
+        --color-secondary: #7a00ff;
+        --color-accent: #00ff9f;
+        --color-bg: #0a0f1c;
+        --color-surface: #121a2f;
+        --color-surface-2: #1c2540;
+        --color-danger: #ff3b5c;
+        --color-warning: #ffb300;
+        --color-success: #00ff9f;
+        --color-text: #d8e1ff;
+        --color-text-dim: #6c7aa8;
+        --glow-primary: 0 0 10px rgba(0, 234, 255, 0.7);
+        --glow-accent: 0 0 8px rgba(0, 255, 159, 0.7);
+
+        /* tokens/_variables.scss */
+        --font-main: 'Arimo', sans-serif;
+        --font-mono: 'Cousine', monospace;
+        --border-radius: 6px;
+        --border-radius-lg: 12px;
+        --transition-fast: 0.15s ease;
+        --transition-medium: 0.3s ease;
+        --z-ui: 100;
+        --z-overlay: 1000;
+
+        /* tokens/_breakpoints.scss — sm:480 / md:768 / lg:1024 / xl:1440 (used as literal px in @media, CSS vars can't drive media queries) */
+      }
+
+      /* ============================================================
+         BASE — mirrors design-system/base/_base.scss
+         ============================================================ */
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-main);
+        position: relative;
+        overflow-x: hidden;
+      }
+      /* subtle HUD scanline/vignette texture — cheap, on-brand ambience */
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background:
+          repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 3px),
+          radial-gradient(ellipse at 50% 0%, rgba(0, 234, 255, 0.08), transparent 60%);
+      }
+      .mono {
+        font-family: var(--font-mono);
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-weight: 650;
+      }
+      button,
+      input {
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+      }
+
+      /* ============================================================
+         MIXINS → CSS classes (design-system/tokens/_mixins.scss)
+         ============================================================ */
+      .panel {
+        background: linear-gradient(145deg, #0f172a, #0a0f1c);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius);
+        backdrop-filter: blur(6px);
+      }
+      .neon-border {
+        --accent-color: var(--color-primary);
+        border: 1px solid var(--accent-color);
+        box-shadow:
+          0 0 6px var(--accent-color),
+          inset 0 0 6px var(--accent-color);
+      }
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .holographic {
+        background: linear-gradient(120deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15), rgba(0, 255, 128, 0.15));
+      }
+
+      /* ============================================================
+         SHARED UI PRIMITIVES
+         ============================================================ */
+      .btn {
+        appearance: none;
+        cursor: pointer;
+        border-radius: var(--border-radius);
+        padding: 0.65em 1.4em;
+        font-weight: 650;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        background: var(--color-surface-2);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--color-text);
+        transition:
+          box-shadow var(--transition-fast),
+          transform var(--transition-fast),
+          opacity var(--transition-fast),
+          border-color var(--transition-fast);
+      }
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+      .btn:active:not(:disabled) {
+        transform: translateY(0) scale(0.98);
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .btn-primary {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+      }
+      .btn-primary:hover:not(:disabled) {
+        box-shadow: var(--glow-primary);
+      }
+      .btn-secondary {
+        border-color: var(--color-secondary);
+        color: #c9a3ff;
+      }
+      .btn-secondary:hover:not(:disabled) {
+        box-shadow: 0 0 10px rgba(122, 0, 255, 0.6);
+      }
+      .btn-accent {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+      }
+      .btn-accent:hover:not(:disabled) {
+        box-shadow: var(--glow-accent);
+      }
+      .btn-danger {
+        border-color: var(--color-danger);
+        color: var(--color-danger);
+      }
+      .btn-danger:hover:not(:disabled) {
+        box-shadow: 0 0 10px rgba(255, 59, 92, 0.6);
+      }
+      .btn-ghost {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.12);
+        color: var(--color-text-dim);
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35em;
+      }
+      .field label {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-dim);
+      }
+      .field input[type='text'] {
+        background: var(--color-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius);
+        padding: 0.6em 0.8em;
+        outline: none;
+        transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+      }
+      .field input[type='text']:focus {
+        border-color: var(--color-primary);
+        box-shadow: var(--glow-primary);
+      }
+
+      /* ============================================================
+         PREVIEW-ONLY CHROME (tooling, not real game UI)
+         ============================================================ */
+      .preview-switcher {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        border-radius: var(--border-radius);
+        background: rgba(10, 15, 28, 0.85);
+        backdrop-filter: blur(8px);
+      }
+      .preview-switcher__label {
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
+        color: var(--color-text-dim);
+        white-space: nowrap;
+      }
+      .preview-switcher__tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .tab {
+        appearance: none;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--color-text-dim);
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        font-family: var(--font-mono);
+      }
+      .tab.is-active {
+        color: var(--color-bg);
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+      .demo-toggle {
+        font-size: 0.62rem;
+        padding: 4px 8px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: var(--color-text-dim);
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: var(--font-mono);
+      }
+
+      /* ============================================================
+         SCREENS
+         ============================================================ */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
+      .screen.screen--active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Login & Queue (centered card screens) --- */
+      .center-screen {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        width: 100%;
+        max-width: 420px;
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: stretch;
+      }
+      .wordmark {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: var(--color-text);
+        text-shadow: var(--glow-primary);
+      }
+      .wordmark .accent {
+        color: var(--color-accent);
+        text-shadow: var(--glow-accent);
+      }
+      .card-sub {
+        text-align: center;
+        margin-top: -12px;
+        font-size: 0.7rem;
+        letter-spacing: 0.16em;
+        color: var(--color-text-dim);
+      }
+      .connected-readout {
+        min-height: 1.2em;
+        text-align: center;
+        color: var(--color-accent);
+        font-size: 0.8rem;
+      }
+      .card.is-connecting {
+        animation: pulseBorder 0.65s ease infinite alternate;
+      }
+      @keyframes pulseBorder {
+        from {
+          box-shadow: 0 0 6px var(--color-primary), inset 0 0 6px var(--color-primary);
+        }
+        to {
+          box-shadow: 0 0 18px var(--color-primary), inset 0 0 10px var(--color-primary);
+        }
+      }
+
+      .queue-status {
+        text-align: center;
+        padding: 18px 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--color-text-dim);
+      }
+      .queue-status.is-active {
+        color: var(--color-primary);
+        text-shadow: var(--glow-primary);
+        animation: queuePulse 1.4s ease infinite;
+      }
+      @keyframes queuePulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .queue-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* --- Proposal (modal-style overlay) --- */
+      .proposal-backdrop {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at center, rgba(255, 179, 0, 0.08), transparent 70%);
+      }
+      .proposal-card {
+        width: 100%;
+        max-width: 440px;
+        padding: 30px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        --accent-color: var(--color-warning);
+      }
+      .proposal-title {
+        text-align: center;
+        font-size: 1.1rem;
+        letter-spacing: 0.06em;
+        color: var(--color-warning);
+        text-shadow: 0 0 8px rgba(255, 179, 0, 0.6);
+      }
+      .proposal-timeout {
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+      .proposal-timeout::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: var(--color-warning);
+        transform-origin: left;
+        animation: proposalDrain 12s linear infinite;
+      }
+      @keyframes proposalDrain {
+        from {
+          transform: scaleX(1);
+        }
+        to {
+          transform: scaleX(0);
+        }
+      }
+      .proposal-actions {
+        display: flex;
+        gap: 12px;
+      }
+      .proposal-actions .btn {
+        flex: 1;
+      }
+      .proposal-status {
+        text-align: center;
+        min-height: 1.2em;
+        font-size: 0.78rem;
+        color: var(--color-text-dim);
+      }
+
+      /* --- Combat --- */
+      .combat-topbar {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 10px 16px;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .turn-chip {
+        color: var(--color-text-dim);
+      }
+      .turn-number {
+        color: var(--color-text);
+      }
+      .turn-indicator {
+        font-weight: 650;
+        padding: 2px 10px;
+        border-radius: 999px;
+        border: 1px solid currentColor;
+      }
+      .turn-indicator--self {
+        color: var(--color-accent);
+        text-shadow: var(--glow-accent);
+      }
+      .turn-indicator--enemy {
+        color: var(--color-danger);
+      }
+      .turn-state-chip {
+        color: var(--color-text-dim);
+        font-size: 0.68rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+
+      .arena-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: auto;
+        padding: 12px;
+      }
+
+      /* Hex grid — pointy-top hexes, horizontal rows, odd-row offset.
+         Matches server/src/structures/hexagonal-grid/hexagonal-grid.structure.ts
+         (setAllCellCoordinates: each row toggles BOTTOM_LEFT/BOTTOM_RIGHT
+         offset; cells within a row placed RIGHT of each other). */
+      .hex-grid {
+        --hex-w: 56px;
+        --hex-h: calc(var(--hex-w) * 1.1547);
+        display: flex;
+        flex-direction: column;
+      }
+      .hex-row {
+        display: flex;
+        margin-top: calc(var(--hex-h) * -0.25);
+      }
+      .hex-row:first-child {
+        margin-top: 0;
+      }
+      .hex-row--offset {
+        margin-left: calc(var(--hex-w) / 2);
+      }
+      .hex {
+        position: relative;
+        width: var(--hex-w);
+        height: var(--hex-h);
+        margin-right: 3px;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        background: var(--color-surface);
+        transition: box-shadow var(--transition-fast);
+      }
+      .terrain-plain {
+        background: #16203a;
+      }
+      .terrain-grass {
+        background: #123a2e;
+      }
+      .terrain-water {
+        background: #10283a;
+      }
+      .terrain-hills {
+        background: #201640;
+      }
+      .topo-hills {
+        box-shadow: inset 0 -6px 10px rgba(0, 0, 0, 0.35);
+      }
+      .topo-mountains {
+        box-shadow: inset 0 -10px 16px rgba(0, 0, 0, 0.55);
+      }
+      .hex.occupied {
+        z-index: 2;
+        box-shadow:
+          inset 0 0 0 2px var(--accent-color),
+          0 0 10px var(--accent-color);
+      }
+      .hex.occupied--self {
+        --accent-color: var(--color-primary);
+      }
+      .hex.occupied--enemy {
+        --accent-color: var(--color-danger);
+      }
+      .arena-wrap.paths-shown .hex.is-reachable {
+        box-shadow:
+          inset 0 0 0 2px var(--color-accent),
+          0 0 8px var(--color-accent);
+      }
+
+      /* HUD bandeau — both robot panels, directly above the action bar */
+      .hud-bandeau {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 12px 0;
+      }
+      .robot-panel {
+        flex: 1;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        --accent-color: var(--color-primary);
+      }
+      .robot-panel--enemy {
+        --accent-color: var(--color-secondary);
+      }
+      .robot-panel--overheated {
+        animation: overheatPulse 1.1s ease infinite;
+      }
+      @keyframes overheatPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 6px var(--color-warning), inset 0 0 6px var(--color-warning);
+        }
+        50% {
+          box-shadow: 0 0 16px var(--color-warning), inset 0 0 10px var(--color-warning);
+        }
+      }
+
+      .robot-id-frame {
+        position: relative;
+        padding: 6px 10px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-size: 0.78rem;
+      }
+      .robot-id-frame .corner {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-color: var(--accent-color);
+        border-style: solid;
+      }
+      .corner-tl {
+        top: 0;
+        left: 0;
+        border-width: 2px 0 0 2px;
+      }
+      .corner-tr {
+        top: 0;
+        right: 0;
+        border-width: 2px 2px 0 0;
+      }
+      .corner-bl {
+        bottom: 0;
+        left: 0;
+        border-width: 0 0 2px 2px;
+      }
+      .corner-br {
+        bottom: 0;
+        right: 0;
+        border-width: 0 2px 2px 0;
+      }
+      .robot-name {
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        color: var(--color-text);
+      }
+      .robot-uid {
+        color: var(--color-text-dim);
+        font-size: 0.7rem;
+      }
+
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .bar-label {
+        width: 4.5em;
+        font-size: 0.65rem;
+        letter-spacing: 0.06em;
+        color: var(--color-text-dim);
+      }
+      .bar {
+        position: relative;
+        flex: 1;
+        height: 9px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .bar-fill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 999px;
+      }
+      .bar-fill--hp {
+        z-index: 2;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      }
+      .bar-fill--shield {
+        z-index: 1;
+        background: rgba(216, 225, 255, 0.6);
+        box-shadow: 0 0 6px rgba(216, 225, 255, 0.5);
+      }
+      .bar-fill--mana {
+        background: linear-gradient(90deg, var(--color-secondary), #b98bff);
+      }
+      .bar-fill--heat {
+        background: linear-gradient(90deg, var(--color-warning), var(--color-danger));
+      }
+      .bar-value {
+        width: 8em;
+        text-align: right;
+        font-size: 0.7rem;
+        color: var(--color-text-dim);
+        flex-shrink: 0;
+      }
+      .shield-value {
+        color: #d8e1ff;
+      }
+
+      .robot-chips,
+      .robot-states,
+      .robot-effects {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .chip {
+        font-size: 0.65rem;
+        color: var(--color-text-dim);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .state-badge {
+        font-size: 0.65rem;
+        letter-spacing: 0.04em;
+        border-radius: 4px;
+        padding: 2px 6px;
+        color: var(--color-warning);
+        border: 1px solid var(--color-warning);
+      }
+      .effect-chip {
+        --effect-color: var(--color-danger);
+        font-size: 0.65rem;
+        border: 1px solid var(--effect-color);
+        color: var(--effect-color);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+
+      .stat-group {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 6px;
+      }
+      .stat-group summary {
+        cursor: pointer;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        color: var(--color-text-dim);
+        list-style: none;
+      }
+      .stat-group summary::-webkit-details-marker {
+        display: none;
+      }
+      .stat-group summary::before {
+        content: '▸ ';
+      }
+      .stat-group[open] summary::before {
+        content: '▾ ';
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px 10px;
+        padding: 6px 2px 2px;
+        font-size: 0.7rem;
+        color: var(--color-text-dim);
+      }
+      .robot-coords {
+        font-size: 0.65rem;
+        color: var(--color-text-dim);
+      }
+
+      /* Action bar */
+      .action-bar {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 0;
+      }
+      .movement-cluster {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--border-radius);
+      }
+      .movement-cluster label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.68rem;
+        color: var(--color-text-dim);
+      }
+      .movement-cluster input {
+        width: 42px;
+        background: var(--color-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 3px 4px;
+        text-align: center;
+      }
+      .action-bar .btn:last-child {
+        margin-left: auto;
+      }
+
+      /* ============================================================
+         RESPONSIVE — mobile-first, breakpoints from tokens/_breakpoints.scss
+         ============================================================ */
+      @media (min-width: 768px) {
+        /* md */
+        .hud-bandeau {
+          flex-direction: row;
+        }
+        .hex-grid {
+          --hex-w: 68px;
+        }
+      }
+      @media (min-width: 1024px) {
+        /* lg */
+        .hex-grid {
+          --hex-w: 78px;
+        }
+        .card {
+          padding: 40px 36px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Preview-only navigation — tooling chrome, not part of the real game UI -->
+    <nav class="preview-switcher" aria-label="Navigation de la maquette">
+      <span class="preview-switcher__label mono">APERÇU DESIGN</span>
+      <div class="preview-switcher__tabs">
+        <button class="tab is-active" data-target-screen="login">LOGIN</button>
+        <button class="tab" data-target-screen="queue">QUEUE</button>
+        <button class="tab" data-target-screen="proposal">PROPOSAL</button>
+        <button class="tab" data-target-screen="combat">COMBAT</button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ============================================================
+           SCREEN — Login
+           ============================================================ -->
+      <section class="screen screen--active" data-screen="login">
+        <div class="center-screen">
+          <div class="card panel neon-border" id="login-card">
+            <div class="wordmark">MYROBOT<span class="accent">2</span></div>
+            <div class="card-sub mono">ACCÈS PILOTE</div>
+            <div class="field">
+              <label for="connect-ws-input">Identifiant</label>
+              <input id="connect-ws-input" type="text" placeholder="callsign..." autocomplete="off" />
+            </div>
+            <button id="connect-ws" class="btn btn-primary">Connexion</button>
+            <div id="connected-span" class="connected-readout mono"></div>
+            <button id="disconnect-ws" class="btn btn-ghost" disabled>Déconnexion</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Queue
+           ============================================================ -->
+      <section class="screen" data-screen="queue">
+        <div class="center-screen">
+          <div class="card panel neon-border">
+            <div class="wordmark" style="font-size: 1.1rem">FILE D'ATTENTE</div>
+            <div id="queue-status" class="queue-status mono">HORS FILE</div>
+            <div class="queue-actions">
+              <button id="enter-queue-btn" class="btn btn-primary">Entrer en file</button>
+              <button id="leave-queue-btn" class="btn btn-danger" disabled>Quitter la file</button>
+              <button id="rejoin-game-btn" class="btn btn-secondary" disabled>Rejoindre la partie</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Proposal
+           ============================================================ -->
+      <section class="screen" data-screen="proposal">
+        <div class="proposal-backdrop">
+          <div class="proposal-card panel neon-border" id="div-proposal">
+            <div class="proposal-title mono">⚠ PROPOSITION DE COMBAT</div>
+            <div class="proposal-timeout"></div>
+            <div class="proposal-actions">
+              <button id="accept-proposal-btn" class="btn btn-accent">Accepter</button>
+              <button id="decline-proposal-btn" class="btn btn-danger">Refuser</button>
+            </div>
+            <div id="proposal-status" class="proposal-status mono"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Combat
+           ============================================================ -->
+      <section class="screen" data-screen="combat">
+        <div class="combat-topbar mono">
+          <span class="turn-chip">TOUR <span class="turn-number">3</span></span>
+          <span id="turn-indicator" class="turn-indicator turn-indicator--self">VOTRE TOUR</span>
+          <span class="turn-state-chip">EN COURS</span>
+          <button id="demo-turn-toggle" class="demo-toggle" title="Bascule de démo — pas une vraie action de jeu">
+            [DEMO] Basculer le tour
+          </button>
+        </div>
+
+        <div class="arena-wrap">
+          <div class="hex-grid" id="hex-grid"></div>
+        </div>
+
+        <div class="hud-bandeau">
+          <!-- Self robot -->
+          <div class="robot-panel panel neon-border">
+            <div class="robot-id-frame mono">
+              <div class="corner corner-tl"></div>
+              <div class="corner corner-tr"></div>
+              <div class="corner corner-bl"></div>
+              <div class="corner corner-br"></div>
+              <span class="robot-name">WASS</span>
+              <span class="robot-uid">#wass</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">PV</span>
+              <div class="bar">
+                <div class="bar-fill bar-fill--shield" style="left: 62%; width: 18%"></div>
+                <div class="bar-fill bar-fill--hp" style="width: 62%"></div>
+              </div>
+              <span class="bar-value mono">124/200 <span class="shield-value">+36</span></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">MANA</span>
+              <div class="bar"><div class="bar-fill bar-fill--mana" style="width: 70%"></div></div>
+              <span class="bar-value mono">70/100</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">SURCHAUFFE</span>
+              <div class="bar"><div class="bar-fill bar-fill--heat" style="width: 30%"></div></div>
+              <span class="bar-value mono">30/100</span>
+            </div>
+            <div class="robot-chips mono">
+              <span class="chip">DÉPL 3/4</span>
+              <span class="chip">ACT 1/1</span>
+              <span class="chip">SOUS-ACT 1/1</span>
+              <span class="chip">MOD·E 2</span>
+              <span class="chip">REFROID 4</span>
+            </div>
+            <div class="robot-states">
+              <span class="state-badge">ROOTED</span>
+            </div>
+            <div class="robot-effects" id="self-effects"></div>
+            <details class="stat-group">
+              <summary class="mono">ATTRIBUTS</summary>
+              <div class="stat-grid mono">
+                <span>POW 10</span><span>MOB 10</span><span>CHS 10</span>
+                <span>CPU 10</span><span>ENE 10</span><span>INTF 10</span>
+              </div>
+            </details>
+            <details class="stat-group">
+              <summary class="mono">STATISTIQUES</summary>
+              <div class="stat-grid mono">
+                <span>DGT 10</span><span>PRÉC 10</span><span>ESQ 10</span>
+                <span>CRIT 10</span><span>RÉD 10</span><span>ARM 10</span>
+                <span>VIT 10</span><span>VIS 2</span>
+              </div>
+            </details>
+            <div class="robot-coords mono">x:1 y:4 z:-5</div>
+          </div>
+
+          <!-- Enemy robot -->
+          <div class="robot-panel robot-panel--enemy robot-panel--overheated panel neon-border">
+            <div class="robot-id-frame mono">
+              <div class="corner corner-tl"></div>
+              <div class="corner corner-tr"></div>
+              <div class="corner corner-bl"></div>
+              <div class="corner corner-br"></div>
+              <span class="robot-name">BAST</span>
+              <span class="robot-uid">#bast</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">PV</span>
+              <div class="bar">
+                <div class="bar-fill bar-fill--hp" style="width: 44%"></div>
+              </div>
+              <span class="bar-value mono">88/200</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">MANA</span>
+              <div class="bar"><div class="bar-fill bar-fill--mana" style="width: 40%"></div></div>
+              <span class="bar-value mono">40/100</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">SURCHAUFFE</span>
+              <div class="bar"><div class="bar-fill bar-fill--heat" style="width: 90%"></div></div>
+              <span class="bar-value mono">90/100</span>
+            </div>
+            <div class="robot-chips mono">
+              <span class="chip">DÉPL 4/4</span>
+              <span class="chip">ACT 1/1</span>
+              <span class="chip">SOUS-ACT 0/1</span>
+              <span class="chip">MOD·E 1</span>
+              <span class="chip">REFROID 10</span>
+            </div>
+            <div class="robot-states">
+              <span class="state-badge">SURCHAUFFÉ</span>
+            </div>
+            <div class="robot-effects" id="enemy-effects"></div>
+            <details class="stat-group">
+              <summary class="mono">ATTRIBUTS</summary>
+              <div class="stat-grid mono">
+                <span>POW 10</span><span>MOB 10</span><span>CHS 10</span>
+                <span>CPU 10</span><span>ENE 10</span><span>INTF 10</span>
+              </div>
+            </details>
+            <details class="stat-group">
+              <summary class="mono">STATISTIQUES</summary>
+              <div class="stat-grid mono">
+                <span>DGT 10</span><span>PRÉC 10</span><span>ESQ 10</span>
+                <span>CRIT 10</span><span>RÉD 10</span><span>ARM 10</span>
+                <span>VIT 10</span><span>VIS 2</span>
+              </div>
+            </details>
+            <div class="robot-coords mono">x:7 y:1 z:-8</div>
+          </div>
+        </div>
+
+        <div class="action-bar panel">
+          <button id="end-turn-btn" class="btn btn-primary" data-turn-gated>Fin de tour</button>
+          <button id="ask-possible-paths-btn" class="btn btn-secondary" data-turn-gated>Chemins possibles</button>
+          <div class="movement-cluster">
+            <label>x:<input id="movement-input-x" type="number" value="0" data-turn-gated /></label>
+            <label>y:<input id="movement-input-y" type="number" value="0" data-turn-gated /></label>
+            <label>z:<input id="movement-input-z" type="number" value="0" data-turn-gated /></label>
+            <button id="path-btn" class="btn btn-secondary" data-turn-gated>Déplacement</button>
+          </div>
+          <button id="action-btn" class="btn btn-accent" data-turn-gated>Action</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ============================================================
+      // Screen switcher (preview-only tooling — no real router)
+      // ============================================================
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          const target = tab.dataset.targetScreen;
+          document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.toggle('screen--active', screen.dataset.screen === target);
+          });
+        });
+      });
+
+      // ============================================================
+      // Login demo — purely visual, mirrors client/src/test.js's
+      // updateLogged() state transitions without a real websocket.
+      // ============================================================
+      const loginCard = document.getElementById('login-card');
+      const connectBtn = document.getElementById('connect-ws');
+      const disconnectBtn = document.getElementById('disconnect-ws');
+      const loginInput = document.getElementById('connect-ws-input');
+      const connectedSpan = document.getElementById('connected-span');
+
+      connectBtn.addEventListener('click', () => {
+        const login = (loginInput.value.trim() || 'pilote').toUpperCase();
+        connectBtn.disabled = true;
+        loginCard.classList.add('is-connecting');
+        window.setTimeout(() => {
+          loginCard.classList.remove('is-connecting');
+          connectedSpan.textContent = '> CONNECTÉ EN TANT QUE ' + login;
+          disconnectBtn.disabled = false;
+        }, 650);
+      });
+      disconnectBtn.addEventListener('click', () => {
+        connectedSpan.textContent = '';
+        connectBtn.disabled = false;
+        disconnectBtn.disabled = true;
+      });
+
+      // ============================================================
+      // Queue demo — mirrors the enter/leave mutual-exclusion logic
+      // already implemented in client/src/test.js.
+      // ============================================================
+      const enterQueueBtn = document.getElementById('enter-queue-btn');
+      const leaveQueueBtn = document.getElementById('leave-queue-btn');
+      const queueStatus = document.getElementById('queue-status');
+
+      enterQueueBtn.addEventListener('click', () => {
+        enterQueueBtn.disabled = true;
+        leaveQueueBtn.disabled = false;
+        queueStatus.textContent = "EN FILE D'ATTENTE";
+        queueStatus.classList.add('is-active');
+      });
+      leaveQueueBtn.addEventListener('click', () => {
+        enterQueueBtn.disabled = false;
+        leaveQueueBtn.disabled = true;
+        queueStatus.textContent = 'HORS FILE';
+        queueStatus.classList.remove('is-active');
+      });
+
+      // ============================================================
+      // Proposal demo — mirrors the answeredProposal mutual-lock
+      // semantics in client/src/test.js.
+      // ============================================================
+      const acceptBtn = document.getElementById('accept-proposal-btn');
+      const declineBtn = document.getElementById('decline-proposal-btn');
+      const proposalStatus = document.getElementById('proposal-status');
+
+      function lockProposal(message) {
+        acceptBtn.disabled = true;
+        declineBtn.disabled = true;
+        proposalStatus.textContent = message;
+      }
+      acceptBtn.addEventListener('click', () => lockProposal("> EN ATTENTE DE L'ADVERSAIRE..."));
+      declineBtn.addEventListener('click', () => lockProposal('> PROPOSITION REFUSÉE'));
+
+      // ============================================================
+      // Combat — hex grid generation
+      // Matches the odd-row-offset pointy-top topology confirmed in
+      // server/src/structures/hexagonal-grid/hexagonal-grid.structure.ts.
+      // Grid is intentionally smaller than the real 10x10 arena
+      // (game.generator.ts) for legibility in this mockup.
+      // ============================================================
+      (function buildHexGrid() {
+        const grid = document.getElementById('hex-grid');
+        const COLS = 9;
+        const ROWS = 6;
+        const terrains = ['terrain-plain', 'terrain-grass', 'terrain-hills', 'terrain-water'];
+        const topographies = ['', 'topo-hills', 'topo-mountains'];
+        const selfCell = { row: 4, col: 1 };
+        const enemyCell = { row: 1, col: 7 };
+        const reachable = [
+          { row: 4, col: 1 },
+          { row: 4, col: 2 },
+          { row: 3, col: 1 },
+          { row: 4, col: 0 },
+          { row: 5, col: 1 },
+          { row: 3, col: 2 },
+        ];
+        const isReachable = (r, c) => reachable.some(p => p.row === r && p.col === c);
+
+        for (let row = 0; row < ROWS; row++) {
+          const rowEl = document.createElement('div');
+          rowEl.className = 'hex-row' + (row % 2 === 1 ? ' hex-row--offset' : '');
+          for (let col = 0; col < COLS; col++) {
+            const hex = document.createElement('div');
+            const terrain = terrains[(row * 3 + col * 7) % terrains.length];
+            const topo = topographies[(row + col * 2) % topographies.length];
+            hex.className = ['hex', terrain, topo].filter(Boolean).join(' ');
+            hex.dataset.x = String(col);
+            hex.dataset.y = String(row);
+            hex.dataset.z = String(-col - row);
+            if (row === selfCell.row && col === selfCell.col) hex.classList.add('occupied', 'occupied--self');
+            if (row === enemyCell.row && col === enemyCell.col) hex.classList.add('occupied', 'occupied--enemy');
+            if (isReachable(row, col)) hex.classList.add('is-reachable');
+            rowEl.appendChild(hex);
+          }
+          grid.appendChild(rowEl);
+        }
+      })();
+
+      document.getElementById('ask-possible-paths-btn').addEventListener('click', () => {
+        document.querySelector('.arena-wrap').classList.toggle('paths-shown');
+      });
+
+      // ============================================================
+      // Turn-gating demo — toggles the disabled state of every
+      // action-bar control to visualize the real turn-based rule
+      // (only the robot matching TurnState.currentTurnRobotId may act).
+      // ============================================================
+      const combatScreen = document.querySelector('[data-screen="combat"]');
+      const turnIndicator = document.getElementById('turn-indicator');
+      const turnGatedControls = document.querySelectorAll('[data-turn-gated]');
+
+      document.getElementById('demo-turn-toggle').addEventListener('click', () => {
+        const isEnemyTurn = combatScreen.classList.toggle('is-enemy-turn');
+        turnIndicator.textContent = isEnemyTurn ? 'TOUR ENNEMI' : 'VOTRE TOUR';
+        turnIndicator.classList.toggle('turn-indicator--enemy', isEnemyTurn);
+        turnIndicator.classList.toggle('turn-indicator--self', !isEnemyTurn);
+        turnGatedControls.forEach(el => {
+          el.disabled = isEnemyTurn;
+        });
+      });
+
+      // ============================================================
+      // Effect chips — placeholder effectId → display metadata.
+      // EffectState.effectId is an opaque string in `shared`; there is
+      // no real client-facing name/color lookup yet. Replace this map
+      // once the server exposes effect metadata to clients.
+      // ============================================================
+      const EFFECT_DISPLAY_MAP = {
+        'effect.fire': { label: 'FEU', color: 'var(--color-danger)' },
+        'effect.corrosion': { label: 'CORROSION', color: 'var(--color-warning)' },
+        'effect.emp': { label: 'EMP', color: 'var(--color-secondary)' },
+      };
+
+      function renderEffectChips(container, effects) {
+        effects.forEach(effect => {
+          const meta = EFFECT_DISPLAY_MAP[effect.effectId] || { label: effect.effectId, color: 'var(--color-text-dim)' };
+          const chip = document.createElement('span');
+          chip.className = 'effect-chip mono';
+          chip.style.setProperty('--effect-color', meta.color);
+          chip.textContent = meta.label + ' x' + effect.stacks + ' · ' + effect.remainingTurns + 't';
+          container.appendChild(chip);
+        });
+      }
+
+      renderEffectChips(document.getElementById('self-effects'), [
+        { id: 'e1', sourceRobotId: 'bast', targetRobotId: 'wass', effectId: 'effect.fire', stacks: 2, lastedTurns: 1, remainingTurns: 2 },
+      ]);
+      renderEffectChips(document.getElementById('enemy-effects'), []);
+    </script>
+  </body>
+</html>
