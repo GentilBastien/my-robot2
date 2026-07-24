@@ -1,0 +1,1969 @@
+<!doctype html>
+<!--
+  MyRobot2 — v2 design preview (Login → Queue → Proposal → Combat)
+
+  Third design pass, per feedback on v1:
+  - Target card interaction kept (well received) — click any robot, or your
+    own portrait, to show its card.
+  - Borders/glows toned down from "neon HUD" to a sober "Star Wars control
+    panel" language: muted beveled panel edges, small LED-style indicator
+    dots on buttons instead of whole-element glow, no blurred neon outlines.
+    Same design-system color tokens, used far more sparingly.
+  - Turns are no longer framed as a self/enemy binary. Games can be
+    2v2/5v5 with allies on your side, so combat now models several robots
+    with a `team` (self/ally/enemy) and a turn ORDER (not just "your turn
+    vs their turn"). A turn-order strip is now shown at the very top of
+    the screen. NOTE: `shared.RobotState` has no `team` field today — this
+    is a mockup-only construct flagging a real gap for the future server
+    model (see ROBOTS/TURN_ORDER below).
+  - Hex grid terrain reworked after the reference screenshot (Sid Meier's
+    Civilization: Beyond Earth) into naturalistic planetary terrain
+    (sand/rock/grass/snow/water) with elevation shading and glowing
+    resource-deposit clusters, instead of flat tech-tinted tiles. Terrain
+    classes are named after the REAL enum values in
+    shared/src/states/cell-attribute.state.ts (BaseAttribute,
+    TopographyAttribute, FeatureAttribute, ResourceAttribute,
+    RaisingLevelAttribute) — only a representative subset of Feature values
+    (FOREST, ICE) gets a distinct visual treatment; the rest fall back to
+    the base terrain look (scope note, not a fabricated mechanic).
+
+  Still NOT wired to the real WebSocket client in client/src. v0 and v1 are
+  kept as-is for comparison.
+
+  Documented assumptions carried over from v0/v1 (still true here):
+  - No "stunned" visual: RobotStateTypeEnum has no STUNNED value.
+  - Effect name/color mapping (EFFECT_DISPLAY_MAP below) is a placeholder —
+    EffectState.effectId is opaque in `shared`.
+  - Proposal screen has no opponent preview (SEND_PROPOSAL payload only
+    carries a proposalId).
+  - The bottom-bar "Action" button stays a single generic control.
+  - No fog-of-war/visibility rendering (CellState.visibleBy).
+  - No territory/ownership borders (unlike the reference screenshot) —
+    MyRobot2's arena is a single shared battle grid, not a claimed-region
+    strategy map, so that part of the reference image wasn't ported.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyRobot2 — Design Preview v2 (Espace, sobre)</title>
+    <style>
+      /* ============================================================
+         TOKENS — 1:1 translation of design-system/tokens/*.scss
+         ============================================================ */
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Bold.ttf') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-BoldItalic.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Italic.ttf') format('truetype');
+        font-weight: 500;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Medium.ttf') format('truetype');
+        font-weight: 600;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-MediumItalic.ttf') format('truetype');
+        font-weight: 600;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-Regular.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-SemiBold.ttf') format('truetype');
+        font-weight: 650;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Arimo';
+        src: url('../design-system/font/arimo/Arimo-SemiBoldItalic.ttf') format('truetype');
+        font-weight: 650;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Bold.ttf') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-BoldItalic.ttf') format('truetype');
+        font-weight: 700;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Italic.ttf') format('truetype');
+        font-weight: 500;
+        font-style: italic;
+      }
+      @font-face {
+        font-family: 'Cousine';
+        src: url('../design-system/font/cousine/Cousine-Regular.ttf') format('truetype');
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      :root {
+        /* tokens/_colors.scss */
+        --color-primary: #00eaff;
+        --color-secondary: #7a00ff;
+        --color-accent: #00ff9f;
+        --color-bg: #0a0f1c;
+        --color-surface: #121a2f;
+        --color-surface-2: #1c2540;
+        --color-danger: #ff3b5c;
+        --color-warning: #ffb300;
+        --color-success: #00ff9f;
+        --color-text: #d8e1ff;
+        --color-text-dim: #6c7aa8;
+        --glow-primary: 0 0 10px rgba(0, 234, 255, 0.7);
+        --glow-accent: 0 0 8px rgba(0, 255, 159, 0.7);
+
+        /* tokens/_variables.scss */
+        --font-main: 'Arimo', sans-serif;
+        --font-mono: 'Cousine', monospace;
+        --border-radius: 6px;
+        --border-radius-lg: 12px;
+        --transition-fast: 0.15s ease;
+        --transition-medium: 0.3s ease;
+        --z-ui: 100;
+        --z-overlay: 1000;
+
+        /* tokens/_breakpoints.scss — sm:480 / md:768 / lg:1024 / xl:1440 (literal px in @media, CSS vars can't drive media queries) */
+      }
+
+      /* ============================================================
+         BASE — mirrors design-system/base/_base.scss
+         ============================================================ */
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+      body {
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-main);
+        position: relative;
+        overflow-x: hidden;
+      }
+      .mono {
+        font-family: var(--font-mono);
+      }
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-weight: 650;
+      }
+      button,
+      input {
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+      }
+
+      /* ============================================================
+         DECORATIVE BACKGROUND — deep space (starfield, nebula, planet)
+         Unchanged from v1 — this part of the feedback was positive.
+         ============================================================ */
+      .starfield,
+      .nebula,
+      .planet,
+      .hero-star,
+      .shooting-star {
+        position: fixed;
+        z-index: 0;
+        pointer-events: none;
+      }
+      .starfield {
+        inset: 0;
+        overflow: hidden;
+      }
+      .star-layer {
+        position: absolute;
+        inset: 0;
+        background-repeat: repeat;
+      }
+      .star-layer--small {
+        background-image: radial-gradient(1px 1px at 20px 30px, #fff, transparent 100%),
+          radial-gradient(1px 1px at 60px 110px, #cfe3ff, transparent 100%),
+          radial-gradient(1px 1px at 120px 40px, #fff, transparent 100%),
+          radial-gradient(1px 1px at 170px 150px, #fff, transparent 100%),
+          radial-gradient(1px 1px at 40px 170px, #cfe3ff, transparent 100%),
+          radial-gradient(1px 1px at 190px 80px, #fff, transparent 100%),
+          radial-gradient(1px 1px at 90px 10px, #fff, transparent 100%);
+        background-size: 200px 200px;
+        opacity: 0.7;
+        animation: starDriftSmall 140s linear infinite;
+      }
+      .star-layer--medium {
+        background-image: radial-gradient(1.5px 1.5px at 40px 60px, #fff, transparent 100%),
+          radial-gradient(1.5px 1.5px at 180px 140px, #d8e1ff, transparent 100%),
+          radial-gradient(1.5px 1.5px at 260px 40px, #fff, transparent 100%),
+          radial-gradient(1.5px 1.5px at 100px 220px, #fff, transparent 100%),
+          radial-gradient(1.5px 1.5px at 300px 260px, #cfe3ff, transparent 100%);
+        background-size: 320px 320px;
+        opacity: 0.55;
+        animation: starDriftMedium 200s linear infinite reverse;
+      }
+      .star-layer--large {
+        background-image: radial-gradient(2px 2px at 80px 90px, #fff, transparent 100%),
+          radial-gradient(2.5px 2.5px at 320px 220px, #00eaff, transparent 100%),
+          radial-gradient(2px 2px at 420px 80px, #fff, transparent 100%),
+          radial-gradient(2.5px 2.5px at 180px 380px, #fff, transparent 100%);
+        background-size: 480px 480px;
+        opacity: 0.8;
+        animation:
+          starDriftSmall 260s linear infinite,
+          twinkle 4s ease-in-out infinite;
+      }
+      @keyframes starDriftSmall {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -200px -200px;
+        }
+      }
+      @keyframes starDriftMedium {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: -320px -320px;
+        }
+      }
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.8;
+        }
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      .nebula {
+        border-radius: 50%;
+        filter: blur(70px);
+        mix-blend-mode: screen;
+      }
+      .nebula--cyan {
+        width: 55vw;
+        height: 55vw;
+        left: -18vw;
+        top: -15vw;
+        background: radial-gradient(circle, var(--color-primary), transparent 70%);
+        opacity: 0.2;
+      }
+      .nebula--violet {
+        width: 60vw;
+        height: 60vw;
+        right: -22vw;
+        bottom: -18vw;
+        background: radial-gradient(circle, var(--color-secondary), transparent 70%);
+        opacity: 0.24;
+      }
+      .nebula--green {
+        width: 38vw;
+        height: 38vw;
+        right: 6vw;
+        top: -8vw;
+        background: radial-gradient(circle, var(--color-accent), transparent 70%);
+        opacity: 0.12;
+      }
+
+      .planet {
+        top: -70px;
+        right: -70px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 32% 30%, #3a2a55 0%, #1c1030 45%, #0a0616 100%);
+        box-shadow:
+          0 0 70px 16px rgba(122, 0, 255, 0.2),
+          inset -18px -18px 34px rgba(0, 0, 0, 0.6),
+          inset 10px 10px 26px rgba(255, 255, 255, 0.04);
+      }
+      .planet::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150%;
+        height: 34px;
+        border: 5px solid rgba(0, 234, 255, 0.14);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) rotate(-14deg) scaleY(0.32);
+      }
+      .planet::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background-image: radial-gradient(circle at 68% 24%, rgba(0, 0, 0, 0.4) 0 7px, transparent 8px),
+          radial-gradient(circle at 42% 58%, rgba(0, 0, 0, 0.32) 0 11px, transparent 12px),
+          radial-gradient(circle at 76% 72%, rgba(0, 0, 0, 0.28) 0 5px, transparent 6px);
+      }
+
+      .hero-star {
+        left: 6vw;
+        bottom: 8vh;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--color-warning);
+        box-shadow:
+          0 0 20px 6px rgba(255, 179, 0, 0.5),
+          0 0 60px 24px rgba(255, 179, 0, 0.16);
+      }
+
+      .shooting-star {
+        top: 12%;
+        left: -10%;
+        width: 140px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #fff, transparent);
+        transform: rotate(12deg);
+        opacity: 0;
+        animation: shoot 9s ease-in infinite;
+      }
+      .shooting-star--b {
+        top: 30%;
+        animation-delay: 4.5s;
+      }
+      @keyframes shoot {
+        0% {
+          opacity: 0;
+          transform: translate(0, 0) rotate(12deg);
+        }
+        3% {
+          opacity: 1;
+        }
+        10% {
+          opacity: 0;
+          transform: translate(130vw, 55vh) rotate(12deg);
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .star-layer,
+        .shooting-star {
+          animation: none !important;
+        }
+        .shooting-star {
+          display: none;
+        }
+      }
+
+      /* ============================================================
+         MIXINS → CSS classes (design-system/tokens/_mixins.scss)
+         `.neon-border` is translated faithfully but, per feedback, is no
+         longer applied broadly — see `.console-border` below for the
+         sober "control panel" alternative actually used on cards.
+         ============================================================ */
+      .panel {
+        background: linear-gradient(145deg, #0f172a, #0a0f1c);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: var(--border-radius);
+        backdrop-filter: blur(6px);
+      }
+      .neon-border {
+        --accent-color: var(--color-primary);
+        border: 1px solid var(--accent-color);
+        box-shadow:
+          0 0 6px var(--accent-color),
+          inset 0 0 6px var(--accent-color);
+      }
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .holographic {
+        background: linear-gradient(120deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.15), rgba(0, 255, 128, 0.15));
+      }
+
+      /* Sober alternative to .neon-border: a beveled hardware-panel edge —
+         thin muted border + inset highlight/shadow, no colored glow. */
+      .console-border {
+        border: 1px solid rgba(180, 195, 230, 0.18);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.05),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+      }
+
+      /* Utility layered on top of .panel for the bigger "viewport glass"
+         cards: softer radius + a subtle glass sheen (no color, no glow). */
+      .holo-card {
+        border-radius: var(--border-radius-lg);
+        position: relative;
+        overflow: hidden;
+      }
+      .holo-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 40%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent);
+        pointer-events: none;
+      }
+
+      /* ============================================================
+         SHARED UI PRIMITIVES — buttons styled like backlit toggle
+         switches on a control panel: small LED indicator, no glow halo.
+         ============================================================ */
+      .btn {
+        appearance: none;
+        cursor: pointer;
+        position: relative;
+        border-radius: 4px;
+        padding: 0.65em 1.3em 0.65em 2.1em;
+        font-weight: 650;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        font-size: 0.82rem;
+        background: linear-gradient(180deg, var(--color-surface-2), var(--color-surface));
+        border: 1px solid rgba(180, 195, 230, 0.18);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.06),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+        color: var(--color-text);
+        --led-color: var(--color-text-dim);
+        transition:
+          filter var(--transition-fast),
+          transform var(--transition-fast),
+          opacity var(--transition-fast);
+      }
+      .btn::before {
+        content: '';
+        position: absolute;
+        left: 0.9em;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--led-color);
+        box-shadow: 0 0 3px 1px var(--led-color);
+      }
+      .btn:hover:not(:disabled) {
+        filter: brightness(1.15);
+      }
+      .btn:active:not(:disabled) {
+        transform: translateY(1px);
+        filter: brightness(0.95);
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        filter: none !important;
+        transform: none !important;
+      }
+      .btn-primary {
+        --led-color: var(--color-primary);
+        border-color: rgba(0, 234, 255, 0.3);
+      }
+      .btn-secondary {
+        --led-color: var(--color-secondary);
+        border-color: rgba(122, 0, 255, 0.35);
+      }
+      .btn-accent {
+        --led-color: var(--color-accent);
+        border-color: rgba(0, 255, 159, 0.3);
+      }
+      .btn-danger {
+        --led-color: var(--color-danger);
+        border-color: rgba(255, 59, 92, 0.35);
+      }
+      .btn-ghost {
+        background: transparent;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35em;
+      }
+      .field label {
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-dim);
+      }
+      .field input[type='text'] {
+        background: var(--color-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--border-radius);
+        padding: 0.6em 0.8em;
+        outline: none;
+        transition:
+          box-shadow var(--transition-fast),
+          border-color var(--transition-fast);
+      }
+      .field input[type='text']:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 2px rgba(0, 234, 255, 0.15);
+      }
+
+      /* ============================================================
+         PREVIEW-ONLY CHROME (tooling, not real game UI)
+         ============================================================ */
+      .preview-switcher {
+        position: fixed;
+        top: 14px;
+        right: 14px;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        border-radius: var(--border-radius);
+        background: rgba(10, 15, 28, 0.85);
+        backdrop-filter: blur(8px);
+      }
+      .preview-switcher__label {
+        font-size: 0.62rem;
+        letter-spacing: 0.12em;
+        color: var(--color-text-dim);
+        white-space: nowrap;
+      }
+      .preview-switcher__tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .tab {
+        appearance: none;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--color-text-dim);
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+        font-family: var(--font-mono);
+      }
+      .tab.is-active {
+        color: var(--color-bg);
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+      }
+      .demo-toggle {
+        font-size: 0.62rem;
+        padding: 4px 8px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        background: transparent;
+        color: var(--color-text-dim);
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: var(--font-mono);
+      }
+
+      /* ============================================================
+         SCREENS
+         ============================================================ */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
+      .screen.screen--active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* --- Login & Queue (centered card screens) --- */
+      .center-screen {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+      .card {
+        width: 100%;
+        max-width: 420px;
+        padding: 32px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: stretch;
+      }
+      .wordmark {
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: var(--color-text);
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(180, 195, 230, 0.15);
+      }
+      .wordmark .accent {
+        color: var(--color-accent);
+      }
+      .card-sub {
+        text-align: center;
+        margin-top: -10px;
+        font-size: 0.7rem;
+        letter-spacing: 0.16em;
+        color: var(--color-text-dim);
+      }
+      .connected-readout {
+        min-height: 1.2em;
+        text-align: center;
+        color: var(--color-accent);
+        font-size: 0.8rem;
+      }
+      .card.is-connecting {
+        animation: connectingBlink 0.8s ease infinite alternate;
+      }
+      @keyframes connectingBlink {
+        from {
+          border-color: rgba(180, 195, 230, 0.18);
+        }
+        to {
+          border-color: var(--color-primary);
+        }
+      }
+
+      .queue-status {
+        text-align: center;
+        padding: 18px 0;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--color-text-dim);
+      }
+      .queue-status.is-active {
+        color: var(--color-primary);
+        animation: queuePulse 1.4s ease infinite;
+      }
+      @keyframes queuePulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .queue-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      /* --- Proposal (modal-style overlay) --- */
+      .proposal-backdrop {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(ellipse at center, rgba(255, 179, 0, 0.06), transparent 70%);
+      }
+      .proposal-card {
+        width: 100%;
+        max-width: 440px;
+        padding: 30px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .proposal-title {
+        text-align: center;
+        font-size: 1.1rem;
+        letter-spacing: 0.06em;
+        color: var(--color-warning);
+      }
+      .proposal-timeout {
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+      .proposal-timeout::after {
+        content: '';
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: var(--color-warning);
+        transform-origin: left;
+        animation: proposalDrain 12s linear infinite;
+      }
+      @keyframes proposalDrain {
+        from {
+          transform: scaleX(1);
+        }
+        to {
+          transform: scaleX(0);
+        }
+      }
+      .proposal-actions {
+        display: flex;
+        gap: 12px;
+      }
+      .proposal-actions .btn {
+        flex: 1;
+      }
+      .proposal-status {
+        text-align: center;
+        min-height: 1.2em;
+        font-size: 0.78rem;
+        color: var(--color-text-dim);
+      }
+
+      /* --- Combat --- */
+
+      /* Turn-order preview strip — shown at the very top of the screen.
+         Robots are colored by team (self/ally/enemy), not a binary. */
+      .turn-order {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        flex-wrap: wrap;
+        padding: 8px 12px 4px;
+      }
+      .turn-order__chip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1px solid var(--chip-color, var(--color-text-dim));
+        color: var(--chip-color, var(--color-text-dim));
+        font-size: 0.62rem;
+        font-weight: 650;
+        opacity: 0.55;
+        transition: all var(--transition-fast);
+      }
+      .turn-order__chip.is-current {
+        opacity: 1;
+        background: var(--chip-color);
+        color: var(--color-bg);
+      }
+      .turn-order__chip.is-past {
+        opacity: 0.3;
+      }
+      .turn-order__arrow {
+        color: var(--color-text-dim);
+        font-size: 0.7rem;
+      }
+
+      .combat-topbar {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 6px 16px 10px;
+        font-size: 0.76rem;
+        letter-spacing: 0.06em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+      .turn-chip {
+        color: var(--color-text-dim);
+      }
+      .turn-number {
+        color: var(--color-text);
+      }
+      .active-turn-label {
+        color: var(--color-text-dim);
+      }
+      .active-turn-label strong {
+        color: var(--color-text);
+        font-weight: 650;
+      }
+      .team-tag {
+        font-size: 0.62rem;
+        padding: 1px 8px;
+        border-radius: 999px;
+        border: 1px solid var(--team-color, var(--color-text-dim));
+        color: var(--team-color, var(--color-text-dim));
+      }
+      .turn-state-chip {
+        color: var(--color-text-dim);
+        font-size: 0.68rem;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+      .combat-hint {
+        text-align: center;
+        font-size: 0.68rem;
+        letter-spacing: 0.03em;
+        color: var(--color-text-dim);
+        padding: 4px 12px 0;
+      }
+
+      .arena-wrap {
+        flex: 1 1 auto;
+        min-height: 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        overflow: auto;
+      }
+      .hex-grid-scroll {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 240px;
+      }
+
+      /* Hex grid — pointy-top hexes, horizontal rows, odd-row offset.
+         Matches server/src/structures/hexagonal-grid/hexagonal-grid.structure.ts
+         (setAllCellCoordinates: each row toggles BOTTOM_LEFT/BOTTOM_RIGHT
+         offset; cells within a row placed RIGHT of each other).
+
+         Terrain classes below are named after the real enum values in
+         shared/src/states/cell-attribute.state.ts, styled after the
+         reference screenshot (naturalistic planetary surface, not tech
+         tiles): sandy/rocky/grassy/icy tones, elevation shading, and
+         glowing bioluminescent resource-deposit clusters. */
+      .hex-grid {
+        --hex-w: 56px;
+        --hex-h: calc(var(--hex-w) * 1.1547);
+        display: flex;
+        flex-direction: column;
+      }
+      .hex-row {
+        display: flex;
+        margin-top: calc(var(--hex-h) * -0.25);
+      }
+      .hex-row:first-child {
+        margin-top: 0;
+      }
+      .hex-row--offset {
+        margin-left: calc(var(--hex-w) / 2);
+      }
+      .hex {
+        position: relative;
+        width: var(--hex-w);
+        height: var(--hex-h);
+        margin-right: 3px;
+        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition:
+          box-shadow var(--transition-fast),
+          border-color var(--transition-fast);
+      }
+      /* BaseAttribute */
+      .terrain-water {
+        background: radial-gradient(120% 120% at 30% 20%, #1c3542, #102530 70%);
+      }
+      .terrain-plain {
+        background: radial-gradient(120% 120% at 30% 20%, #5c5038, #453b29 70%);
+      }
+      .terrain-grass {
+        background: radial-gradient(120% 120% at 30% 20%, #3c4527, #2b331c 70%);
+      }
+      .terrain-desert {
+        background: radial-gradient(120% 120% at 30% 20%, #6b5732, #503f25 70%);
+      }
+      .terrain-tundra {
+        background: radial-gradient(120% 120% at 30% 20%, #494236, #362f27 70%);
+      }
+      .terrain-snow {
+        background: radial-gradient(120% 120% at 30% 20%, #93a0ab, #6f7c88 70%);
+      }
+      /* TopographyAttribute — relief cues, kept to inset shadows so they
+         stay contained within the clip-path (outer shadows get clipped
+         away by the hex polygon, so only inset effects are reliable). */
+      .topo-hills {
+        box-shadow:
+          inset 0 -8px 12px rgba(0, 0, 0, 0.35),
+          inset 0 6px 8px rgba(255, 255, 255, 0.05);
+      }
+      .topo-mountains {
+        box-shadow:
+          inset 0 -12px 18px rgba(0, 0, 0, 0.55),
+          inset 0 8px 12px rgba(255, 255, 255, 0.07);
+      }
+      .hex.topo-canyons::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: repeating-linear-gradient(115deg, rgba(0, 0, 0, 0.28) 0 3px, transparent 3px 11px);
+        mix-blend-mode: multiply;
+        opacity: 0.8;
+      }
+      /* FeatureAttribute — only FOREST and ICE get a distinct look; other
+         values (JUNGLE/MARSH/OASIS/FLOOD/REEF) fall back to base terrain. */
+      .hex.feature-forest::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(circle at 30% 70%, rgba(15, 35, 18, 0.6) 0 5px, transparent 6px),
+          radial-gradient(circle at 60% 40%, rgba(15, 35, 18, 0.55) 0 4px, transparent 5px),
+          radial-gradient(circle at 75% 75%, rgba(15, 35, 18, 0.55) 0 4px, transparent 5px);
+      }
+      .hex.feature-ice::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(200, 225, 240, 0.16);
+      }
+      /* ResourceAttribute — small glowing deposit cluster, one color per
+         resource type (reusing existing tokens, no new hues). */
+      .resource-glow {
+        position: absolute;
+        top: 55%;
+        left: 45%;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: var(--resource-color);
+        box-shadow:
+          0 0 4px 1px var(--resource-color),
+          7px -5px 3px 0 var(--resource-color),
+          -5px 4px 3px 0 var(--resource-color),
+          4px 7px 3px 0 var(--resource-color);
+        opacity: 0.85;
+        pointer-events: none;
+      }
+      .resource-glow--res1 {
+        --resource-color: var(--color-accent);
+      }
+      .resource-glow--res2 {
+        --resource-color: var(--color-primary);
+      }
+      .resource-glow--res3 {
+        --resource-color: var(--color-secondary);
+      }
+
+      /* Occupied / turn-order / target state — identity ring is a plain
+         colored border (no glow); active-turn and targeted use INSET
+         glows only, since an outer box-shadow would be clipped away by
+         the hex's own clip-path. */
+      .hex.occupied {
+        z-index: 2;
+        cursor: pointer;
+        border-width: 2px;
+        border-color: var(--accent-color);
+      }
+      .hex.occupied.is-active-turn {
+        box-shadow: inset 0 0 8px 1px var(--accent-color);
+        animation: activeTurnPulse 2.4s ease-in-out infinite;
+      }
+      @keyframes activeTurnPulse {
+        0%,
+        100% {
+          box-shadow: inset 0 0 6px 1px var(--accent-color);
+        }
+        50% {
+          box-shadow: inset 0 0 10px 2px var(--accent-color);
+        }
+      }
+      .hex.occupied.is-targeted {
+        box-shadow:
+          inset 0 0 0 3px var(--accent-color),
+          inset 0 0 10px 2px var(--accent-color);
+      }
+      .arena-wrap.paths-shown .hex.is-reachable {
+        box-shadow: inset 0 0 0 2px var(--color-accent);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hex.occupied.is-active-turn {
+          animation: none;
+        }
+      }
+
+      /* Self mini-portrait — always visible, bottom-left of the arena */
+      .self-portrait {
+        position: static;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px 8px 8px;
+        cursor: pointer;
+        align-self: flex-start;
+        transition: filter var(--transition-fast);
+      }
+      .self-portrait:hover {
+        filter: brightness(1.12);
+      }
+      .self-portrait:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+      .self-portrait.is-current-target {
+        border-color: var(--color-primary);
+        box-shadow: inset 0 0 0 1px var(--color-primary);
+      }
+      .self-portrait__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--color-surface-2);
+        border: 1px solid var(--color-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--color-primary);
+        flex-shrink: 0;
+      }
+      .self-portrait__vitals {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .self-portrait__name {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        color: var(--color-text);
+      }
+
+      /* Target card — appears only once a robot is targeted */
+      .target-card {
+        position: static;
+        z-index: 2;
+        width: auto;
+        padding: 14px 30px 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-self: stretch;
+        animation: targetCardIn 0.2s ease;
+      }
+      .target-card[hidden] {
+        display: none;
+      }
+      @keyframes targetCardIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .is-overheated {
+        animation: overheatPulse 1.6s ease-in-out infinite;
+      }
+      @keyframes overheatPulse {
+        0%,
+        100% {
+          border-color: rgba(180, 195, 230, 0.18);
+        }
+        50% {
+          border-color: var(--color-warning);
+        }
+      }
+      .target-card__close {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        color: var(--color-text-dim);
+        cursor: pointer;
+        font-size: 0.8rem;
+        line-height: 1;
+      }
+      .target-card__close:hover {
+        color: var(--color-danger);
+      }
+      .target-card__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      @media (min-width: 768px) {
+        /* md — overlay both cards on the arena corners instead of stacking */
+        .self-portrait {
+          position: absolute;
+          left: 20px;
+          bottom: 20px;
+        }
+        .target-card {
+          position: absolute;
+          right: 20px;
+          bottom: 20px;
+          width: min(300px, calc(100% - 40px));
+        }
+      }
+
+      .robot-id-frame {
+        position: relative;
+        padding: 6px 10px;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-size: 0.78rem;
+      }
+      .robot-id-frame .corner {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-color: var(--accent-color);
+        border-style: solid;
+      }
+      .corner-tl {
+        top: 0;
+        left: 0;
+        border-width: 2px 0 0 2px;
+      }
+      .corner-tr {
+        top: 0;
+        right: 0;
+        border-width: 2px 2px 0 0;
+      }
+      .corner-bl {
+        bottom: 0;
+        left: 0;
+        border-width: 0 0 2px 2px;
+      }
+      .corner-br {
+        bottom: 0;
+        right: 0;
+        border-width: 0 2px 2px 0;
+      }
+      .robot-name {
+        font-weight: 650;
+        letter-spacing: 0.06em;
+        color: var(--color-text);
+      }
+      .robot-uid {
+        color: var(--color-text-dim);
+        font-size: 0.7rem;
+      }
+
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .bar-label {
+        width: 4.5em;
+        font-size: 0.65rem;
+        letter-spacing: 0.06em;
+        color: var(--color-text-dim);
+      }
+      .bar {
+        position: relative;
+        flex: 1;
+        height: 9px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        overflow: hidden;
+      }
+      .bar--mini {
+        flex: none;
+        width: 64px;
+        height: 5px;
+      }
+      .bar-fill {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 999px;
+      }
+      .bar-fill--hp {
+        z-index: 2;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+      }
+      .bar-fill--shield {
+        z-index: 1;
+        background: rgba(216, 225, 255, 0.6);
+      }
+      .bar-fill--mana {
+        background: linear-gradient(90deg, var(--color-secondary), #b98bff);
+      }
+      .bar-fill--heat {
+        background: linear-gradient(90deg, var(--color-warning), var(--color-danger));
+      }
+      .bar-value {
+        width: 8em;
+        text-align: right;
+        font-size: 0.7rem;
+        color: var(--color-text-dim);
+        flex-shrink: 0;
+      }
+      .shield-value {
+        color: #d8e1ff;
+      }
+
+      .robot-chips,
+      .robot-states,
+      .robot-effects {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .chip {
+        font-size: 0.65rem;
+        color: var(--color-text-dim);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .state-badge {
+        font-size: 0.65rem;
+        letter-spacing: 0.04em;
+        border-radius: 4px;
+        padding: 2px 6px;
+        color: var(--color-warning);
+        border: 1px solid var(--color-warning);
+      }
+      .effect-chip {
+        --effect-color: var(--color-danger);
+        font-size: 0.65rem;
+        border: 1px solid var(--effect-color);
+        color: var(--effect-color);
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+
+      .stat-group {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        padding-top: 6px;
+      }
+      .stat-group summary {
+        cursor: pointer;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        color: var(--color-text-dim);
+        list-style: none;
+      }
+      .stat-group summary::-webkit-details-marker {
+        display: none;
+      }
+      .stat-group summary::before {
+        content: '▸ ';
+      }
+      .stat-group[open] summary::before {
+        content: '▾ ';
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px 10px;
+        padding: 6px 2px 2px;
+        font-size: 0.7rem;
+        color: var(--color-text-dim);
+      }
+      .robot-coords {
+        font-size: 0.65rem;
+        color: var(--color-text-dim);
+      }
+
+      /* Action bar */
+      .action-bar {
+        flex: 0 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 0;
+      }
+      .movement-cluster {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 8px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--border-radius);
+      }
+      .movement-cluster label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.68rem;
+        color: var(--color-text-dim);
+      }
+      .movement-cluster input {
+        width: 42px;
+        background: var(--color-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 3px 4px;
+        text-align: center;
+      }
+      .action-bar .btn:last-child {
+        margin-left: auto;
+      }
+
+      /* ============================================================
+         RESPONSIVE — mobile-first, breakpoints from tokens/_breakpoints.scss
+         ============================================================ */
+      @media (min-width: 768px) {
+        /* md */
+        .hex-grid {
+          --hex-w: 68px;
+        }
+      }
+      @media (min-width: 1024px) {
+        /* lg */
+        .hex-grid {
+          --hex-w: 78px;
+        }
+        .card {
+          padding: 40px 36px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Deep-space decorative background (behind every screen) -->
+    <div class="starfield" aria-hidden="true">
+      <div class="star-layer star-layer--small"></div>
+      <div class="star-layer star-layer--medium"></div>
+      <div class="star-layer star-layer--large"></div>
+    </div>
+    <div class="nebula nebula--cyan" aria-hidden="true"></div>
+    <div class="nebula nebula--violet" aria-hidden="true"></div>
+    <div class="nebula nebula--green" aria-hidden="true"></div>
+    <div class="planet" aria-hidden="true"></div>
+    <div class="hero-star" aria-hidden="true"></div>
+    <div class="shooting-star shooting-star--a" aria-hidden="true"></div>
+    <div class="shooting-star shooting-star--b" aria-hidden="true"></div>
+
+    <!-- Preview-only navigation — tooling chrome, not part of the real game UI -->
+    <nav class="preview-switcher" aria-label="Navigation de la maquette">
+      <span class="preview-switcher__label mono">APERÇU DESIGN</span>
+      <div class="preview-switcher__tabs">
+        <button class="tab is-active" data-target-screen="login">LOGIN</button>
+        <button class="tab" data-target-screen="queue">QUEUE</button>
+        <button class="tab" data-target-screen="proposal">PROPOSAL</button>
+        <button class="tab" data-target-screen="combat">COMBAT</button>
+      </div>
+    </nav>
+
+    <main>
+      <!-- ============================================================
+           SCREEN — Login
+           ============================================================ -->
+      <section class="screen screen--active" data-screen="login">
+        <div class="center-screen">
+          <div class="card panel console-border holo-card" id="login-card">
+            <div class="wordmark">MYROBOT<span class="accent">2</span></div>
+            <div class="card-sub mono">ACCÈS PILOTE</div>
+            <div class="field">
+              <label for="connect-ws-input">Identifiant</label>
+              <input id="connect-ws-input" type="text" placeholder="callsign..." autocomplete="off" />
+            </div>
+            <button id="connect-ws" class="btn btn-primary">Connexion</button>
+            <div id="connected-span" class="connected-readout mono"></div>
+            <button id="disconnect-ws" class="btn btn-ghost" disabled>Déconnexion</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Queue
+           ============================================================ -->
+      <section class="screen" data-screen="queue">
+        <div class="center-screen">
+          <div class="card panel console-border holo-card">
+            <div class="wordmark" style="font-size: 1.1rem">FILE D'ATTENTE</div>
+            <div id="queue-status" class="queue-status mono">HORS FILE</div>
+            <div class="queue-actions">
+              <button id="enter-queue-btn" class="btn btn-primary">Entrer en file</button>
+              <button id="leave-queue-btn" class="btn btn-danger" disabled>Quitter la file</button>
+              <button id="rejoin-game-btn" class="btn btn-secondary" disabled>Rejoindre la partie</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Proposal
+           ============================================================ -->
+      <section class="screen" data-screen="proposal">
+        <div class="proposal-backdrop">
+          <div class="proposal-card panel console-border holo-card" id="div-proposal">
+            <div class="proposal-title mono">⚠ PROPOSITION DE COMBAT</div>
+            <div class="proposal-timeout"></div>
+            <div class="proposal-actions">
+              <button id="accept-proposal-btn" class="btn btn-accent">Accepter</button>
+              <button id="decline-proposal-btn" class="btn btn-danger">Refuser</button>
+            </div>
+            <div id="proposal-status" class="proposal-status mono"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCREEN — Combat
+           ============================================================ -->
+      <section class="screen" data-screen="combat">
+        <div class="turn-order mono" id="turn-order"></div>
+        <div class="combat-topbar mono">
+          <span class="turn-chip">TOUR <span class="turn-number" id="turn-number">3</span></span>
+          <span class="active-turn-label">AU TOUR DE <strong id="active-robot-name">WASS</strong></span>
+          <span class="team-tag" id="active-team-tag">VOUS</span>
+          <span class="turn-state-chip">EN COURS</span>
+          <button id="demo-turn-toggle" class="demo-toggle" title="Bascule de démo — pas une vraie action de jeu">
+            [DEMO] Tour suivant
+          </button>
+        </div>
+        <div class="combat-hint mono">» Sélectionnez un robot sur la grille (ou votre portrait) pour afficher sa fiche</div>
+
+        <div class="arena-wrap">
+          <div class="hex-grid-scroll">
+            <div class="hex-grid" id="hex-grid"></div>
+          </div>
+
+          <!-- Self mini-portrait — always visible -->
+          <div class="self-portrait panel console-border" id="self-portrait" role="button" tabindex="0" aria-label="Voir la fiche de votre robot">
+            <div class="self-portrait__avatar mono" id="self-avatar">W</div>
+            <div class="self-portrait__vitals">
+              <div class="self-portrait__name mono" id="self-name">WASS</div>
+              <div class="bar bar--mini">
+                <div class="bar-fill bar-fill--shield" id="self-shield-fill"></div>
+                <div class="bar-fill bar-fill--hp" id="self-hp-fill"></div>
+              </div>
+              <div class="bar bar--mini"><div class="bar-fill bar-fill--mana" id="self-mana-fill"></div></div>
+              <div class="bar bar--mini"><div class="bar-fill bar-fill--heat" id="self-heat-fill"></div></div>
+            </div>
+          </div>
+
+          <!-- Target card — hidden until a robot is targeted -->
+          <div class="target-card panel console-border" id="target-card" hidden>
+            <button class="target-card__close" id="target-card-close" type="button" aria-label="Fermer la fiche cible">✕</button>
+            <div class="robot-id-frame mono">
+              <div class="corner corner-tl"></div>
+              <div class="corner corner-tr"></div>
+              <div class="corner corner-bl"></div>
+              <div class="corner corner-br"></div>
+              <span class="robot-name" id="target-name"></span>
+              <span class="robot-uid" id="target-uid"></span>
+            </div>
+            <div class="target-card__header">
+              <span class="team-tag" id="target-team-tag"></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">PV</span>
+              <div class="bar">
+                <div class="bar-fill bar-fill--shield" id="target-shield-fill"></div>
+                <div class="bar-fill bar-fill--hp" id="target-hp-fill"></div>
+              </div>
+              <span class="bar-value mono" id="target-hp-value"></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">MANA</span>
+              <div class="bar"><div class="bar-fill bar-fill--mana" id="target-mana-fill"></div></div>
+              <span class="bar-value mono" id="target-mana-value"></span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">SURCHAUFFE</span>
+              <div class="bar"><div class="bar-fill bar-fill--heat" id="target-heat-fill"></div></div>
+              <span class="bar-value mono" id="target-heat-value"></span>
+            </div>
+            <div class="robot-chips mono" id="target-chips"></div>
+            <div class="robot-states" id="target-states"></div>
+            <div class="robot-effects" id="target-effects"></div>
+            <details class="stat-group">
+              <summary class="mono">ATTRIBUTS</summary>
+              <div class="stat-grid mono" id="target-attributes"></div>
+            </details>
+            <details class="stat-group">
+              <summary class="mono">STATISTIQUES</summary>
+              <div class="stat-grid mono" id="target-statistics"></div>
+            </details>
+            <div class="robot-coords mono" id="target-coords"></div>
+          </div>
+        </div>
+
+        <div class="action-bar panel">
+          <button id="end-turn-btn" class="btn btn-primary" data-turn-gated>Fin de tour</button>
+          <button id="ask-possible-paths-btn" class="btn btn-secondary" data-turn-gated>Chemins possibles</button>
+          <div class="movement-cluster">
+            <label>x:<input id="movement-input-x" type="number" value="0" data-turn-gated /></label>
+            <label>y:<input id="movement-input-y" type="number" value="0" data-turn-gated /></label>
+            <label>z:<input id="movement-input-z" type="number" value="0" data-turn-gated /></label>
+            <button id="path-btn" class="btn btn-secondary" data-turn-gated>Déplacement</button>
+          </div>
+          <button id="action-btn" class="btn btn-accent" data-turn-gated>Action</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ============================================================
+      // Screen switcher (preview-only tooling — no real router)
+      // ============================================================
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          const target = tab.dataset.targetScreen;
+          document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.toggle('screen--active', screen.dataset.screen === target);
+          });
+        });
+      });
+
+      // ============================================================
+      // Login demo — purely visual, mirrors client/src/test.js's
+      // updateLogged() state transitions without a real websocket.
+      // ============================================================
+      const loginCard = document.getElementById('login-card');
+      const connectBtn = document.getElementById('connect-ws');
+      const disconnectBtn = document.getElementById('disconnect-ws');
+      const loginInput = document.getElementById('connect-ws-input');
+      const connectedSpan = document.getElementById('connected-span');
+
+      connectBtn.addEventListener('click', () => {
+        const login = (loginInput.value.trim() || 'pilote').toUpperCase();
+        connectBtn.disabled = true;
+        loginCard.classList.add('is-connecting');
+        window.setTimeout(() => {
+          loginCard.classList.remove('is-connecting');
+          connectedSpan.textContent = '> CONNECTÉ EN TANT QUE ' + login;
+          disconnectBtn.disabled = false;
+        }, 650);
+      });
+      disconnectBtn.addEventListener('click', () => {
+        connectedSpan.textContent = '';
+        connectBtn.disabled = false;
+        disconnectBtn.disabled = true;
+      });
+
+      // ============================================================
+      // Queue demo — mirrors the enter/leave mutual-exclusion logic
+      // already implemented in client/src/test.js.
+      // ============================================================
+      const enterQueueBtn = document.getElementById('enter-queue-btn');
+      const leaveQueueBtn = document.getElementById('leave-queue-btn');
+      const queueStatus = document.getElementById('queue-status');
+
+      enterQueueBtn.addEventListener('click', () => {
+        enterQueueBtn.disabled = true;
+        leaveQueueBtn.disabled = false;
+        queueStatus.textContent = "EN FILE D'ATTENTE";
+        queueStatus.classList.add('is-active');
+      });
+      leaveQueueBtn.addEventListener('click', () => {
+        enterQueueBtn.disabled = false;
+        leaveQueueBtn.disabled = true;
+        queueStatus.textContent = 'HORS FILE';
+        queueStatus.classList.remove('is-active');
+      });
+
+      // ============================================================
+      // Proposal demo — mirrors the answeredProposal mutual-lock
+      // semantics in client/src/test.js.
+      // ============================================================
+      const acceptBtn = document.getElementById('accept-proposal-btn');
+      const declineBtn = document.getElementById('decline-proposal-btn');
+      const proposalStatus = document.getElementById('proposal-status');
+
+      function lockProposal(message) {
+        acceptBtn.disabled = true;
+        declineBtn.disabled = true;
+        proposalStatus.textContent = message;
+      }
+      acceptBtn.addEventListener('click', () => lockProposal("> EN ATTENTE DE L'ADVERSAIRE..."));
+      declineBtn.addEventListener('click', () => lockProposal('> PROPOSITION REFUSÉE'));
+
+      // ============================================================
+      // Combat — robot data (stand-in for RobotState from `shared`, plus
+      // a mockup-only `team` field — see header comment: `shared` has no
+      // team concept today, this flags a real gap for a 2v2/5v5 mode).
+      // ============================================================
+      const SELF_ROBOT_ID = 'wass';
+      const TEAM_COLOR = {
+        self: 'var(--color-primary)',
+        ally: 'var(--color-accent)',
+        enemy: 'var(--color-danger)',
+      };
+      const TEAM_LABEL = { self: 'VOUS', ally: 'ALLIÉ', enemy: 'ENNEMI' };
+
+      const ROBOTS = {
+        wass: {
+          id: 'wass',
+          name: 'WASS',
+          team: 'self',
+          hp: 124,
+          maxHp: 200,
+          shield: 36,
+          mana: 70,
+          maxMana: 100,
+          heat: 30,
+          maxHeat: 100,
+          isOverheating: false,
+          chips: ['DÉPL 3/4', 'ACT 1/1', 'SOUS-ACT 1/1', 'MOD·E 2', 'REFROID 4'],
+          states: ['ROOTED'],
+          effects: [{ id: 'e1', sourceRobotId: 'bast', targetRobotId: 'wass', effectId: 'effect.fire', stacks: 2, lastedTurns: 1, remainingTurns: 2 }],
+          attributes: { POW: 10, MOB: 10, CHS: 10, CPU: 10, ENE: 10, INTF: 10 },
+          statistics: { DGT: 10, 'PRÉC': 10, ESQ: 10, CRIT: 10, 'RÉD': 10, ARM: 10, VIT: 10, VIS: 2 },
+          coords: { x: 1, y: 4, z: -5 },
+        },
+        arn: {
+          id: 'arn',
+          name: 'ARN',
+          team: 'ally',
+          hp: 160,
+          maxHp: 180,
+          shield: 0,
+          mana: 55,
+          maxMana: 90,
+          heat: 10,
+          maxHeat: 100,
+          isOverheating: false,
+          chips: ['DÉPL 4/4', 'ACT 1/1', 'SOUS-ACT 1/1', 'MOD·E 3', 'REFROID 0'],
+          states: [],
+          effects: [],
+          attributes: { POW: 8, MOB: 12, CHS: 9, CPU: 11, ENE: 9, INTF: 10 },
+          statistics: { DGT: 8, 'PRÉC': 12, ESQ: 11, CRIT: 8, 'RÉD': 7, ARM: 8, VIT: 12, VIS: 3 },
+          coords: { x: 3, y: 4, z: -7 },
+        },
+        bast: {
+          id: 'bast',
+          name: 'BAST',
+          team: 'enemy',
+          hp: 88,
+          maxHp: 200,
+          shield: 0,
+          mana: 40,
+          maxMana: 100,
+          heat: 90,
+          maxHeat: 100,
+          isOverheating: true,
+          chips: ['DÉPL 4/4', 'ACT 1/1', 'SOUS-ACT 0/1', 'MOD·E 1', 'REFROID 10'],
+          states: ['SURCHAUFFÉ'],
+          effects: [],
+          attributes: { POW: 10, MOB: 10, CHS: 10, CPU: 10, ENE: 10, INTF: 10 },
+          statistics: { DGT: 10, 'PRÉC': 10, ESQ: 10, CRIT: 10, 'RÉD': 10, ARM: 10, VIT: 10, VIS: 2 },
+          coords: { x: 6, y: 1, z: -7 },
+        },
+        drex: {
+          id: 'drex',
+          name: 'DREX',
+          team: 'enemy',
+          hp: 140,
+          maxHp: 140,
+          shield: 20,
+          mana: 80,
+          maxMana: 80,
+          heat: 0,
+          maxHeat: 100,
+          isOverheating: false,
+          chips: ['DÉPL 3/4', 'ACT 1/1', 'SOUS-ACT 1/1', 'MOD·E 2', 'REFROID 0'],
+          states: [],
+          effects: [],
+          attributes: { POW: 12, MOB: 8, CHS: 13, CPU: 8, ENE: 10, INTF: 7 },
+          statistics: { DGT: 12, 'PRÉC': 9, ESQ: 7, CRIT: 9, 'RÉD': 13, ARM: 13, VIT: 8, VIS: 2 },
+          coords: { x: 7, y: 2, z: -9 },
+        },
+      };
+
+      // Initiative order is interleaved across teams (not grouped) —
+      // matches TurnState.currentTurnRobotId being a single robot id in
+      // a cyclic sequence, per server/src/structures/cyclic-list.
+      const TURN_ORDER = ['wass', 'bast', 'arn', 'drex'];
+      let turnIndex = 0;
+      let turnNumber = 3;
+
+      // Placeholder effectId → display metadata. EffectState.effectId is an
+      // opaque string in `shared`; there is no real client-facing name/color
+      // lookup yet. Replace this map once the server exposes effect metadata.
+      const EFFECT_DISPLAY_MAP = {
+        'effect.fire': { label: 'FEU', color: 'var(--color-danger)' },
+        'effect.corrosion': { label: 'CORROSION', color: 'var(--color-warning)' },
+        'effect.emp': { label: 'EMP', color: 'var(--color-secondary)' },
+      };
+
+      function pct(value, max) {
+        return Math.max(0, Math.min(100, (value / max) * 100));
+      }
+
+      function renderChipList(container, items, className) {
+        container.innerHTML = '';
+        items.forEach(text => {
+          const span = document.createElement('span');
+          span.className = className;
+          span.textContent = text;
+          container.appendChild(span);
+        });
+      }
+
+      function renderEffectChips(container, effects) {
+        container.innerHTML = '';
+        effects.forEach(effect => {
+          const meta = EFFECT_DISPLAY_MAP[effect.effectId] || { label: effect.effectId, color: 'var(--color-text-dim)' };
+          const chip = document.createElement('span');
+          chip.className = 'effect-chip mono';
+          chip.style.setProperty('--effect-color', meta.color);
+          chip.textContent = meta.label + ' x' + effect.stacks + ' · ' + effect.remainingTurns + 't';
+          container.appendChild(chip);
+        });
+      }
+
+      function renderKeyValueGrid(container, obj) {
+        container.innerHTML = '';
+        Object.entries(obj).forEach(([key, value]) => {
+          const span = document.createElement('span');
+          span.textContent = key + ' ' + value;
+          container.appendChild(span);
+        });
+      }
+
+      function renderSelfPortrait() {
+        const r = ROBOTS[SELF_ROBOT_ID];
+        document.getElementById('self-avatar').textContent = r.name.charAt(0);
+        document.getElementById('self-name').textContent = r.name;
+        document.getElementById('self-hp-fill').style.width = pct(r.hp, r.maxHp) + '%';
+        document.getElementById('self-shield-fill').style.cssText =
+          'left:' + pct(r.hp, r.maxHp) + '%; width:' + pct(r.shield, r.maxHp) + '%';
+        document.getElementById('self-mana-fill').style.width = pct(r.mana, r.maxMana) + '%';
+        document.getElementById('self-heat-fill').style.width = pct(r.heat, r.maxHeat) + '%';
+        document.getElementById('self-portrait').classList.toggle('is-overheated', r.isOverheating);
+      }
+
+      function renderTargetCard(key) {
+        const r = ROBOTS[key];
+        const card = document.getElementById('target-card');
+        card.style.setProperty('--accent-color', TEAM_COLOR[r.team]);
+        card.classList.toggle('is-overheated', !!r.isOverheating);
+        document.getElementById('target-name').textContent = r.name;
+        document.getElementById('target-uid').textContent = '#' + r.id;
+        const teamTag = document.getElementById('target-team-tag');
+        teamTag.textContent = TEAM_LABEL[r.team];
+        teamTag.style.setProperty('--team-color', TEAM_COLOR[r.team]);
+        document.getElementById('target-hp-fill').style.width = pct(r.hp, r.maxHp) + '%';
+        document.getElementById('target-shield-fill').style.cssText =
+          'left:' + pct(r.hp, r.maxHp) + '%; width:' + pct(r.shield, r.maxHp) + '%';
+        document.getElementById('target-hp-value').innerHTML =
+          r.hp + '/' + r.maxHp + (r.shield ? ' <span class="shield-value">+' + r.shield + '</span>' : '');
+        document.getElementById('target-mana-fill').style.width = pct(r.mana, r.maxMana) + '%';
+        document.getElementById('target-mana-value').textContent = r.mana + '/' + r.maxMana;
+        document.getElementById('target-heat-fill').style.width = pct(r.heat, r.maxHeat) + '%';
+        document.getElementById('target-heat-value').textContent = r.heat + '/' + r.maxHeat;
+        renderChipList(document.getElementById('target-chips'), r.chips, 'chip');
+        renderChipList(document.getElementById('target-states'), r.states, 'state-badge');
+        renderEffectChips(document.getElementById('target-effects'), r.effects);
+        renderKeyValueGrid(document.getElementById('target-attributes'), r.attributes);
+        renderKeyValueGrid(document.getElementById('target-statistics'), r.statistics);
+        document.getElementById('target-coords').textContent = 'x:' + r.coords.x + ' y:' + r.coords.y + ' z:' + r.coords.z;
+      }
+
+      renderSelfPortrait();
+
+      // ============================================================
+      // Targeting — click any occupied hex, or your own portrait, to
+      // show its card. Clicking the current target again clears it.
+      // ============================================================
+      const targetCard = document.getElementById('target-card');
+      const selfPortraitEl = document.getElementById('self-portrait');
+      let currentTargetKey = null;
+
+      function toggleTarget(key) {
+        if (currentTargetKey === key) {
+          clearTarget();
+          return;
+        }
+        currentTargetKey = key;
+        renderTargetCard(key);
+        targetCard.hidden = false;
+        document.querySelectorAll('.hex').forEach(hex => hex.classList.toggle('is-targeted', hex.dataset.robot === key));
+        selfPortraitEl.classList.toggle('is-current-target', key === SELF_ROBOT_ID);
+      }
+      function clearTarget() {
+        currentTargetKey = null;
+        targetCard.hidden = true;
+        document.querySelectorAll('.hex.is-targeted').forEach(hex => hex.classList.remove('is-targeted'));
+        selfPortraitEl.classList.remove('is-current-target');
+      }
+
+      document.getElementById('target-card-close').addEventListener('click', clearTarget);
+      selfPortraitEl.addEventListener('click', () => toggleTarget(SELF_ROBOT_ID));
+      selfPortraitEl.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleTarget(SELF_ROBOT_ID);
+        }
+      });
+
+      // ============================================================
+      // Turn-order strip + generic "active robot" indicator (no more
+      // self/enemy binary — any robot not matching SELF_ROBOT_ID could
+      // be an ally or an enemy).
+      // ============================================================
+      const combatScreen = document.querySelector('[data-screen="combat"]');
+      const turnGatedControls = document.querySelectorAll('[data-turn-gated]');
+
+      function renderTurnOrder() {
+        const container = document.getElementById('turn-order');
+        container.innerHTML = '';
+        TURN_ORDER.forEach((id, index) => {
+          if (index > 0) {
+            const arrow = document.createElement('span');
+            arrow.className = 'turn-order__arrow';
+            arrow.textContent = '›';
+            container.appendChild(arrow);
+          }
+          const robot = ROBOTS[id];
+          const chip = document.createElement('span');
+          chip.className = 'turn-order__chip mono';
+          chip.style.setProperty('--chip-color', TEAM_COLOR[robot.team]);
+          chip.textContent = robot.name.charAt(0);
+          chip.title = robot.name + ' (' + TEAM_LABEL[robot.team] + ')';
+          if (index === turnIndex) chip.classList.add('is-current');
+          else if (index < turnIndex) chip.classList.add('is-past');
+          container.appendChild(chip);
+        });
+      }
+
+      function updateActiveTurn() {
+        const activeId = TURN_ORDER[turnIndex];
+        const robot = ROBOTS[activeId];
+        document.getElementById('turn-number').textContent = String(turnNumber);
+        document.getElementById('active-robot-name').textContent = robot.name;
+        const tag = document.getElementById('active-team-tag');
+        tag.textContent = TEAM_LABEL[robot.team];
+        tag.style.setProperty('--team-color', TEAM_COLOR[robot.team]);
+        document.querySelectorAll('.hex.occupied').forEach(hex => {
+          hex.classList.toggle('is-active-turn', hex.dataset.robot === activeId);
+        });
+        const isMyTurn = activeId === SELF_ROBOT_ID;
+        turnGatedControls.forEach(el => {
+          el.disabled = !isMyTurn;
+        });
+        renderTurnOrder();
+      }
+
+      document.getElementById('demo-turn-toggle').addEventListener('click', () => {
+        turnIndex = (turnIndex + 1) % TURN_ORDER.length;
+        if (turnIndex === 0) turnNumber++;
+        updateActiveTurn();
+      });
+
+      // ============================================================
+      // Combat — hex grid generation
+      // Matches the odd-row-offset pointy-top topology confirmed in
+      // server/src/structures/hexagonal-grid/hexagonal-grid.structure.ts.
+      // Grid is intentionally smaller than the real 10x10 arena
+      // (game.generator.ts) for legibility in this mockup. Per-cell
+      // terrain/topography/feature/resource/level are named after the
+      // real CellAttributeState enums, assigned deterministically (no
+      // Math.random) purely for visual variety.
+      // ============================================================
+      (function buildHexGrid() {
+        const grid = document.getElementById('hex-grid');
+        const COLS = 9;
+        const ROWS = 6;
+        const BASE = ['water', 'plain', 'grass', 'desert', 'tundra', 'snow'];
+        const TOPO = ['flat', 'hills', 'canyons', 'mountains'];
+        const TOPO_BRIGHTNESS = { flat: 1, hills: 1, canyons: 0.95, mountains: 0.88 };
+        const LEVEL = ['level1', 'level2', 'level3'];
+        const LEVEL_BRIGHTNESS = { level1: 0.88, level2: 1, level3: 1.12 };
+
+        const occupants = {
+          '4,1': 'wass',
+          '4,3': 'arn',
+          '1,6': 'bast',
+          '2,7': 'drex',
+        };
+        const reachable = [
+          { row: 4, col: 1 },
+          { row: 4, col: 2 },
+          { row: 3, col: 1 },
+          { row: 4, col: 0 },
+          { row: 5, col: 1 },
+          { row: 3, col: 2 },
+        ];
+        const isReachable = (r, c) => reachable.some(p => p.row === r && p.col === c);
+
+        for (let row = 0; row < ROWS; row++) {
+          const rowEl = document.createElement('div');
+          rowEl.className = 'hex-row' + (row % 2 === 1 ? ' hex-row--offset' : '');
+          for (let col = 0; col < COLS; col++) {
+            const hex = document.createElement('div');
+            const base = BASE[(row * 2 + col) % BASE.length];
+            const topo = TOPO[(row + col * 3) % TOPO.length];
+            const level = LEVEL[(row + col) % LEVEL.length];
+            const feature = (row + col) % 5 === 0 ? 'forest' : (row + col) % 7 === 0 ? 'ice' : 'none';
+            const resource = row * col !== 0 && (row * col) % 9 === 0 ? 'res1' : (row + col) % 11 === 0 ? 'res2' : 'none';
+
+            hex.className = ['hex', 'terrain-' + base, 'topo-' + topo, feature !== 'none' ? 'feature-' + feature : '']
+              .filter(Boolean)
+              .join(' ');
+            hex.style.filter = 'brightness(' + (TOPO_BRIGHTNESS[topo] * LEVEL_BRIGHTNESS[level]).toFixed(2) + ')';
+            hex.dataset.x = String(col);
+            hex.dataset.y = String(row);
+            hex.dataset.z = String(-col - row);
+            hex.dataset.base = base.toUpperCase();
+            hex.dataset.topo = topo.toUpperCase();
+            hex.dataset.level = level.toUpperCase();
+
+            if (resource !== 'none') {
+              const glow = document.createElement('span');
+              glow.className = 'resource-glow resource-glow--' + resource;
+              hex.appendChild(glow);
+            }
+
+            const robotId = occupants[row + ',' + col];
+            if (robotId) {
+              hex.classList.add('occupied');
+              hex.dataset.robot = robotId;
+              hex.style.setProperty('--accent-color', TEAM_COLOR[ROBOTS[robotId].team]);
+            }
+            if (isReachable(row, col)) hex.classList.add('is-reachable');
+            rowEl.appendChild(hex);
+          }
+          grid.appendChild(rowEl);
+        }
+
+        grid.querySelectorAll('.hex.occupied').forEach(hex => {
+          hex.addEventListener('click', () => toggleTarget(hex.dataset.robot));
+        });
+
+        updateActiveTurn();
+      })();
+
+      document.getElementById('ask-possible-paths-btn').addEventListener('click', () => {
+        document.querySelector('.arena-wrap').classList.toggle('paths-shown');
+      });
+    </script>
+  </body>
+</html>
