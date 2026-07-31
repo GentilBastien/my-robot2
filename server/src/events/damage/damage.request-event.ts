@@ -2,7 +2,7 @@ import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { DamageResponseEvent } from '@events/damage/damage.response-event';
 import { ActionElementTypeEnum, ActionTypeEnum } from 'shared';
-import { DamageResult, mitigationCalculator } from '@calculators/mitigation.calculator';
+import { DamageResult, MitigationCalculator } from '@calculators/mitigation.calculator';
 
 export class DamageRequestEvent implements RequestEvent {
   sourceRobotId: string;
@@ -26,13 +26,13 @@ export class DamageRequestEvent implements RequestEvent {
   }
 
   public mapToResponse(context: ContextEvent): DamageResponseEvent {
-    const damageResult: DamageResult = mitigationCalculator.damageMitigationCalculator({
+    const damageResult: DamageResult = MitigationCalculator.damageMitigationCalculator({
+      context,
       sourceRobotId: this.sourceRobotId,
       targetRobotId: this.targetRobotId,
       actionTypeEnum: this.actionTypeEnum,
       actionElementTypeEnum: this.actionElementTypeEnum,
       baseDamage: this.baseDamage,
-      gameState: context.gameState,
     });
 
     return new DamageResponseEvent({

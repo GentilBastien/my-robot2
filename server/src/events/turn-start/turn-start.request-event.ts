@@ -1,6 +1,7 @@
 import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { TurnStartResponseEvent } from '@events/turn-start/turn-start.response-event';
+import { TurnCalculator } from '@calculators/turn.calculator';
 
 export class TurnStartRequestEvent implements RequestEvent {
   sourceRobotId: string;
@@ -11,7 +12,7 @@ export class TurnStartRequestEvent implements RequestEvent {
 
   public mapToResponse(context: ContextEvent): TurnStartResponseEvent {
     //sourceRobotId of requestTurnStartStateEvent is the id of the robot that previously played.
-    const newTurnState = context.gameCalculator.newTurnState(context.gameState);
+    const newTurnState = TurnCalculator.newTurnState(context);
     // const allowed = newTurnState.currentTurnRobotId === requestTurnStartStateEvent.sourceRobotId;
     const allowed = true;
     return new TurnStartResponseEvent({

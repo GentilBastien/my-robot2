@@ -1,6 +1,8 @@
 import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { TurnEndResponseEvent } from '@events/turn-end/turn-end.response-event';
+import { TurnCalculator } from '@calculators/turn.calculator';
+import { RobotCalculator } from '@calculators/robot.calculator';
 
 export class TurnEndRequestEvent implements RequestEvent {
   sourceRobotId: string;
@@ -10,9 +12,9 @@ export class TurnEndRequestEvent implements RequestEvent {
   }
 
   public mapToResponse(context: ContextEvent): TurnEndResponseEvent {
-    const allowed = context.gameCalculator.isRobotTurn(this.sourceRobotId);
-    const turnNumber = context.gameCalculator.getTurnNumber(context.gameState);
-    const turnRobotId = context.gameCalculator.getPlayingRobotId();
+    const allowed = RobotCalculator.isRobotTurn(context, this.sourceRobotId);
+    const turnNumber = TurnCalculator.getTurnNumber(context);
+    const turnRobotId = TurnCalculator.getPlayingRobotId(context);
 
     return new TurnEndResponseEvent({
       sourceRobotId: this.sourceRobotId,

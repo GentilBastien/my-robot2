@@ -1,13 +1,13 @@
 import { Coordinates, EffectState, GameState } from 'shared';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { Action } from '@entities/actions/action';
-import { GameCalculator } from '@calculators/game.calculator';
+import { GameStateHandler } from '@game/game.state-handler';
 
 export interface EffectContext {
-  trigger: EffectTrigger;
-  effectState: EffectState;
-  gameState: Readonly<GameState>;
-  gameCalculator: GameCalculator;
-  action?: Action;
-  coordinates?: Coordinates;
+  readonly trigger: EffectTrigger;
+  readonly effectState: EffectState;
+  readonly gameState: Readonly<GameState>;
+  readonly gameStateHandler: GameStateHandler;
+  readonly action?: Action;
+  readonly coordinates?: Coordinates;
 }

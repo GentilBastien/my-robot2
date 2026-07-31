@@ -5,7 +5,7 @@ import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { addEffectState, updateEffectState } from '@reducers/effect.reducer';
-import { effectCalculator } from '@calculators/effect.calculator';
+import { EffectCalculator } from '@calculators/effect.calculator';
 
 export class AddEffectResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -19,23 +19,23 @@ export class AddEffectResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effect: Effect = effectCalculator.getEffect(this.effectState);
+    const effect: Effect = EffectCalculator.getEffect(this.effectState);
 
-    const alreadyAffected: EffectState | undefined = effectCalculator.getEffectStateIfTargetAlreadyAffectedBy(
-      context.gameState,
+    const existingEffectState: EffectState | undefined = EffectCalculator.getEffectStateIfTargetAlreadyAffectedBy(
+      context,
       this.effectState
     );
 
     const newEffectsFromApply: RequestEvent[] = effect.handle({
       trigger: EffectTrigger.ON_APPLY,
-      effectState: alreadyAffected ?? this.effectState,
+      effectState: existingEffectState ?? this.effectState,
       gameState: context.gameState,
-      gameCalculator: context.gameCalculator,
+      gameStateHandler: context.gameStateHandler,
     });
     context.pendingRequests.insertEnd(newEffectsFromApply);
 
-    if (alreadyAffected) {
-      return updateEffectState(alreadyAffected);
+    if (existingEffectState) {
+      return updateEffectState(existingEffectState);
     } else {
       return addEffectState(this.effectState);
     }

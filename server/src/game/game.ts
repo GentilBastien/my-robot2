@@ -3,24 +3,28 @@ import { GameConfig } from '@game/game.config';
 import { RequestEvent } from '@events/request.event';
 import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
 import { resolveMaybeArray } from 'shared/dist/types/maybe';
-import { GameCalculator } from '@calculators/game.calculator';
+import { GameStateHandler } from '@game/game.state-handler';
+import { CellCalculator } from '@calculators/cell.calculator';
+import { ContextEvent } from '@events/context.event';
+import { ResponseEvent } from '@events/response.event';
 
 /**
  * Receives GameEvents and ActionEvents, dispatch events to system and then resolvers to reduce them.
  */
 export class Game {
   private gameState: GameState;
-  private readonly gameCalculator: GameCalculator;
+  private readonly gameStateHandler: GameStateHandler;
 
   constructor(gameConfig: GameConfig) {
     this.gameState = gameConfig.initialGameState;
-    this.gameCalculator = new GameCalculator(gameConfig);
-    this.gameCalculator.update_1(this.gameState);
-    this.gameCalculator.update_2(this.gameState);
+    this.gameStateHandler = new GameStateHandler(gameConfig);
+    this.gameStateHandler.updateCyclicListState(this.gameState);
+    this.gameStateHandler.updateHexagonalGridState(this.gameState);
   }
 
   public getPossiblePaths(robotId: string): PathCostCoordinate[] {
-    return this.gameCalculator.getPossiblePaths(this.gameState, robotId);
+    const context: ContextEvent = this.getGameContext();
+    return CellCalculator.getPossiblePaths(context, robotId);
   }
 
   public resolveEvent(request: RequestEvent): void {
@@ -46,9 +50,8 @@ export class Game {
     currentState: GameState,
     pendingRequests: ArrayIndexStructure<RequestEvent>
   ): GameState {
-    const context = { gameState: currentState, gameCalculator: this.gameCalculator, pendingRequests };
-    const response = request.mapToResponse(context);
-    console.log(response);
+    const context: ContextEvent = this.getGameContext(pendingRequests);
+    const response: ResponseEvent = request.mapToResponse(context);
     if (response.responseValidated) {
       const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
       for (const reducer of reducers) {
@@ -56,5 +59,13 @@ export class Game {
       }
     }
     return currentState;
+  }
+
+  private getGameContext(pendingRequests?: ArrayIndexStructure<RequestEvent>): ContextEvent {
+    return {
+      gameState: this.gameState,
+      gameStateHandler: this.gameStateHandler,
+      pendingRequests: pendingRequests ?? new ArrayIndexStructure<RequestEvent>(),
+    };
   }
 }

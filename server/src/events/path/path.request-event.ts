@@ -2,7 +2,8 @@ import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { PathResponseEvent } from '@events/path/path.response-event';
 import { Coordinates, MovementTypeEnum, PathCostCoordinate } from 'shared';
-import { robotCalculator } from '@calculators/robot.calculator';
+import { RobotCalculator } from '@calculators/robot.calculator';
+import { CellCalculator } from '@calculators/cell.calculator';
 
 export class PathRequestEvent implements RequestEvent {
   sourceRobotId: string;
@@ -16,22 +17,17 @@ export class PathRequestEvent implements RequestEvent {
   }
 
   public mapToResponse(context: ContextEvent): PathResponseEvent {
-    const isRobotTurn = context.gameCalculator.isRobotTurn(this.sourceRobotId);
-    const pathWithCosts: PathCostCoordinate = context.gameCalculator.mapPathToPathWithCost(this.path);
-    const pathCost: number = context.gameCalculator.getPathCoordinateCost(pathWithCosts);
-    const robotRemainingMove = robotCalculator.getRobotState(context.gameState, this.sourceRobotId).resources
-      .remainingMove;
+    const isRobotTurn = RobotCalculator.isRobotTurn(context, this.sourceRobotId);
+    const pathWithCosts: PathCostCoordinate = CellCalculator.mapPathToPathWithCost(context, this.path);
+    const pathCost: number = CellCalculator.getPathCoordinateCost(pathWithCosts);
+    const robotRemainingMove = RobotCalculator.getRobotState(context, this.sourceRobotId).resources.remainingMove;
     const enoughRemainingMovement = robotRemainingMove >= pathCost;
-    const movementTypeAllowed: boolean = context.gameCalculator.movementTypeAllowedForRobot(
-      context.gameState,
+    const movementTypeAllowed: boolean = RobotCalculator.movementTypeAllowedForRobot(
+      context,
       this.sourceRobotId,
       this.movementType
     );
-    const pathResultsInMovement: boolean = context.gameCalculator.pathResultsInMovement(
-      context.gameState,
-      this.sourceRobotId,
-      this.path
-    );
+    const pathResultsInMovement: boolean = CellCalculator.pathResultsInMovement(context, this.sourceRobotId, this.path);
     return new PathResponseEvent({
       movementType: this.movementType,
       responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathResultsInMovement,

@@ -7,7 +7,8 @@ import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { startTurnReducer } from '@reducers/turn.reducer';
 import { ResourcesRequestEvent } from '@events/resources/resources.request-event';
 import { TurnStartRequestEvent } from '@events/turn-start/turn-start.request-event';
-import { effectCalculator } from '@calculators/effect.calculator';
+import { TurnCalculator } from '@calculators/turn.calculator';
+import { EffectCalculator } from '@calculators/effect.calculator';
 
 export class TurnEndResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -31,23 +32,20 @@ export class TurnEndResponseEvent implements ResponseEvent {
     /**
      * At the end of the turn, get the effects from the robot ending turn, and the effects from the cell it is on.
      */
-    const effectStatesFromRobot: EffectState[] = effectCalculator.getEffectStatesFromRobot(
-      context.gameState,
-      this.turnRobotId
-    );
-    const effectStatesFromCell: EffectState[] = effectCalculator.getEffectStatesFromRobotCell(
-      context.gameState,
+    const effectStatesFromRobot: EffectState[] = EffectCalculator.getEffectStatesFromRobot(context, this.turnRobotId);
+    const effectStatesFromCell: EffectState[] = EffectCalculator.getEffectStatesFromRobotCell(
+      context,
       this.turnRobotId
     );
 
     const requestStateEventsFromEffects: RequestEvent[] = [...effectStatesFromRobot, ...effectStatesFromCell].flatMap(
       effectState => {
-        const effect: Effect = effectCalculator.getEffect(effectState);
+        const effect: Effect = EffectCalculator.getEffect(effectState);
         return effect.handle({
           trigger: EffectTrigger.ON_TURN_END,
           effectState,
           gameState: context.gameState,
-          gameCalculator: context.gameCalculator,
+          gameStateHandler: context.gameStateHandler,
         });
       }
     );
@@ -56,7 +54,7 @@ export class TurnEndResponseEvent implements ResponseEvent {
     const resourcesRequestEvent: ResourcesRequestEvent = new ResourcesRequestEvent(this.turnRobotId);
     context.pendingRequests.insertEnd(resourcesRequestEvent);
 
-    context.gameCalculator.advanceTurn();
+    TurnCalculator.advanceTurn(context);
 
     const turnStartRequestEvent = new TurnStartRequestEvent(this.turnRobotId);
     context.pendingRequests.insertEnd(turnStartRequestEvent);

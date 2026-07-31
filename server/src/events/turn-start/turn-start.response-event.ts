@@ -5,7 +5,7 @@ import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { startTurnReducer } from '@reducers/turn.reducer';
-import { effectCalculator } from '@calculators/effect.calculator';
+import { EffectCalculator } from '@calculators/effect.calculator';
 
 export class TurnStartResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -26,23 +26,20 @@ export class TurnStartResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effectStatesFromRobot: EffectState[] = effectCalculator.getEffectStatesFromRobot(
-      context.gameState,
-      this.turnRobotId
-    );
-    const effectStatesFromCell: EffectState[] = effectCalculator.getEffectStatesFromRobotCell(
-      context.gameState,
+    const effectStatesFromRobot: EffectState[] = EffectCalculator.getEffectStatesFromRobot(context, this.turnRobotId);
+    const effectStatesFromCell: EffectState[] = EffectCalculator.getEffectStatesFromRobotCell(
+      context,
       this.turnRobotId
     );
 
     const requestEventsFromEffects: RequestEvent[] = [...effectStatesFromRobot, ...effectStatesFromCell].flatMap(
       effectState => {
-        const effect: Effect = effectCalculator.getEffect(effectState);
+        const effect: Effect = EffectCalculator.getEffect(effectState);
         return effect.handle({
           trigger: EffectTrigger.ON_TURN_START,
           effectState,
           gameState: context.gameState,
-          gameCalculator: context.gameCalculator,
+          gameStateHandler: context.gameStateHandler,
         });
       }
     );

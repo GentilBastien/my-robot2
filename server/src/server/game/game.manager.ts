@@ -38,7 +38,7 @@ export class GameManager {
     throw 'no game session found';
   }
 
-  public getSession(login: string): Session {
+  public hasSessionLinkedToAGame(login: string): Session {
     for (const gs of Object.values(this.gameSessions)) {
       const session: Session | undefined = gs.sessions.find(session => session.login === login);
       if (session) {

@@ -2,6 +2,7 @@ import { ResponseEvent } from '@events/response.event';
 import { ContextEvent } from '@events/context.event';
 import { MaybeArray, MovementTypeEnum, PathCostCoordinate, Reducer, StepPathCostCoordinate } from 'shared';
 import { StepPathRequestEvent } from '@events/step-path/step-path.request-event';
+import { CellCalculator } from '@calculators/cell.calculator';
 
 export class PathResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -25,9 +26,7 @@ export class PathResponseEvent implements ResponseEvent {
     switch (this.movementType) {
       case MovementTypeEnum.JUMPED:
       case MovementTypeEnum.TELEPORTED: {
-        const pathCoordsAsOneStep: StepPathCostCoordinate | undefined = context.gameCalculator.pathCoordinateIsOneStep(
-          this.path
-        );
+        const pathCoordsAsOneStep: StepPathCostCoordinate = CellCalculator.splitPathInSteps(this.path)[0];
         if (pathCoordsAsOneStep) {
           const stepPath = new StepPathRequestEvent(this.sourceRobotId, this.movementType, pathCoordsAsOneStep);
           context.pendingRequests.insertEnd(stepPath);
@@ -37,7 +36,7 @@ export class PathResponseEvent implements ResponseEvent {
       case MovementTypeEnum.HOVERED:
       case MovementTypeEnum.WALKED:
       default: {
-        const steps: StepPathCostCoordinate[] = context.gameCalculator.splitPathInSteps(this.path);
+        const steps: StepPathCostCoordinate[] = CellCalculator.splitPathInSteps(this.path);
         const requestStepPathStateEvents: StepPathRequestEvent[] = steps.map(
           stepPath => new StepPathRequestEvent(this.sourceRobotId, this.movementType, stepPath)
         );

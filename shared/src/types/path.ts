@@ -2,7 +2,7 @@ import { Coordinates } from './coordinates';
 
 /**
  * Defines the cells that must be crossed to make this path.
- * This path may have a cost.
+ * Crossing a cell may have a cost associated.
  */
 export interface PathCostCoordinate {
   coordinatesPath: Coordinates[];

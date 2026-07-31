@@ -5,7 +5,7 @@ import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { removeEffectState } from '@reducers/effect.reducer';
-import { effectCalculator } from '@calculators/effect.calculator';
+import { EffectCalculator } from '@calculators/effect.calculator';
 
 export class RemoveEffectResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -19,14 +19,14 @@ export class RemoveEffectResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effectState: EffectState = effectCalculator.getEffectStateById(context.gameState, this.effectStateId);
-    const effect: Effect = effectCalculator.getEffect(effectState);
+    const effectState: EffectState = EffectCalculator.getEffectStateById(context, this.effectStateId);
+    const effect: Effect = EffectCalculator.getEffect(effectState);
 
     const newEffectsWhenExpired: RequestEvent[] = effect.handle({
       trigger: EffectTrigger.ON_EXPIRE,
       effectState,
       gameState: context.gameState,
-      gameCalculator: context.gameCalculator,
+      gameStateHandler: context.gameStateHandler,
     });
     context.pendingRequests.insertEnd(newEffectsWhenExpired);
 

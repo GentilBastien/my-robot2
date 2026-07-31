@@ -22,7 +22,7 @@ export class SessionManager {
   public register(login: string, webSocket: WebSocket): void {
     const previouslyRegistered = this.gameManager.hasGameSession(login);
     if (previouslyRegistered) {
-      const previousSession = this.gameManager.getSession(login);
+      const previousSession = this.gameManager.hasSessionLinkedToAGame(login);
       this.sessions[login] = { ...previousSession, webSocket };
     } else {
       this.sessions[login] = { login, webSocket, state: SessionStateTypeEnum.ONLINE };
