@@ -1,8 +1,7 @@
-import { GameState, PathCostCoordinate, Reducer } from 'shared';
+import { GameState, PathCostCoordinate, Reducer, resolveMaybeArray } from 'shared';
 import { GameConfig } from '@game/game.config';
 import { RequestEvent } from '@events/request.event';
 import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
-import { resolveMaybeArray } from 'shared/dist/types/maybe';
 import { GameStateHandler } from '@game/game.state-handler';
 import { CellCalculator } from '@calculators/cell.calculator';
 import { ContextEvent } from '@events/context.event';

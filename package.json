@@ -2,11 +2,12 @@
   "name": "my-robot2",
   "version": "1.0.0",
   "workspaces": [
-    "shared",
-    "server"
+    "client",
+    "server",
+    "shared"
   ],
   "scripts": {
-    "clean": "tsc -b --clean shared server/tsconfig.build.json client && rimraf server/dist && rimraf shared/dist",
+    "clean": "tsc -b --clean shared server/tsconfig.build.json client && rimraf client/dist && rimraf server/dist && rimraf shared/dist",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json && tsc-alias -p client/tsconfig.json",
     "build": "npm run clean && tsc -b shared server/tsconfig.build.json client && npm run alias",
     "start": "node server/dist/index.js",

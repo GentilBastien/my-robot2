@@ -1,6 +1,5 @@
-import { MaybeArray } from 'shared';
+import { MaybeArray, resolveMaybeArray } from 'shared';
 import { ArrayIndexStructureInterface } from '@structures/array-index/array-index.structure-interface';
-import { resolveMaybeArray } from 'shared/dist/types/maybe';
 
 export class ArrayIndexStructure<T> implements ArrayIndexStructureInterface<T> {
   private readonly _elements: T[];

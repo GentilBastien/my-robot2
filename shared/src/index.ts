@@ -43,4 +43,4 @@ export { Coordinates } from './types/coordinates';
 export { PathCostCoordinate, StepPathCostCoordinate } from './types/path';
 export { Comparator } from './types/comparator';
 export { Reducer } from './types/reducer';
-export { MaybeArray, MaybeFunction } from './types/maybe';
+export { MaybeArray, MaybeFunction, resolveMaybeArray, resolveMaybeFunction } from './types/maybe';

@@ -3,8 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "composite": true,
-    "baseUrl": "./src",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "baseUrl": "src",
     "paths": {
       "@calculators/*": ["calculators/*"],
       "@entities/*": ["entities/*"],
@@ -23,8 +23,7 @@
       "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],
       "@utils/*": ["utils/*"]
-    },
-    "esModuleInterop": true
+    }
   },
   "include": ["src"],
   "references": [{ "path": "../shared" }]
