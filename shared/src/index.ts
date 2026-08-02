@@ -6,6 +6,15 @@ export { ClientMessage } from './server/websocket/client-message';
 export { ServerMessage } from './server/websocket/server-message';
 
 export { GameEvent, PathGameEvent, ActionGameEvent } from './server/websocket/game.event';
+export {
+  ActionRequestEvent,
+  ActionResponseEvent,
+  TargetedAction,
+  ZoneAction,
+  DamageAction,
+  HealAction,
+  ShieldAction,
+} from './server/websocket/actions.event';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';

@@ -4,6 +4,7 @@ import { AutoAttack } from '@entities/actions/action-list/auto-attack';
 
 export type Actions = Record<string, Action>;
 
+//TODO: do singletons ! not "new autoAttack" in map values
 export const actionList: Readonly<Actions> = {
   [ActionTypeEnum.AUTO_ATTACK]: new AutoAttack(),
 };

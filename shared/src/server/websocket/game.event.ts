@@ -2,25 +2,27 @@ import { GameEventTypeEnum } from '../../enums/game-event-type.enum';
 import { ActionTypeEnum } from '../../enums/action-type.enum';
 import { MovementTypeEnum } from '../../enums/movement-type.enum';
 import { Coordinates } from '../../types/coordinates';
+import { ActionRequestEvent } from './actions.event';
 
 export interface GameEvent {
-  gameEventType: GameEventTypeEnum;
-  actionTypeEnum?: ActionTypeEnum;
-  sourceRobotId: string;
+  readonly gameEventType: GameEventTypeEnum;
+  readonly actionTypeEnum?: ActionTypeEnum;
+  readonly sourceRobotId: string;
 }
 
 export interface TurnEndGameEvent extends GameEvent {
-  gameEventType: GameEventTypeEnum.TURN_END;
+  readonly gameEventType: GameEventTypeEnum.TURN_END;
 }
 
 export interface PathGameEvent extends GameEvent {
-  gameEventType: GameEventTypeEnum.PATH;
-  movementType: MovementTypeEnum;
-  path: Coordinates[];
+  readonly gameEventType: GameEventTypeEnum.PATH;
+  readonly movementType: MovementTypeEnum;
+  readonly path: Coordinates[];
 }
 
 export interface ActionGameEvent extends GameEvent {
-  gameEventType: GameEventTypeEnum.ACTION;
-  actionTypeEnum: ActionTypeEnum;
-  data: Record<string, string>;
+  readonly gameEventType: GameEventTypeEnum.ACTION;
+  readonly actionTypeEnum: ActionTypeEnum;
+  readonly sourceRobotId: string;
+  readonly actionRequestEvent: ActionRequestEvent;
 }

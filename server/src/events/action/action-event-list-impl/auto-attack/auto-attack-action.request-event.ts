@@ -1,8 +1,7 @@
 import { AbstractActionRequestEvent } from '@events/action/action-event-list-impl/abstract-action.request-event';
 import { ContextEvent } from '@events/context.event';
 import { AutoAttackActionResponseEvent } from '@events/action/action-event-list-impl/auto-attack/auto-attack-action.response-event';
-import { ActionTypeEnum } from 'shared';
-import { DamageAction, TargetedAction } from '@events/action/action.event-list';
+import { ActionTypeEnum, DamageAction, TargetedAction } from 'shared';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 
 export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent implements DamageAction, TargetedAction {

@@ -2,11 +2,10 @@ import { ContextEvent } from '@events/context.event';
 import { ActionTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Action } from '@entities/actions/action';
-import { ActionResponseEvent } from '@events/action/action.event-list';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 import { RobotCalculator } from '@calculators/robot.calculator';
 
-export abstract class AbstractActionResponseEvent implements ActionResponseEvent {
+export abstract class AbstractActionResponseEvent {
   sourceRobotId: string;
   actionTypeEnum: ActionTypeEnum;
   responseValidated: boolean;
@@ -25,15 +24,6 @@ export abstract class AbstractActionResponseEvent implements ActionResponseEvent
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const action: Action = RobotCalculator.getAction(this.actionTypeEnum);
-    const requestEventsFromAction: RequestEvent[] = action.onUse({
-      actionResponseEvent: this,
-      gameState: context.gameState,
-      gameStateHandler: context.gameStateHandler,
-    });
-    if (this.responseValidated) {
-      context.pendingRequests.insertEnd(requestEventsFromAction);
-    }
-    return [];
+
   }
 }
