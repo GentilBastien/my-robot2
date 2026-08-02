@@ -1,5 +1,6 @@
 import { ActionTypeEnum, DamageAction, TargetedAction } from 'shared';
 import { AbstractActionRequestEvent } from '@events/action/NEW/abstract-action.request-event';
+import { RequestEvent } from '@events/request.event';
 
 export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent implements DamageAction, TargetedAction {
   sourceRobotId: string;
@@ -18,5 +19,7 @@ export class AutoAttackActionRequestEvent extends AbstractActionRequestEvent imp
     this.targetRobotId = targetRobotId;
   }
 
-  protected onUse(): void {}
+  protected onUse(): RequestEvent[] {
+    return [];
+  }
 }

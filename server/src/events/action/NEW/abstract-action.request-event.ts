@@ -9,8 +9,11 @@ import { ManaRequestEvent } from '@events/mana/mana.request-event';
 import { MovementCostRequestEvent } from '@events/movement-cost/movement-cost.request-event';
 import { HeatRequestEvent } from '@events/heat/heat.request-event';
 import { ActionCostRequestEvent } from '@events/action-cost/action-cost.request-event';
+import { RequestEvent } from '@events/request.event';
+import { ResponseEvent } from '@events/response.event';
+import { ActionResponseEvent } from '@events/action/NEW/action.response-event';
 
-export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
+export abstract class AbstractActionRequestEvent implements ActionRequestEvent, RequestEvent {
   gameEventType: GameEventTypeEnum.ACTION;
   actionTypeEnum: ActionTypeEnum;
   action: Action;
@@ -25,7 +28,7 @@ export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
     this.hasEnergyModule = hasEnergyModule;
   }
 
-  protected abstract onUse(): void;
+  protected abstract onUse(): RequestEvent[];
 
   public getActionResponseErrors(context: ContextEvent): ActionResponseErrors {
     return RobotCalculator.robotAllowedForAction(context, this.sourceRobotId, this.action);
@@ -75,8 +78,12 @@ export abstract class AbstractActionRequestEvent implements ActionRequestEvent {
     const actionCost = this.action.actionCost;
     const subActionCost = this.action.subActionCost;
     if (actionCost !== undefined || subActionCost !== undefined) {
-      return new ActionCostRequestEvent(this.sourceRobotId, actionCost, subActionCost);
+      return new ActionCostRequestEvent(this.sourceRobotId, actionCost ?? 0, subActionCost ?? 0);
     }
     return undefined;
+  }
+
+  mapToResponse(context: ContextEvent): ResponseEvent {
+    return new ActionResponseEvent();
   }
 }
