@@ -9,7 +9,7 @@ export interface IdParams {
   id: string;
 }
 
-export async function registerRoutes(app: FastifyInstance) {
+export async function registerRoutes(app: FastifyInstance): Promise<void> {
   const prefix = '/api/v1';
   await app.register(loginRoute, { prefix });
   await app.register(robotDetailRoute, { prefix });

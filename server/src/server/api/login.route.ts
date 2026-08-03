@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { LoginRequest } from 'shared';
 
-export async function loginRoute(app: FastifyInstance) {
+export async function loginRoute(app: FastifyInstance): Promise<void> {
   app.post('/login', async (request, response) => {
     const { login, password } = request.body as LoginRequest;
     if (!login || !password) {

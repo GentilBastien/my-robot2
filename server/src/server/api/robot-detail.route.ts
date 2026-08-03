@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { IdParams, ParamConstants } from '@server-api/routes';
 
-export async function robotDetailRoute(app: FastifyInstance) {
+export async function robotDetailRoute(app: FastifyInstance): Promise<void> {
   interface RobotDetail {
     id: string;
     name: string;
