@@ -1,4 +1,4 @@
-import { Coordinates, EffectState, GameState } from 'shared';
+import { Coordinate, EffectState, GameState } from 'shared';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { Action } from '@entities/actions/action';
 import { GameStateHandler } from '@game/game.state-handler';
@@ -9,5 +9,5 @@ export interface EffectContext {
   readonly gameState: Readonly<GameState>;
   readonly gameStateHandler: GameStateHandler;
   readonly action?: Action;
-  readonly coordinates?: Coordinates;
+  readonly coordinates?: Coordinate;
 }

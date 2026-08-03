@@ -1,4 +1,4 @@
-import { Coordinates, Weight } from 'shared';
+import { Coordinate, Weight } from 'shared';
 import { deepEquals } from '@utils/equals.utils';
 import { HexagonalCellStructureInterface } from '@structures/hexagonal-cell/hexagonal-cell.structure-interface';
 import { HexagonalCellDirectionEnum } from '@structures/hexagonal-cell/hexagonal-cell-direction.enum';
@@ -30,7 +30,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return 0 - this._x - this._y;
   }
 
-  public get coordinates(): Coordinates {
+  public get coordinates(): Coordinate {
     return {
       x: this._x,
       y: this._y,
@@ -42,7 +42,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return this._item?.weight ?? 0;
   }
 
-  public setCoordinates(coordinates: Coordinates): void {
+  public setCoordinates(coordinates: Coordinate): void {
     if (coordinates.x + coordinates.y + coordinates.z !== 0) {
       throw HexagonalCellError.invalidCoordinatesError;
     }
@@ -83,7 +83,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return this._x === otherCell._x && this._y === otherCell._y;
   }
 
-  public isLocatedAt(coordinates: Coordinates): boolean {
+  public isLocatedAt(coordinates: Coordinate): boolean {
     if (coordinates.x + coordinates.y + coordinates.z !== 0) {
       throw HexagonalCellError.invalidCoordinatesError;
     }

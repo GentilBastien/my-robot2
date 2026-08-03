@@ -2,7 +2,7 @@ import {
   ActionTypeEnum,
   AttributesState,
   AttributesTypeEnum,
-  Coordinates,
+  Coordinate,
   MovementTypeEnum,
   ResourcesState,
   RobotState,
@@ -15,13 +15,15 @@ import { TurnCalculator } from '@calculators/turn.calculator';
 import { Action } from '@entities/actions/action';
 import { actionList } from '@entities/actions/action-list/action.list';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
+import { ActionRequestEvent } from '@events/action/action.request-event';
+import { CellCalculator } from '@calculators/cell.calculator';
 
 export class RobotCalculator {
   public static getRobotState(context: ContextEvent, robotId: string): RobotState {
     return context.gameState.robots[robotId];
   }
 
-  public static getRobotCoordinates(context: ContextEvent, robotId: string): Coordinates {
+  public static getRobotCoordinates(context: ContextEvent, robotId: string): Coordinate {
     return RobotCalculator.getRobotState(context, robotId).coordinates;
   }
 
@@ -122,9 +124,13 @@ export class RobotCalculator {
     );
   }
 
-  public static robotAllowedForAction(context: ContextEvent, robotId: string, action: Action): ActionResponseErrors {
+  public static robotAllowedForAction(
+    context: ContextEvent,
+    { sourceRobotId, targetRobotId, targetCellCoordinate, action }: ActionRequestEvent
+  ): ActionResponseErrors {
     const response: ActionResponseErrors = {};
-    const isRobotTurn = RobotCalculator.isRobotTurn(context, robotId);
+
+    const isRobotTurn = RobotCalculator.isRobotTurn(context, sourceRobotId);
     if (!isRobotTurn) {
       response.wrongTurn = { robotTurnId: TurnCalculator.getPlayingRobotId(context) };
     }
@@ -132,7 +138,7 @@ export class RobotCalculator {
     if (!hasAction) {
       response.actionUnavailable = { conditions: ['Lvl 23 min', 'requires propulsors'] };
     }
-    const resourcesState = RobotCalculator.getRobotResourcesState(context, robotId);
+    const resourcesState = RobotCalculator.getRobotResourcesState(context, sourceRobotId);
     const isRobotOverheating = resourcesState.isOverheating;
     if (isRobotOverheating) {
       response.robotOverheating = { overheating: resourcesState.overheating };
@@ -145,9 +151,20 @@ export class RobotCalculator {
     if (!robotHasEnoughMana) {
       response.noEnoughMana = { cost: action.manaCost ?? 0, available: resourcesState.mana };
     }
-    const robotHasEnoughRange = true; //TODO Range
+    let robotHasEnoughRange = true;
+    if (targetRobotId) {
+      robotHasEnoughRange = CellCalculator.hasEnoughRangeForRobotTarget(context, sourceRobotId, targetRobotId, action);
+    }
+    if (targetCellCoordinate) {
+      robotHasEnoughRange = CellCalculator.hasEnoughRangeForCoordinateTarget(
+        context,
+        sourceRobotId,
+        targetCellCoordinate,
+        action
+      );
+    }
     if (!robotHasEnoughRange) {
-      response.noEnoughRange = { cost: action.range, available: 0 };
+      response.noEnoughRange = { required: 1000, available: action.range }; //TODO, export data
     }
     const robotHasVision = !action.needVision || (action.needVision && true); //TODO
     if (!robotHasVision) {
@@ -161,9 +178,6 @@ export class RobotCalculator {
     robotId: string,
     movementType: MovementTypeEnum
   ): boolean {
-    //TODO: impl function
-    // const robot = this.getRobotState(gameState, robotId);
-    console.log(context, robotId, movementType);
-    return true;
+    return RobotCalculator.getRobotState(context, robotId).movementType === movementType;
   }
 }

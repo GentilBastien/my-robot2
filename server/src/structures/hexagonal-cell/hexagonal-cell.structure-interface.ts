@@ -1,6 +1,6 @@
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 import { HexagonalCellDirectionEnum } from '@structures/hexagonal-cell/hexagonal-cell-direction.enum';
-import { Coordinates, Weight } from 'shared';
+import { Coordinate, Weight } from 'shared';
 
 /**
  * A cell with a hexagonal form in a 3 axis coordinates representation. Used as
@@ -25,7 +25,7 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   /**
    * Coordinates of the cell.
    */
-  coordinates: Coordinates;
+  coordinates: Coordinate;
 
   /**
    * The weight hold by the cell.
@@ -40,7 +40,7 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
    * Sets this cell's coordinates.
    * @param coordinates The new coordinates.
    */
-  setCoordinates(coordinates: Coordinates): void;
+  setCoordinates(coordinates: Coordinate): void;
 
   /**
    * Sets this cell's coordinates adjacent to another cell coordinates according to the
@@ -61,7 +61,7 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
    * @param coordinates Given coordinates
    * @throws {invalidCoordinatesError} if given coordinates are invalid (sum of x+y+z different from 0).
    */
-  isLocatedAt(coordinates: Coordinates): boolean;
+  isLocatedAt(coordinates: Coordinate): boolean;
 
   /**
    * Returns true if the cell in parameter is adjacent to this cell.

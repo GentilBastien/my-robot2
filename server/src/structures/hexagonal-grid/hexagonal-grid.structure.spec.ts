@@ -250,6 +250,30 @@ describe('HexagonalGridStructure', () => {
     expect(result).toHaveLength(expected.length);
   });
 
+  test('HexagonalGrid getRange #1', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 2, y: 2, z: -4 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 1, z: -1 });
+    const result = grid.getRange(start, target);
+    expect(result).toBe(3);
+  });
+
+  test('HexagonalGrid getRange #2', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 0, z: 0 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 3, z: -3 });
+    const result = grid.getRange(start, target);
+    expect(result).toBe(3);
+  });
+
+  test('HexagonalGrid getRange #3', () => {
+    const grid = produceCustomGrid();
+    const start: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 2, y: 1, z: -3 });
+    const target: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 0, y: 2, z: -2 });
+    const result = grid.getRange(start, target);
+    expect(result).toBe(2);
+  });
+
   test('HexagonalGrid isCellInRange true #1', () => {
     const grid = produceCustomGrid();
     const origin: HexagonalCellStructure<Weight> = grid.getCellAt({ x: 1, y: 0, z: -1 });

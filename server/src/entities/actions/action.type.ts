@@ -1,11 +1,3 @@
-import { ActionTypeEnum } from '../../enums/action-type.enum';
-import { GameEvent } from './game.event';
-
-export interface ActionRequestEvent extends GameEvent {
-  readonly actionTypeEnum: ActionTypeEnum;
-  readonly hasEnergyModule: boolean;
-}
-
 export interface TargetedAction {
   readonly targetRobotId: string;
 }

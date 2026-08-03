@@ -1,10 +1,12 @@
 import {
   ArenaState,
   BaseAttribute,
+  CellState,
   EffectState,
   FeatureAttribute,
   GameState,
   GameStateTypeEnum,
+  MovementTypeEnum,
   RaisingLevelAttribute,
   ResourceAttribute,
   RobotState,
@@ -54,19 +56,26 @@ function defineInitialTurnState(): TurnState {
 }
 
 function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaState {
+  const cellStates: CellState[] = Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
+    id: index.toString(),
+    weight: 2,
+    visibleBy: [],
+    attributes: {
+      baseAttribute: BaseAttribute.GRASS,
+      topographyAttribute: TopographyAttribute.FLAT,
+      featureAttribute: FeatureAttribute.NONE,
+      resourceAttribute: ResourceAttribute.NONE,
+      raisingLevelAttribute: RaisingLevelAttribute.LEVEL1,
+    },
+  }));
   return {
-    cells: Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
-      id: index.toString(),
-      weight: 2,
-      visibleBy: [],
-      attributes: {
-        baseAttribute: BaseAttribute.GRASS,
-        topographyAttribute: TopographyAttribute.FLAT,
-        featureAttribute: FeatureAttribute.NONE,
-        resourceAttribute: ResourceAttribute.NONE,
-        raisingLevelAttribute: RaisingLevelAttribute.LEVEL1,
+    cells: cellStates.reduce(
+      (acc, curr) => {
+        acc[curr.id] = curr;
+        return acc;
       },
-    })),
+      {} as Record<string, CellState>
+    ),
   };
 }
 
@@ -106,7 +115,9 @@ function temp_defineRandomRobot(name: string): RobotState {
       totalActions: 1,
       totalSubActions: 1,
     },
+    vision: [],
     selfStates: [],
+    movementType: MovementTypeEnum.WALKED,
     coordinates: { x: 0, y: 0, z: 0 },
     statistics: {
       hp: 10,

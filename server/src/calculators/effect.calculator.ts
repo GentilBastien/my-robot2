@@ -1,4 +1,4 @@
-import { Coordinates, EffectState } from 'shared';
+import { Coordinate, EffectState } from 'shared';
 import { effectList } from '@entities/effects/effect-list/effect.list';
 import { Effect } from '@entities/effects/effect';
 import { RobotCalculator } from '@calculators/robot.calculator';
@@ -26,7 +26,7 @@ export class EffectCalculator {
     return EffectCalculator.getEffectStatesAtCoordinates(context, robotCoordinates);
   }
 
-  public static getEffectStatesAtCoordinates(context: ContextEvent, coordinates: Coordinates): EffectState[] {
+  public static getEffectStatesAtCoordinates(context: ContextEvent, coordinates: Coordinate): EffectState[] {
     return context.gameState.effects.filter(effectState => effectState.targetCoordinates === coordinates);
   }
 

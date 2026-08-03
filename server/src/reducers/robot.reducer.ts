@@ -1,7 +1,7 @@
-import { Coordinates, GameState, Reducer, RobotStateTypeEnum } from 'shared';
+import { Coordinate, GameState, Reducer, RobotStateTypeEnum } from 'shared';
 
 export const updateCoordinates =
-  (robotId: string, newCoordinates: Coordinates): Reducer =>
+  (robotId: string, newCoordinates: Coordinate): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return {
       ...gameState,

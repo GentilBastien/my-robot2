@@ -2,10 +2,10 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
-import { ActionGameEvent, Coordinates, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
+import { ActionData, Coordinate, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
 import { TurnEndRequestEvent } from '@events/turn-end/turn-end.request-event';
 import { PathRequestEvent } from '@events/path/path.request-event';
-import { AutoAttackActionRequestEvent } from '@events/action/action-event-list-impl/auto-attack/auto-attack-action.request-event';
+import { ActionRequestEvent } from '@events/action/action.request-event';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;
@@ -85,7 +85,7 @@ export class GameManager {
     throw 'no gameId';
   }
 
-  public receivePath(session: Session, path: Coordinates[]): void {
+  public receivePath(session: Session, path: Coordinate[]): void {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
       const turnEndRequestEvent = new PathRequestEvent(session.login, MovementTypeEnum.WALKED, path);
@@ -94,10 +94,10 @@ export class GameManager {
     throw 'no gameId';
   }
 
-  public receiveAction(session: Session, actionGameEvent: ActionGameEvent): void {
+  public receiveAction(session: Session, actionData: ActionData): void {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
-      const actionRequestEvent = new AutoAttackActionRequestEvent(actionGameEvent.sourceRobotId, 'wass', 100, true);
+      const actionRequestEvent = new ActionRequestEvent(actionData);
       return gameSession.game.resolveEvent(actionRequestEvent);
     }
     throw 'no gameId';

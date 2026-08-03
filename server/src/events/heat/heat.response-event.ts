@@ -20,11 +20,15 @@ export class HeatResponseEvent implements ResponseEvent {
     const resourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
 
     const delta = this.computeCooling(resourcesState.isOverheating, this.value);
-    const newOverheatingValue = valueInRange(0, resourcesState.maxOverheating, resourcesState.overheating + delta);
+    const newOverheatingValue = valueInRange(0, Number.MAX_VALUE, resourcesState.overheating + delta);
 
     return heatReducer(this.sourceRobotId, newOverheatingValue);
   }
 
+  /**
+   * If no overheating state, the value stays the same value.
+   * In overheating state, an adding value will be doubled, a decrementing value will be halved.
+   */
   private computeCooling(isOverheating: boolean, value: number): number {
     if (isOverheating) {
       if (value > 0) {

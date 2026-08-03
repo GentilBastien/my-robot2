@@ -1,4 +1,4 @@
-import { Coordinates, PathCostCoordinate, Weight } from 'shared';
+import { Coordinate, PathCostCoordinate, Weight } from 'shared';
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 
 export interface HexagonalGridStructureInterface<T extends Weight> {
@@ -24,7 +24,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @throws {noCellFoundError} if no cell have the given coordinates.
    * @throws {outOfBoundsCoordinatesError} if the given coordinates are off the grid width/height.
    */
-  getCellAt(coordinates: Coordinates): HexagonalCellStructure<T>;
+  getCellAt(coordinates: Coordinate): HexagonalCellStructure<T>;
 
   /**
    * Set an item in the cell located at the given coordinates. Returns the previous item in it.
@@ -34,7 +34,7 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * @throws {noCellFoundError} if no cell have the given coordinates.
    * @throws {outOfBoundsCoordinatesError} if the given coordinates are off the grid width/height.
    */
-  setCellAt(coordinates: Coordinates, item: T | null): T | null;
+  setCellAt(coordinates: Coordinate, item: T | null): T | null;
 
   /**
    * Set all cells with an item.
@@ -43,6 +43,13 @@ export interface HexagonalGridStructureInterface<T extends Weight> {
    * grid's {@linkcode width} * {@linkcode height}
    */
   setAllCellItems(items: T[]): void;
+
+  /**
+   * Get the range between two cells.
+   * @param start The starting cell.
+   * @param target The target cell.
+   */
+  getRange(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): number;
 
   /**
    * Returns the cells adjacent to the origin cell in parameter with a given radius. If the origin cell was

@@ -4,6 +4,6 @@ export interface ActionResponseErrors {
   robotOverheating?: { overheating: number };
   noEnoughAction?: { cost: number; available: number };
   noEnoughMana?: { cost: number; available: number };
-  noEnoughRange?: { cost: number; available: number };
+  noEnoughRange?: { required: number; available: number };
   noVision?: { invisible: boolean };
 }

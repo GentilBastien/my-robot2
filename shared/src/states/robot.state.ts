@@ -2,13 +2,16 @@ import { ResourcesState } from './resources.state';
 import { AttributesState } from './attributes.state';
 import { StatisticsState } from './statistics.state';
 import { RobotStateTypeEnum } from '../enums/robot-state-type.enum';
-import { Coordinates } from '../types/coordinates';
+import { Coordinate } from '../types/coordinate';
+import { MovementTypeEnum } from '../enums/movement-type.enum';
 
 export interface RobotState {
   id: string;
   name: string;
-  coordinates: Coordinates;
+  coordinates: Coordinate;
   selfStates: RobotStateTypeEnum[];
+  movementType: MovementTypeEnum;
+  vision: string[];
   resources: ResourcesState;
   attributes: AttributesState;
   statistics: StatisticsState;

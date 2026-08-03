@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { ActionGameEvent, Coordinates, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
+import { ActionData, Coordinate, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
@@ -119,14 +119,14 @@ export class SessionManager {
     this.gameManager.receiveTurnEnd(session);
   }
 
-  public receivePathGameEvent(login: string, path: Coordinates[]): void {
+  public receivePathGameEvent(login: string, path: Coordinate[]): void {
     const session = this.sessions[login];
     this.gameManager.receivePath(session, path);
   }
 
-  public receiveAction(login: string, actionGameEvent: ActionGameEvent): void {
+  public receiveAction(login: string, actionData: ActionData): void {
     const session = this.sessions[login];
-    this.gameManager.receiveAction(session, actionGameEvent);
+    this.gameManager.receiveAction(session, actionData);
   }
 
   public sendSession(session: Session): void {

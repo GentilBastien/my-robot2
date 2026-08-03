@@ -14,7 +14,7 @@ export class GameStateHandler {
   }
 
   public updateHexagonalGridState(gameState: GameState): void {
-    this.hexagonalGridState.setAllCellItems(gameState.arenaState.cells);
+    this.hexagonalGridState.setAllCellItems(Object.values(gameState.arenaState.cells));
   }
 
   public updateCyclicListState(gameState: GameState): void {

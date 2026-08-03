@@ -1,4 +1,4 @@
-import { Coordinates } from 'shared';
+import { Coordinate } from 'shared';
 
 /**
  * Returns true if both parameters have/share the same value.
@@ -24,6 +24,6 @@ export function deepEquals<T>(item1: T, item2: T): boolean {
   }
 }
 
-export function coordinateEquals(coordinates1: Coordinates, coordinates2: Coordinates): boolean {
+export function coordinateEquals(coordinates1: Coordinate, coordinates2: Coordinate): boolean {
   return coordinates1.x === coordinates2.x && coordinates1.y === coordinates2.y && coordinates1.z === coordinates2.z;
 }

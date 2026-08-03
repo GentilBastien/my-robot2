@@ -4,17 +4,7 @@ export { LoginRequest } from './server/api/login/request';
 export { LoginResponse } from './server/api/login/response';
 export { ClientMessage } from './server/websocket/client-message';
 export { ServerMessage } from './server/websocket/server-message';
-
-export { GameEvent, PathGameEvent, ActionGameEvent } from './server/websocket/game.event';
-export {
-  ActionRequestEvent,
-  ActionResponseEvent,
-  TargetedAction,
-  ZoneAction,
-  DamageAction,
-  HealAction,
-  ShieldAction,
-} from './server/websocket/actions.event';
+export { ActionData } from './server/websocket/action-data';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
@@ -48,7 +38,7 @@ export { StatisticsState } from './states/statistics.state';
 export { TurnState } from './states/turn.state';
 
 export { Weight } from './types/weight';
-export { Coordinates } from './types/coordinates';
+export { Coordinate } from './types/coordinate';
 export { PathCostCoordinate, StepPathCostCoordinate } from './types/path';
 export { Comparator } from './types/comparator';
 export { Reducer } from './types/reducer';

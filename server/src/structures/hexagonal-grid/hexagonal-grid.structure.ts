@@ -1,4 +1,4 @@
-import { Comparator, Coordinates, PathCostCoordinate, Weight } from 'shared';
+import { Comparator, Coordinate, PathCostCoordinate, Weight } from 'shared';
 import { HexagonalGridStructureInterface } from '@structures/hexagonal-grid/hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 import { HexagonalGridError } from '@structures/hexagonal-grid/hexagonal-grid.error';
@@ -30,7 +30,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     return this._height;
   }
 
-  public getCellAt(coordinates: Coordinates): HexagonalCellStructure<T> {
+  public getCellAt(coordinates: Coordinate): HexagonalCellStructure<T> {
     if (coordinates.x > this._width - 1 || coordinates.y > this._height - 1) {
       throw HexagonalGridError.outOfBoundsCoordinatesError;
     }
@@ -39,7 +39,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     return found;
   }
 
-  public setCellAt(coordinates: Coordinates, item: T | null): T | null {
+  public setCellAt(coordinates: Coordinate, item: T | null): T | null {
     if (coordinates.x > this._width - 1 || coordinates.y > this._height - 1) {
       throw HexagonalGridError.outOfBoundsCoordinatesError;
     }
@@ -79,6 +79,13 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
             Math.abs(origin.z - cell.z) <= radius
       );
     }
+  }
+
+  public getRange(start: HexagonalCellStructure<T>, target: HexagonalCellStructure<T>): number {
+    const dx = Math.abs(start.x - target.x);
+    const dy = Math.abs(start.y - target.y);
+    const dz = Math.abs(start.z - target.z);
+    return Math.max(dx, dy, dz);
   }
 
   public isCellInRange(origin: HexagonalCellStructure<T>, range: number, target: HexagonalCellStructure<T>): boolean {
@@ -154,7 +161,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     const costCandidate: number = costFromStart + cellCandidate.weight;
     if (costCandidate <= maxCostFromStart) {
       //candidate is valid, add it in the valid cells and check its adjacent cells.
-      const basePath: Coordinates[] = pathToCandidate?.coordinatesPath ?? [];
+      const basePath: Coordinate[] = pathToCandidate?.coordinatesPath ?? [];
       const baseCost: number[] = pathToCandidate?.costs ?? [];
       const path: PathCostCoordinate = {
         coordinatesPath: [...basePath, cellCandidate.coordinates],

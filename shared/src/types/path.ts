@@ -1,11 +1,11 @@
-import { Coordinates } from './coordinates';
+import { Coordinate } from './coordinate';
 
 /**
  * Defines the cells that must be crossed to make this path.
  * Crossing a cell may have a cost associated.
  */
 export interface PathCostCoordinate {
-  coordinatesPath: Coordinates[];
+  coordinatesPath: Coordinate[];
   costs: number[];
 }
 
@@ -16,7 +16,7 @@ export interface PathCostCoordinate {
  * from a cell to another. Cost defines the cost to make this moves.
  */
 export interface StepPathCostCoordinate {
-  startCoordinates: Coordinates;
-  endCoordinates: Coordinates;
+  startCoordinates: Coordinate;
+  endCoordinates: Coordinate;
   cost: number;
 }

@@ -1,16 +1,16 @@
 import { RequestEvent } from '@events/request.event';
 import { ContextEvent } from '@events/context.event';
 import { PathResponseEvent } from '@events/path/path.response-event';
-import { Coordinates, MovementTypeEnum, PathCostCoordinate } from 'shared';
+import { Coordinate, MovementTypeEnum, PathCostCoordinate } from 'shared';
 import { RobotCalculator } from '@calculators/robot.calculator';
 import { CellCalculator } from '@calculators/cell.calculator';
 
 export class PathRequestEvent implements RequestEvent {
   sourceRobotId: string;
   movementType: MovementTypeEnum;
-  path: Coordinates[];
+  path: Coordinate[];
 
-  constructor(sourceRobotId: string, movementType: MovementTypeEnum, path: Coordinates[]) {
+  constructor(sourceRobotId: string, movementType: MovementTypeEnum, path: Coordinate[]) {
     this.sourceRobotId = sourceRobotId;
     this.movementType = movementType;
     this.path = path;
@@ -27,10 +27,15 @@ export class PathRequestEvent implements RequestEvent {
       this.sourceRobotId,
       this.movementType
     );
-    const pathResultsInMovement: boolean = CellCalculator.pathResultsInMovement(context, this.sourceRobotId, this.path);
+    const pathIsValid: boolean = CellCalculator.checkPathIsValid(
+      context,
+      this.sourceRobotId,
+      this.path,
+      this.movementType
+    );
     return new PathResponseEvent({
       movementType: this.movementType,
-      responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathResultsInMovement,
+      responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathIsValid,
       sourceRobotId: this.sourceRobotId,
       path: pathWithCosts,
     });
