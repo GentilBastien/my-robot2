@@ -1,10 +1,10 @@
 export { ClientMessageType } from './server/websocket/client-message.type';
 export { ServerMessageType } from './server/websocket/server-message.type';
-export { LoginRequest } from './server/api/login/request';
-export { LoginResponse } from './server/api/login/response';
-export { ClientMessage } from './server/websocket/client-message';
-export { ServerMessage } from './server/websocket/server-message';
-export { ActionData } from './server/websocket/action-data';
+export type { LoginRequest } from './server/api/login/request';
+export type { LoginResponse } from './server/api/login/response';
+export type { ClientMessage } from './server/websocket/client-message';
+export type { ServerMessage } from './server/websocket/server-message';
+export type { ActionData } from './server/websocket/action-data';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';
 export { AttributesTypeEnum } from './enums/attributes-type.enum';
@@ -19,27 +19,28 @@ export { GameEventTypeEnum } from './enums/game-event-type.enum';
 export { MovementTypeEnum } from './enums/movement-type.enum';
 export { TurnStateTypeEnum } from './enums/turn-state-type.enum';
 
-export { ArenaState } from './states/arena.state';
-export { AttributesState } from './states/attributes.state';
-export { CellState } from './states/cell.state';
+export type { ArenaState } from './states/arena.state';
+export type { AttributesState } from './states/attributes.state';
+export type { CellState } from './states/cell.state';
+export type { CellAttributeState } from './states/cell-attribute.state';
 export {
-  CellAttributeState,
   BaseAttribute,
   TopographyAttribute,
   FeatureAttribute,
   ResourceAttribute,
   RaisingLevelAttribute,
 } from './states/cell-attribute.state';
-export { EffectState } from './states/effect.state';
-export { GameState } from './states/game.state';
-export { ResourcesState } from './states/resources.state';
-export { RobotState } from './states/robot.state';
-export { StatisticsState } from './states/statistics.state';
-export { TurnState } from './states/turn.state';
+export type { EffectState } from './states/effect.state';
+export type { GameState } from './states/game.state';
+export type { ResourcesState } from './states/resources.state';
+export type { RobotState } from './states/robot.state';
+export type { StatisticsState } from './states/statistics.state';
+export type { TurnState } from './states/turn.state';
 
-export { Weight } from './types/weight';
-export { Coordinate } from './types/coordinate';
-export { PathCostCoordinate, StepPathCostCoordinate } from './types/path';
-export { Comparator } from './types/comparator';
-export { Reducer } from './types/reducer';
-export { MaybeArray, MaybeFunction, resolveMaybeArray, resolveMaybeFunction } from './types/maybe';
+export type { Weight } from './types/weight';
+export type { Coordinate } from './types/coordinate';
+export type { PathCostCoordinate, StepPathCostCoordinate } from './types/path';
+export type { Comparator } from './types/comparator';
+export type { Reducer } from './types/reducer';
+export type { MaybeArray, MaybeFunction } from './types/maybe';
+export { resolveMaybeArray, resolveMaybeFunction } from './types/maybe';

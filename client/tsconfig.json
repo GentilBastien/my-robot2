@@ -1,11 +1,24 @@
 {
   "extends": "../tsconfig.base.json",
+  "compileOnSave": false,
   "compilerOptions": {
+    "module": "preserve",
+    "moduleResolution": "bundler",
     "rootDir": "src",
     "outDir": "dist",
     "tsBuildInfoFile": "dist/.tsbuildinfo",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "strict": true
   },
-  "include": ["src"],
-  "references": [{ "path": "../shared" }]
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "typeCheckHostBindings": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [{ "path": "../shared" }],
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"]
 }

@@ -5,6 +5,9 @@ import Recommended from 'eslint-plugin-prettier/recommended';
 
 export default defineConfig([
   {
+    ignores: ['dist/**'],
+  },
+  {
     files: ['**/*.ts'],
     extends: [eslint.configs.recommended, ...tseslint.configs.recommended, ...tseslint.configs.stylistic, Recommended],
     linterOptions: {

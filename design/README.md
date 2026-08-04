@@ -1,6 +1,6 @@
 # Design mockups
 
-Static, clickable HTML/CSS previews of the MyRobot2 client UI (Login → Queue → Proposal → Combat), built on the tokens in `../design-system`. Not wired to the real WebSocket client in `../client/src` — open a file directly in a browser to review.
+Static, clickable HTML/CSS previews of the MyRobot2 client UI (Login → Queue → Proposal → Combat), built on the tokens in `../design-system`. Not wired to the real WebSocket client in `../client/OLDclient/src` — open a file directly in a browser to review.
 
 - `v0-mockup.html` — first pass: cyberpunk HUD terminal aesthetic, permanent self/enemy HUD panels side by side.
 - `v1-mockup.html` — deep-space Sci-Fi background (starfield/nebula/planet), self mini-portrait pinned bottom-left, single on-demand "target card" shown only when a robot is clicked/targeted.

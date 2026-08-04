@@ -8,6 +8,13 @@
     "skipLibCheck": true,
     "declaration": true,
     "sourceMap": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true
   }
 }

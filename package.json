@@ -11,7 +11,8 @@
     "clean": "tsc -b --clean shared server/tsconfig.build.json client && npm run remove:dist",
     "alias": "tsc-alias -p shared/tsconfig.json && tsc-alias -p server/tsconfig.json && tsc-alias -p client/tsconfig.json",
     "build": "npm run clean && tsc -b shared server/tsconfig.build.json client && npm run alias",
-    "start": "node server/dist/index.js",
+    "start:server": "node server/dist/index.js",
+    "start:client": "npm run start --prefix client",
     "test": "vitest run && npm run alias"
   },
   "devDependencies": {
