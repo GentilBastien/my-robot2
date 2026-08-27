@@ -1,0 +1,14 @@
+.inline-bro {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#div-proposal {
+    width: fit-content;
+    padding: 10px;
+    margin: 7px;
+    border: 1px solid black;
+}
+
+
