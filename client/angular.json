@@ -6,7 +6,11 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "prefix": "mr2"
+        },
+        "@schematics/angular:directive": {
+          "prefix": "mr2"
         }
       },
       "root": "",

@@ -3,7 +3,7 @@ import { RouterOutlet } from "@angular/router";
 import { Coordinate } from "shared";
 
 @Component({
-  selector: "app-root",
+  selector: "mr2-root",
   imports: [RouterOutlet],
   templateUrl: "./app.html",
   styleUrl: "./app.scss",
