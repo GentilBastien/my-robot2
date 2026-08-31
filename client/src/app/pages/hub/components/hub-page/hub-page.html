@@ -1,14 +1,16 @@
 <h1>HUB Page</h1>
 <h3>Login: {{ login() }}</h3>
 
-<div id="queue-div" class="inline-bro">
-  <button id="enter-queue-btn" [disabled]="inQueue()" (click)="onEnterQueue()">
-    Enter queue
-  </button>
-  <button id="leave-queue-btn" [disabled]="!inQueue()" (click)="onLeaveQueue()">
-    Leaves queue
-  </button>
-  <button id="rejoin-game-btn" (click)="onRejoinGame()" disabled>
-    Rejoin game
-  </button>
+<div>
+  <button [disabled]="inQueue() || queueDisabled()" (click)="onEnterQueue()">Enter queue</button>
+  <button [disabled]="!inQueue() || queueDisabled()" (click)="onLeaveQueue()">Leaves queue</button>
+  <button (click)="onRejoinGame()" disabled>Rejoin game</button>
 </div>
+
+@if (hasProposal()) {
+<div class="proposal-container">
+  <span>You have a proposal !!!</span>
+  <button (click)="onAcceptProposal()" [disabled]="proposalAnswered()">Accept</button>
+  <button (click)="onDeclineProposal()" [disabled]="proposalAnswered()">Decline</button>
+</div>
+}

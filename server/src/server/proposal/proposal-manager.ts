@@ -3,7 +3,7 @@ import { SessionManager } from '@server/session/session.manager';
 import { Session } from '@server/session/session';
 
 export class ProposalManager {
-  private static PROPOSAL_TIMEOUT_MS = 15000;
+  private static PROPOSAL_TIMEOUT_MS = 8000;
   private readonly proposals: Record<string, GameProposal> = {};
   private readonly sessionManager: SessionManager;
 

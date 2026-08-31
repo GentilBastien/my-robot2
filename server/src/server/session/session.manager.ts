@@ -178,7 +178,7 @@ export class SessionManager {
       },
       {
         type: ServerMessageType.PROPOSAL_DECLINED,
-        payload: gameProposal.loginDeclined,
+        payload: { loginDeclined: gameProposal.loginDeclined },
       }
     );
   }
@@ -251,7 +251,11 @@ export class SessionManager {
     }
   }
 
-  private updateSessionsAndSend<T>(logins: string[], updateSessionFn: (session: Session) => void, message: ServerMessage<T>): Session[] {
+  private updateSessionsAndSend<T>(
+    logins: string[],
+    updateSessionFn: (session: Session) => void,
+    message: ServerMessage<T>
+  ): Session[] {
     const sessions = logins.map(login => this.sessions[login]).filter(s => s !== undefined);
     sessions.forEach(session => updateSessionFn(session));
     sessions.forEach(session => this.sendToSession(session, message));

@@ -37,6 +37,7 @@ export class WebsocketService {
   }
 
   public destroyWebsocket(): void {
+    this.websocket?.close();
     this.websocket = null;
     console.log('Websocket onclose');
   }
@@ -46,8 +47,8 @@ export class WebsocketService {
   }
 
   private wsOnMessage(messageEvent: MessageEvent): void {
-    console.log('Websocket onmessage', messageEvent);
     const message: ServerMessage<A> = JSON.parse(messageEvent.data);
+    console.log('Websocket onmessage', message);
     switch (message.type) {
       case ServerMessageType.LOGGED_IN:
         return this.onLoggedInSubject.next(message);
