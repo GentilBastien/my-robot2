@@ -33,9 +33,7 @@ export class ProposalService {
   }
 
   public sendDeclineProposal(login: string): void {
+    this.proposalAnswered.set(true);
     this.websocketService.sendToServer(login, ClientMessageType.DECLINE_PROPOSAL, { proposalId: this.proposalId() });
-    this.hasProposal.set(false);
-    this.proposalAnswered.set(false);
-    this.proposalId.set(undefined);
   }
 }
