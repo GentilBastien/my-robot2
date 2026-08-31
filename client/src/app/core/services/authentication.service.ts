@@ -1,12 +1,17 @@
-import { Injectable, signal } from "@angular/core";
+import { computed, Injectable, signal } from "@angular/core";
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
-  private readonly login = signal<string>("");
+  public readonly login = signal<string>("");
+  public readonly isLogged = computed(() => this.login() !== "");
 
-  public setLogin(loginInput: string | undefined): void {
-    if (loginInput) {
-      this.login.set(loginInput);
+  public signIn(value: string | undefined): void {
+    if (value) {
+      this.login.set(value);
     }
+  }
+
+  public logout(): void {
+    this.login.set("");
   }
 }

@@ -5,7 +5,7 @@
   "types": "src/index.ts",
   "dependencies": {
     "fastify": "^5.8.2",
-    "shared": "*",
+    "shared": "file:../shared",
     "ws": "^8.18.3"
   }
 }

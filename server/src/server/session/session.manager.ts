@@ -31,6 +31,8 @@ export class SessionManager {
      * out of scope of register function, so websocket can send the message
      */
     ((): void => this.sendSession(this.sessions[login]))();
+
+    console.log(Object.keys(this.sessions));
   }
 
   public unregister(ws: WebSocket): void {
@@ -47,6 +49,8 @@ export class SessionManager {
           this.leaveGame(session);
         }
         delete this.sessions[login];
+
+        console.log(Object.keys(this.sessions));
         return;
       }
     }
@@ -247,11 +251,7 @@ export class SessionManager {
     }
   }
 
-  private updateSessionsAndSend<T>(
-    logins: string[],
-    updateSessionFn: (session: Session) => void,
-    message: ServerMessage<T>
-  ): Session[] {
+  private updateSessionsAndSend<T>(logins: string[], updateSessionFn: (session: Session) => void, message: ServerMessage<T>): Session[] {
     const sessions = logins.map(login => this.sessions[login]).filter(s => s !== undefined);
     sessions.forEach(session => updateSessionFn(session));
     sessions.forEach(session => this.sendToSession(session, message));

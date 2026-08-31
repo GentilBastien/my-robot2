@@ -3,17 +3,23 @@ import { LoginPage } from "./pages/login/components/login-page/login-page";
 import { HubPage } from "./pages/hub/components/hub-page/hub-page";
 import { GamePage } from "./pages/game/components/hub-page/game-page";
 
+export const routeConstants = {
+  LOGIN: "login",
+  HUB: "hub",
+  GAME: "game",
+};
+
 export const routes: Routes = [
   {
-    path: "login",
+    path: routeConstants.LOGIN,
     component: LoginPage,
   },
   {
-    path: "hub",
+    path: routeConstants.HUB,
     component: HubPage,
   },
   {
-    path: "game",
+    path: routeConstants.GAME,
     component: GamePage,
   },
 ];

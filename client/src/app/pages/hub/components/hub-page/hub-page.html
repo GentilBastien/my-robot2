@@ -1,1 +1,14 @@
-<p>hub-page works!</p>
+<h1>HUB Page</h1>
+<h3>Login: {{ login() }}</h3>
+
+<div id="queue-div" class="inline-bro">
+  <button id="enter-queue-btn" [disabled]="inQueue()" (click)="onEnterQueue()">
+    Enter queue
+  </button>
+  <button id="leave-queue-btn" [disabled]="!inQueue()" (click)="onLeaveQueue()">
+    Leaves queue
+  </button>
+  <button id="rejoin-game-btn" (click)="onRejoinGame()" disabled>
+    Rejoin game
+  </button>
+</div>

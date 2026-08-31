@@ -2,10 +2,11 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import { defineConfig } from 'eslint/config';
 import angular from 'angular-eslint';
+import prettierConfig from 'eslint-config-prettier';
 
 export default defineConfig([
   { ignores: ['**/dist/**', '**/node_modules/**'] },
-
+  prettierConfig,
   // Base TS rules — applies to both client and server
   {
     files: ['**/*.ts'],
@@ -14,7 +15,7 @@ export default defineConfig([
       reportUnusedDisableDirectives: 'error',
     },
     rules: {
-      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
       '@typescript-eslint/no-explicit-any': 'error',
       'prefer-template': 'error',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
