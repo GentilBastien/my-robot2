@@ -22,12 +22,16 @@ export class QueueService {
   }
 
   public sendEnterQueue(login: string): void {
-    this.inQueue.set(true);
-    this.websocketService.sendToServer(login, ClientMessageType.QUEUE);
+    if (!this.inQueue()) {
+      this.inQueue.set(true);
+      this.websocketService.sendToServer(login, ClientMessageType.QUEUE);
+    }
   }
 
   public sendLeaveQueue(login: string): void {
-    this.inQueue.set(false);
-    this.websocketService.sendToServer(login, ClientMessageType.DEQUEUE);
+    if (this.inQueue()) {
+      this.inQueue.set(false);
+      this.websocketService.sendToServer(login, ClientMessageType.DEQUEUE);
+    }
   }
 }

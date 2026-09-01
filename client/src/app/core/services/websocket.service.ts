@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ClientMessageType, PathCostCoordinate, ServerMessage, ServerMessageType } from 'shared';
+import { ClientMessage, ClientMessageType, PathCostCoordinate, ServerMessage, ServerMessageType } from 'shared';
 import { Subject } from 'rxjs';
 
 export interface A {
@@ -13,7 +13,7 @@ export interface A {
 export class WebsocketService {
   private websocket: WebSocket | null = null;
 
-  private readonly onLoggedInSubject = new Subject<ServerMessage<{ gameId: string }>>();
+  private readonly onSendSessionSubject = new Subject<ServerMessage<{ gameId: string }>>();
   private readonly onProposalReceivedSubject = new Subject<ServerMessage<{ proposalId: string }>>();
   private readonly onProposalAcceptedSubject = new Subject<ServerMessage<{ gameId: string }>>();
   private readonly onProposalDeclinedSubject = new Subject<ServerMessage<{ loginDeclined: string }>>();
@@ -21,7 +21,7 @@ export class WebsocketService {
   private readonly onGameFinishedSubject = new Subject<ServerMessage<object>>();
   private readonly onPossiblePathsSubject = new Subject<ServerMessage<{ possiblePaths: PathCostCoordinate[] }>>();
 
-  public readonly loggedIn$ = this.onLoggedInSubject.asObservable();
+  public readonly sendSession$ = this.onSendSessionSubject.asObservable();
   public readonly proposalReceived$ = this.onProposalReceivedSubject.asObservable();
   public readonly proposalAccepted$ = this.onProposalAcceptedSubject.asObservable();
   public readonly proposalDeclined$ = this.onProposalDeclinedSubject.asObservable();
@@ -39,19 +39,19 @@ export class WebsocketService {
   public destroyWebsocket(): void {
     this.websocket?.close();
     this.websocket = null;
-    console.log('Websocket onclose');
+    console.log('Websocket DESTROYED');
   }
 
   private wsOnOpen(): void {
-    console.log('Websocket onopen');
+    console.log('Websocket OPENED');
   }
 
   private wsOnMessage(messageEvent: MessageEvent): void {
     const message: ServerMessage<A> = JSON.parse(messageEvent.data);
-    console.log('Websocket onmessage', message);
+    console.log('Websocket RECEIVE', message);
     switch (message.type) {
-      case ServerMessageType.LOGGED_IN:
-        return this.onLoggedInSubject.next(message);
+      case ServerMessageType.SEND_SESSION:
+        return this.onSendSessionSubject.next(message);
       case ServerMessageType.SEND_PROPOSAL:
         return this.onProposalReceivedSubject.next(message);
       case ServerMessageType.PROPOSAL_ACCEPTED:
@@ -67,9 +67,13 @@ export class WebsocketService {
     }
   }
 
-  public sendToServer(login: string, type: ClientMessageType, payload?: object): void {
-    const a = { login, type, payload };
-    console.log('Websocket send ', a);
-    this.websocket?.send(JSON.stringify(a));
+  public sendToServer<T extends Record<string, string | undefined>>(
+    login: string,
+    type: ClientMessageType,
+    payload?: T
+  ): void {
+    const clientMessage: ClientMessage<T> = { login, type, payload };
+    console.log('Websocket SEND ', clientMessage);
+    this.websocket?.send(JSON.stringify(clientMessage));
   }
 }

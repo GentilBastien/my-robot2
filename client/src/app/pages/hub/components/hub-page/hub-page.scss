@@ -4,3 +4,10 @@
   width: fit-content;
   background-color: #ffb300;
 }
+
+.disconnect-container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  margin-bottom: 20px;
+}

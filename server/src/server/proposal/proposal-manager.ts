@@ -54,6 +54,7 @@ export class ProposalManager {
 
   public timeOutProposal(proposal: GameProposal): void {
     if (!this.isProposalCompleted(proposal)) {
+      console.log('MATCH TIMED OUT');
       this.sessionManager.sendGameProposalTimedOut(proposal);
       this.removeProposal(proposal);
     }

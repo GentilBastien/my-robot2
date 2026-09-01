@@ -134,7 +134,7 @@ export class SessionManager {
   }
 
   public sendSession(session: Session): void {
-    this.sendToSession(session, { type: ServerMessageType.LOGGED_IN, payload: { gameId: session.gameId } });
+    this.sendToSession(session, { type: ServerMessageType.SEND_SESSION, payload: { gameId: session.gameId } });
   }
 
   public sendGameProposal(gameProposal: GameProposal): void {

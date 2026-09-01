@@ -3,6 +3,7 @@ import { AuthenticationService } from '@core/services/authentication.service';
 import { QueueService } from '@core/services/queue.service';
 import { HubUsecase } from '@app/pages/hub/hub.usecase';
 import { ProposalService } from '@core/services/proposal.service';
+import { GameService } from '@core/services/game.service';
 
 @Component({
   selector: 'mr2-hub-page',
@@ -15,6 +16,7 @@ export class HubPage implements OnInit {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly queueService = inject(QueueService);
   private readonly proposalService = inject(ProposalService);
+  private readonly gameService = inject(GameService);
   private readonly hubUsecase = inject(HubUsecase);
 
   protected login = this.authenticationService.login;
@@ -22,9 +24,14 @@ export class HubPage implements OnInit {
   protected queueDisabled = this.queueService.queueDisabled;
   protected hasProposal = this.proposalService.hasProposal;
   protected proposalAnswered = this.proposalService.proposalAnswered;
+  protected inAGame = this.gameService.hasGame;
 
   public ngOnInit(): void {
     this.hubUsecase.createWebsocketOrRedirect(this.login());
+  }
+
+  protected onDisconnect(): void {
+    this.authenticationService.logout();
   }
 
   protected onEnterQueue(): void {

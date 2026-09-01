@@ -1,9 +1,14 @@
-import { computed, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { from } from 'rxjs';
+import { routeConstants } from '@app/app.routes';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-  public readonly login = signal<string>("");
-  public readonly isLogged = computed(() => this.login() !== "");
+  private readonly router = inject(Router);
+
+  public readonly login = signal<string>('');
+  public readonly isLogged = computed(() => this.login() !== '');
 
   public signIn(value: string | undefined): void {
     if (value) {
@@ -12,6 +17,7 @@ export class AuthenticationService {
   }
 
   public logout(): void {
-    this.login.set("");
+    this.login.set('');
+    from(this.router.navigate([routeConstants.LOGIN])).subscribe();
   }
 }

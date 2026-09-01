@@ -1,10 +1,14 @@
 <h1>HUB Page</h1>
-<h3>Login: {{ login() }}</h3>
+
+<div class="disconnect-container">
+  <b>Login: {{ login() }}</b>
+  <button (click)="onDisconnect()">Disconnect from Webserver</button>
+</div>
 
 <div>
   <button [disabled]="inQueue() || queueDisabled()" (click)="onEnterQueue()">Enter queue</button>
   <button [disabled]="!inQueue() || queueDisabled()" (click)="onLeaveQueue()">Leaves queue</button>
-  <button (click)="onRejoinGame()" disabled>Rejoin game</button>
+  <button [disabled]="!inAGame()" (click)="onRejoinGame()">Rejoin game</button>
 </div>
 
 @if (hasProposal()) {
