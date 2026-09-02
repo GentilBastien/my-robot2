@@ -1,9 +1,9 @@
-export { ClientMessageType } from './server/websocket/client-message.type';
-export { ServerMessageType } from './server/websocket/server-message.type';
 export type { LoginRequest } from './server/api/login/request';
 export type { LoginResponse } from './server/api/login/response';
 export type { ClientMessage } from './server/websocket/client-message';
 export type { ServerMessage } from './server/websocket/server-message';
+export { ClientMessageType } from './server/websocket/client-message.type';
+export { ServerMessageType } from './server/websocket/server-message.type';
 export type { ActionData } from './server/websocket/action-data';
 
 export { StatisticsTypeEnum } from './enums/statistics-type.enum';

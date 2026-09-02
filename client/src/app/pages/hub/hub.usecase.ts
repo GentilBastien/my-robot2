@@ -35,14 +35,12 @@ export class HubUsecase {
   }
 
   /**
-   * Creates the websocket when arriving to the hub, redirect if client has no login.
+   * Creates the websocket when arriving to the hub.
    * @param login Client's login.
    */
   public createWebsocketOrRedirect(login: string): void {
     if (login) {
       this.websocketService.createWebsocket(login);
-    } else {
-      from(this.router.navigate([routeConstants.LOGIN])).subscribe();
     }
   }
 
@@ -83,9 +81,9 @@ export class HubUsecase {
    * @param gameId Game id.
    */
   public receivesSession(gameId: string | undefined): void {
-    console.log('NEST PAS APPELE');
     if (gameId) {
       console.log(gameId);
+      this.queueService.disablesQueue(true);
       this.gameService.currentlyInGame(true);
     }
   }
