@@ -1,5 +1,5 @@
 <div id="block-login-a">
   <label for="connect-ws-input">connect to webserver</label>
   <input id="connect-ws-input" #connectInput type="text" />
-  <button id="connect-ws" (click)="onLogin()">Connect to Webserver</button>
+  <button id="connect-ws" (click)="onLogin()" [disabled]="loadingSignIn()">Connect to Webserver</button>
 </div>

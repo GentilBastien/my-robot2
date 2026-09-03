@@ -52,6 +52,11 @@ export class GameManager {
     return Object.values(this.gameSessions).some(gs => gs.sessions.some(session => session.login === login));
   }
 
+  /**
+   * In a GameSession, updates a Session with its login.
+   * @param gameSessionId
+   * @param session
+   */
   public updateGameSession(gameSessionId: string, session: Session): GameSession {
     const sessions: Session[] = this.gameSessions[gameSessionId].sessions;
     this.gameSessions[gameSessionId].sessions = sessions.map(s => (s.login === session.login ? session : s));

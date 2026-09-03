@@ -32,15 +32,15 @@ export class HubUsecase {
       .pipe(takeUntilDestroyed())
       .subscribe(serverMessage => this.receivesDeclinedProposal(serverMessage.payload?.loginDeclined));
     this.proposalService.proposalTimedOut$.pipe(takeUntilDestroyed()).subscribe(() => this.receivesTimedOutProposal());
+    this.websocketService.gameFinished$.pipe(takeUntilDestroyed()).subscribe(() => this.receivesGameFinished());
   }
 
   /**
-   * Creates the websocket when arriving to the hub.
-   * @param login Client's login.
+   * When arriving to the hub.
    */
-  public createWebsocketOrRedirect(login: string): void {
-    if (login) {
-      this.websocketService.createWebsocket(login);
+  public arriveOnHub(): void {
+    if (this.gameService.hasGame()) {
+      this.queueService.disablesQueue(true);
     }
   }
 
@@ -76,15 +76,19 @@ export class HubUsecase {
     this.proposalService.sendDeclineProposal(login);
   }
 
+  public rejoinGame(login: string): void {
+    this.gameService.sendRejoinGame(login);
+    from(this.router.navigate([routeConstants.GAME])).subscribe();
+  }
+
   /**
-   * Client receives a logged in confirmation.
+   * Client receives an existing session on sign in.
    * @param gameId Game id.
    */
   public receivesSession(gameId: string | undefined): void {
     if (gameId) {
-      console.log(gameId);
       this.queueService.disablesQueue(true);
-      this.gameService.currentlyInGame(true);
+      this.gameService.definesGame(gameId);
     }
   }
 
@@ -102,10 +106,10 @@ export class HubUsecase {
    * @param gameId Game id.
    */
   public receivesAcceptedProposal(gameId: string | undefined): void {
+    this.queueService.dequeues();
     this.proposalService.proposalDisappears();
+    this.gameService.definesGame(gameId);
     from(this.router.navigate([routeConstants.GAME])).subscribe();
-
-    console.log('NEW GAME', gameId);
   }
 
   /**
@@ -134,5 +138,10 @@ export class HubUsecase {
       this.queueService.dequeues();
     }
     this.proposalService.proposalDisappears();
+  }
+
+  public receivesGameFinished(): void {
+    this.queueService.disablesQueue(false);
+    this.gameService.definesGame(undefined);
   }
 }

@@ -21,45 +21,38 @@ export class WebsocketManager {
     const { login, type, payload } = JSON.parse(data.toString());
     console.log('login:', login, 'type:', type, 'payload', payload);
     switch (type) {
+      case ClientMessageType.CONNECTION: {
+        return this.sessionManager.receiveConnection(login);
+      }
       case ClientMessageType.QUEUE: {
-        this.sessionManager.receiveJoinQueue(login);
-        break;
+        return this.sessionManager.receiveJoinQueue(login);
       }
       case ClientMessageType.DEQUEUE: {
-        this.sessionManager.receiveLeaveQueue(login);
-        break;
+        return this.sessionManager.receiveLeaveQueue(login);
       }
       case ClientMessageType.ACCEPT_PROPOSAL: {
-        this.sessionManager.receiveAcceptProposal(login, payload.proposalId);
-        break;
+        return this.sessionManager.receiveAcceptProposal(login, payload.proposalId);
       }
       case ClientMessageType.DECLINE_PROPOSAL: {
-        this.sessionManager.receiveDeclineProposal(login, payload.proposalId);
-        break;
+        return this.sessionManager.receiveDeclineProposal(login, payload.proposalId);
       }
       case ClientMessageType.LEAVE_GAME: {
-        this.sessionManager.receiveLeaveGame(login);
-        break;
+        return this.sessionManager.receiveLeaveGame(login);
       }
       case ClientMessageType.REJOIN_GAME: {
-        this.sessionManager.receiveRejoinGame(login);
-        break;
+        return this.sessionManager.receiveRejoinGame(login);
       }
       case ClientMessageType.TURN_END: {
-        this.sessionManager.receiveTurnEnd(login);
-        break;
+        return this.sessionManager.receiveTurnEnd(login);
       }
       case ClientMessageType.POSSIBLE_PATHS: {
-        this.sessionManager.receiveAndSendPossiblePaths(login);
-        break;
+        return this.sessionManager.receiveAndSendPossiblePaths(login);
       }
       case ClientMessageType.PATH: {
-        this.sessionManager.receivePathGameEvent(login, payload.path);
-        break;
+        return this.sessionManager.receivePathGameEvent(login, payload.path);
       }
       case ClientMessageType.ACTION: {
-        this.sessionManager.receiveAction(login, payload);
-        break;
+        return this.sessionManager.receiveAction(login, payload);
       }
     }
   }

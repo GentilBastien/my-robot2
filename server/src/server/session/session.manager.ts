@@ -65,6 +65,10 @@ export class SessionManager {
     return this.queueManager.removeAllMatchedAndGet();
   }
 
+  public receiveConnection(login: string): void {
+    console.log(`Received connection: ${login}`);
+  }
+
   public receiveJoinQueue(login: string): void {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.ONLINE, 'Must be online to enter queue');
@@ -245,6 +249,7 @@ export class SessionManager {
       session.state = SessionStateTypeEnum.ONLINE;
       const newGameSession: GameSession = this.gameManager.updateGameSession(gameSession.id, session);
       if (this.gameManager.isGameSessionIdle(newGameSession.id)) {
+        console.log('GAME CLOSED', gameSession.id);
         this.gameManager.finishGame(gameSession.id);
         this.sendGameFinished(newGameSession);
       }

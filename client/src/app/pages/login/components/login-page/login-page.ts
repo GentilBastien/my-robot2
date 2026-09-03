@@ -10,7 +10,9 @@ import { LoginUsecase } from '@app/pages/login/login.usecase';
 })
 export class LoginPage implements OnInit {
   private readonly loginUsecase = inject(LoginUsecase);
+
   protected readonly loginInput = viewChild<ElementRef<HTMLInputElement>>('connectInput');
+  protected readonly loadingSignIn = this.loginUsecase.loadingSignIn;
 
   public ngOnInit(): void {
     this.loginUsecase.destroyWebsocket();

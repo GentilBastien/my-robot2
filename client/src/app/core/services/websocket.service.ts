@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ClientMessage, ClientMessageType, PathCostCoordinate, ServerMessage, ServerMessageType } from 'shared';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export interface A {
   gameId: string;
@@ -9,9 +9,16 @@ export interface A {
   possiblePaths: PathCostCoordinate[];
 }
 
+export enum WSState {}
+
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
-  private websocket: WebSocket | null = null;
+  private readonly websocketSubject = new BehaviorSubject<WebSocket | null>(null);
+  public readonly websocketReady$ = new Subject<boolean>();
+
+  public get websocket(): WebSocket | null {
+    return this.websocketSubject.getValue();
+  }
 
   private readonly onSendSessionSubject = new Subject<ServerMessage<{ gameId: string }>>();
   private readonly onProposalReceivedSubject = new Subject<ServerMessage<{ proposalId: string }>>();
@@ -29,21 +36,36 @@ export class WebsocketService {
   public readonly gameFinished$ = this.onGameFinishedSubject.asObservable();
   public readonly possiblePaths$ = this.onPossiblePathsSubject.asObservable();
 
-  public createWebsocket(login: string): void {
-    this.websocket = new WebSocket(`ws://localhost:8080/api/v1/game?login=${login}`);
-    this.websocket.onopen = () => this.wsOnOpen();
-    this.websocket.onmessage = messageEvent => this.wsOnMessage(messageEvent);
-    this.websocket.onclose = () => this.destroyWebsocket();
+  public createWebsocket(login: string): Observable<boolean> {
+    const ws = new WebSocket(`ws://localhost:8080/api/v1/game?login=${login}`);
+    ws.onopen = () => this.wsOnOpen(ws);
+    ws.onmessage = messageEvent => this.wsOnMessage(messageEvent);
+    ws.onclose = () => this.wsOnClose();
+    ws.onerror = () => this.wsOnError();
+    return this.websocketReady$;
   }
 
   public destroyWebsocket(): void {
     this.websocket?.close();
-    this.websocket = null;
+    this.websocketSubject.next(null);
     console.log('Websocket DESTROYED');
   }
 
-  private wsOnOpen(): void {
+  private wsOnOpen(ws: WebSocket): void {
     console.log('Websocket OPENED');
+    this.websocketSubject.next(ws);
+    this.websocketReady$.next(true);
+  }
+
+  private wsOnClose(): void {
+    console.log('Websocket CLOSED');
+    this.websocketSubject.next(null);
+    this.websocketReady$.next(false);
+  }
+
+  private wsOnError(): void {
+    console.log('Websocket ERROR');
+    this.websocketSubject.next(null);
   }
 
   private wsOnMessage(messageEvent: MessageEvent): void {

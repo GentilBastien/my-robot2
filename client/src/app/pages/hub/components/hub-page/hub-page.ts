@@ -27,7 +27,7 @@ export class HubPage implements OnInit {
   protected inAGame = this.gameService.hasGame;
 
   public ngOnInit(): void {
-    this.hubUsecase.createWebsocketOrRedirect(this.login());
+    this.hubUsecase.arriveOnHub();
   }
 
   protected onDisconnect(): void {
@@ -50,5 +50,7 @@ export class HubPage implements OnInit {
     this.hubUsecase.declinesProposal(this.login());
   }
 
-  protected onRejoinGame(): void {}
+  protected onRejoinGame(): void {
+    this.hubUsecase.rejoinGame(this.login());
+  }
 }
