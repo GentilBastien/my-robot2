@@ -13,8 +13,8 @@ export class LoginUsecase {
 
   public readonly loadingSignIn = this.authenticationService.loadingSignIn;
 
-  public destroyWebsocket(): void {
-    this.websocketService.destroyWebsocket();
+  public closeWebsocket(): void {
+    this.websocketService.closeWebsocket();
   }
 
   public signIn(login: string | undefined): void {

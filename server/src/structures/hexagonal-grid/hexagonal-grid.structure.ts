@@ -2,7 +2,6 @@ import { Comparator, Coordinate, PathCostCoordinate, Weight } from 'shared';
 import { HexagonalGridStructureInterface } from '@structures/hexagonal-grid/hexagonal-grid.structure-interface';
 import { HexagonalCellStructure } from '@structures/hexagonal-cell/hexagonal-cell.structure';
 import { HexagonalGridError } from '@structures/hexagonal-grid/hexagonal-grid.error';
-import { arrayHasDuplicates } from '@utils/array.utils';
 import { PriorityListStructure } from '@structures/priority-list/priority-list.structure';
 import { HexagonalCellDirectionEnum } from '@structures/hexagonal-cell/hexagonal-cell-direction.enum';
 
@@ -97,81 +96,107 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
   }
 
   public possiblePaths(start: HexagonalCellStructure<T>, maxCost: number): PathCostCoordinate[] {
-    const visitedPaths: PathCostCoordinate[] = [];
-    this.possibleTargets_NewMove(start, visitedPaths, -start.weight, maxCost);
-    return visitedPaths.filter(
-      path => !arrayHasDuplicates(path.coordinatesPath, cell => `${cell.x}.${cell.y}.${cell.z}`)
-    );
+    const key = (c: Coordinate): string => `${c.x}.${c.y}.${c.z}`;
+
+    const bestCost = new Map<string, number>();
+    const bestPath = new Map<string, PathCostCoordinate>();
+
+    // min-priority queue by accumulated cost
+    const queue: { cell: HexagonalCellStructure<T>; cost: number; path: PathCostCoordinate }[] = [];
+
+    const startPath: PathCostCoordinate = { coordinatesPath: [start.coordinates], costs: [start.weight] };
+    bestCost.set(key(start.coordinates), 0);
+    bestPath.set(key(start.coordinates), startPath);
+    queue.push({ cell: start, cost: 0, path: startPath });
+
+    while (queue.length > 0) {
+      // pop cheapest (swap for a real heap if boards get large)
+      queue.sort((a, b) => a.cost - b.cost);
+      const { cell, cost, path } = queue.shift()!;
+
+      // stale entry check
+      if (cost > (bestCost.get(key(cell.coordinates)) ?? Number.MAX_VALUE)) continue;
+
+      for (const neighbor of this.getCellsInRange(cell, 1, false)) {
+        const nextCost = cost + neighbor.weight;
+        if (nextCost > maxCost) continue;
+
+        const nKey = key(neighbor.coordinates);
+        if (nextCost < (bestCost.get(nKey) ?? Number.MAX_VALUE)) {
+          const nextPath: PathCostCoordinate = {
+            coordinatesPath: [...path.coordinatesPath, neighbor.coordinates],
+            costs: [...path.costs, neighbor.weight],
+          };
+          bestCost.set(nKey, nextCost);
+          bestPath.set(nKey, nextPath);
+          queue.push({ cell: neighbor, cost: nextCost, path: nextPath });
+        }
+      }
+    }
+
+    return Array.from(bestPath.values());
   }
 
   public shortestPathTo(
     start: HexagonalCellStructure<T>,
     target: HexagonalCellStructure<T>
   ): PathCostCoordinate | null {
-    const cellWeightFromStartComparator: Comparator<HexagonalCellStructure<T>> = (
-      cell1: HexagonalCellStructure<T>,
-      cell2: HexagonalCellStructure<T>
-    ): number => cell1.weightFromStart - cell2.weightFromStart;
-    const openList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
-    const closedList = new Set<HexagonalCellStructure<T>>();
-    openList.add(start);
-    while (openList.elements.length > 0) {
-      const currentNode: HexagonalCellStructure<T> = openList.poll()!;
-      closedList.add(currentNode);
-      let adjacentCells: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNode, 1, false);
-      adjacentCells = adjacentCells.filter(voisin => !openList.includes(voisin) && !closedList.has(voisin));
-      adjacentCells.forEach(voisin => {
-        voisin.weightFromStart = currentNode.weightFromStart + voisin.weight;
-        voisin.distanceFromTarget = voisin.euclideanDistanceFrom(target);
-        voisin.travelSegments = currentNode.travelSegments + 1;
-      });
-      openList.addAll(adjacentCells);
-    }
-    let shortestPath: HexagonalCellStructure<T>[] = [];
-    let currentNodePath = target;
-    while (!currentNodePath.hasSameLocationWith(start)) {
-      shortestPath.push(currentNodePath);
-      let adjacentCells: HexagonalCellStructure<T>[] = this.getCellsInRange(currentNodePath, 1, false);
-      adjacentCells = adjacentCells.filter(voisin => closedList.has(voisin));
-      const tempList = new PriorityListStructure<HexagonalCellStructure<T>>(cellWeightFromStartComparator);
-      tempList.addAll(adjacentCells);
-      currentNodePath = tempList.elements[0];
-      if (currentNodePath === undefined) {
-        return null;
-      }
-      if (currentNodePath.hasSameLocationWith(start)) {
-        shortestPath.push(currentNodePath);
-        break;
-      }
-    }
-    shortestPath = shortestPath.reverse();
-    return {
-      coordinatesPath: shortestPath.map(cell => cell.coordinates),
-      costs: shortestPath.map(cell => cell.weight),
-    };
-  }
+    const key = (hexCell: HexagonalCellStructure<T>): string =>
+      `${hexCell.coordinates.x}.${hexCell.coordinates.y}.${hexCell.coordinates.z}`;
 
-  private possibleTargets_NewMove(
-    cellCandidate: HexagonalCellStructure<T>,
-    visitedPaths: PathCostCoordinate[],
-    costFromStart: number,
-    maxCostFromStart: number,
-    pathToCandidate?: PathCostCoordinate
-  ): void {
-    const costCandidate: number = costFromStart + cellCandidate.weight;
-    if (costCandidate <= maxCostFromStart) {
-      //candidate is valid, add it in the valid cells and check its adjacent cells.
-      const basePath: Coordinate[] = pathToCandidate?.coordinatesPath ?? [];
-      const baseCost: number[] = pathToCandidate?.costs ?? [];
-      const path: PathCostCoordinate = {
-        coordinatesPath: [...basePath, cellCandidate.coordinates],
-        costs: [...baseCost, cellCandidate.weight],
-      };
-      visitedPaths.push(path);
-      this.getCellsInRange(cellCandidate, 1, false).forEach(adjacentCell =>
-        this.possibleTargets_NewMove(adjacentCell, visitedPaths, costCandidate, maxCostFromStart, path)
-      );
+    const cost = new Map<string, number>();
+    const cameFrom = new Map<string, HexagonalCellStructure<T>>();
+
+    const comparator: Comparator<HexagonalCellStructure<T>> = (a, b) =>
+      (cost.get(key(a)) ?? Number.MAX_VALUE) - (cost.get(key(b)) ?? Number.MAX_VALUE);
+
+    const openList = new PriorityListStructure<HexagonalCellStructure<T>>(comparator);
+    const closedList = new Set<string>();
+
+    cost.set(key(start), 0);
+    openList.add(start);
+
+    while (openList.elements.length > 0) {
+      const currentNode = openList.poll()!;
+      const currentKey = key(currentNode);
+
+      if (closedList.has(currentKey)) continue; // stale duplicate entry
+      closedList.add(currentKey);
+
+      if (currentNode.hasSameLocationWith(target)) break; // shortest cost to target is now final
+
+      const currentCost = cost.get(currentKey)!;
+
+      for (const neighbor of this.getCellsInRange(currentNode, 1, false)) {
+        const nKey = key(neighbor);
+        if (closedList.has(nKey)) continue;
+
+        const tentativeCost = currentCost + neighbor.weight;
+        if (tentativeCost < (cost.get(nKey) ?? Number.MAX_VALUE)) {
+          cost.set(nKey, tentativeCost);
+          cameFrom.set(nKey, currentNode);
+          openList.add(neighbor); // re-add; stale copies are skipped above via closedList check
+        }
+      }
     }
+
+    if (!cost.has(key(target))) return null; // unreachable
+
+    // reconstruct path via cameFrom pointers
+    const path: HexagonalCellStructure<T>[] = [];
+    let node: HexagonalCellStructure<T> | undefined = target;
+    while (node && !node.hasSameLocationWith(start)) {
+      path.push(node);
+      node = cameFrom.get(key(node));
+    }
+    if (!node) return null; // broken chain, shouldn't happen
+    path.push(start);
+    path.reverse();
+
+    return {
+      coordinatesPath: path.map(cell => cell.coordinates),
+      costs: path.map(cell => cell.weight),
+    };
   }
 
   private setAllCellCoordinates(width: number, height: number): void {

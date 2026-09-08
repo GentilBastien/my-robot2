@@ -1,0 +1,49 @@
+:host {
+  --hex-size: 40px;
+  --hex-width: calc(var(--hex-size) * 1.7320508);
+  --hex-height: calc(var(--hex-size) * 2);
+  --row-overlap: calc(var(--hex-height) * 0.25);
+
+  display: block;
+}
+
+.inline-bro {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.bg-one {
+  background-color: #00eaff;
+}
+
+.bg-two {
+  background-color: #00ff9f;
+}
+
+.hex-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.hex-row {
+  display: flex;
+
+  &:not(:first-child) {
+    margin-top: calc(var(--row-overlap) * -1);
+  }
+
+  &.shift-right {
+    margin-left: calc(var(--hex-width) / 2);
+  }
+}
+
+.hex {
+  width: var(--hex-width);
+  height: var(--hex-height);
+  flex-shrink: 0;
+  background: #4a7fb5;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  outline: 1px solid rgba(255, 255, 255, 0.15);
+  outline-offset: -1px;
+}

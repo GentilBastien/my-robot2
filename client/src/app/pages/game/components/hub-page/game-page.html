@@ -1,1 +1,31 @@
 <b>IN GAME</b> <button (click)="onLeaveGame()">Leave game</button>
+
+<div class="inline-bro bg-one">
+  <button (click)="onTurnEnd()">End turn</button>
+</div>
+
+<div class="inline-bro bg-two">
+  <button (click)="onGetPossiblePaths()">GetPossiblePaths</button>
+  @let pp = possiblePaths();
+  <ul>
+    @for (pathCost of pp; track $index) {
+      <li>{{ stringifyPathCost(pathCost) }}</li>
+    }
+  </ul>
+</div>
+
+<div class="inline-bro bg-three">
+  <label for="connect-ws-input">Path:</label>
+  <input id="connect-ws-input" #coordinates type="text" />
+  <button (click)="onMovement()">MoveTo</button>
+</div>
+
+<!--<div class="hex-grid">-->
+<!--  @for (row of rows; track i; let i = $index) {-->
+<!--    <div class="hex-row" [class.shift-right]="isOddRow(i)">-->
+<!--      @for (col of cols; track j; let j = $index) {-->
+<!--        <div class="hex"></div>-->
+<!--      }-->
+<!--    </div>-->
+<!--  }-->
+<!--</div>-->

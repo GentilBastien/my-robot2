@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
   protected readonly loadingSignIn = this.loginUsecase.loadingSignIn;
 
   public ngOnInit(): void {
-    this.loginUsecase.destroyWebsocket();
+    this.loginUsecase.closeWebsocket();
   }
 
   protected onLogin(): void {

@@ -2,7 +2,7 @@ import { createNewGame } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
-import { ActionData, Coordinate, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
+import { ActionData, Coordinate, GameState, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
 import { TurnEndRequestEvent } from '@events/turn-end/turn-end.request-event';
 import { PathRequestEvent } from '@events/path/path.request-event';
 import { ActionRequestEvent } from '@events/action/action.request-event';
@@ -82,6 +82,14 @@ export class GameManager {
     throw 'no gameId';
   }
 
+  public getState(session: Session): GameState {
+    if (session.gameId) {
+      const gameSession = this.gameSessions[session.gameId];
+      return gameSession.game.getState();
+    }
+    throw 'no gameId';
+  }
+
   public getPossiblePaths(session: Session): PathCostCoordinate[] {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
@@ -93,8 +101,9 @@ export class GameManager {
   public receivePath(session: Session, path: Coordinate[]): void {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
-      const turnEndRequestEvent = new PathRequestEvent(session.login, MovementTypeEnum.WALKED, path);
-      return gameSession.game.resolveEvent(turnEndRequestEvent);
+      //TODO impl Walked
+      const pathRequestEvent = new PathRequestEvent(session.login, MovementTypeEnum.WALKED, path);
+      return gameSession.game.resolveEvent(pathRequestEvent);
     }
     throw 'no gameId';
   }

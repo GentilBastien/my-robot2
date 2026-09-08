@@ -8,7 +8,12 @@ export class CellCalculator {
     return context.gameState.arenaState.cells[cellId];
   }
 
-  public static hasEnoughRangeForRobotTarget(context: ContextEvent, sourceRobotId: string, targetRobotId: string, action: Action): boolean {
+  public static hasEnoughRangeForRobotTarget(
+    context: ContextEvent,
+    sourceRobotId: string,
+    targetRobotId: string,
+    action: Action
+  ): boolean {
     const sourceRobotCoordinates = RobotCalculator.getRobotCoordinates(context, sourceRobotId);
     const targetRobotCoordinates = RobotCalculator.getRobotCoordinates(context, targetRobotId);
     const sourceHexCell = context.gameStateHandler.hexagonalGridState.getCellAt(sourceRobotCoordinates);
@@ -16,14 +21,23 @@ export class CellCalculator {
     return context.gameStateHandler.hexagonalGridState.isCellInRange(sourceHexCell, action.range, targetHexCell);
   }
 
-  public static hasEnoughRangeForCoordinateTarget(context: ContextEvent, sourceRobotId: string, targetCellCoordinate: Coordinate, action: Action): boolean {
+  public static hasEnoughRangeForCoordinateTarget(
+    context: ContextEvent,
+    sourceRobotId: string,
+    targetCellCoordinate: Coordinate,
+    action: Action
+  ): boolean {
     const sourceRobotCoordinates = RobotCalculator.getRobotCoordinates(context, sourceRobotId);
     const sourceHexCell = context.gameStateHandler.hexagonalGridState.getCellAt(sourceRobotCoordinates);
     const targetHexCell = context.gameStateHandler.hexagonalGridState.getCellAt(targetCellCoordinate);
     return context.gameStateHandler.hexagonalGridState.isCellInRange(sourceHexCell, action.range, targetHexCell);
   }
 
-  public static getShortestPathTo(context: ContextEvent, robotId: string, target: Coordinate): PathCostCoordinate | null {
+  public static getShortestPathTo(
+    context: ContextEvent,
+    robotId: string,
+    target: Coordinate
+  ): PathCostCoordinate | null {
     const robotCoordinates = RobotCalculator.getRobotCoordinates(context, robotId);
     const startCell = context.gameStateHandler.hexagonalGridState.getCellAt(robotCoordinates);
     const targetCell = context.gameStateHandler.hexagonalGridState.getCellAt(target);
@@ -49,7 +63,12 @@ export class CellCalculator {
     };
   }
 
-  public static checkPathIsValid(context: ContextEvent, robotId: string, path: Coordinate[], movementType: MovementTypeEnum): boolean {
+  public static checkPathIsValid(
+    context: ContextEvent,
+    robotId: string,
+    path: Coordinate[],
+    movementType: MovementTypeEnum
+  ): boolean {
     const robotCoordinates = RobotCalculator.getRobotCoordinates(context, robotId);
     if (path.some(p => !CellCalculator.checkCoordinateIsValid(context, p))) {
       return false;
@@ -64,11 +83,15 @@ export class CellCalculator {
       }
     }
     for (let i = 0; i < hexCells.length; i++) {
-      if (!hexCells[i].isAdjacentTo(hexCells[i + 1])) {
+      if (hexCells[i + 1] && !hexCells[i].isAdjacentTo(hexCells[i + 1])) {
         return false;
       }
     }
-    return path.length > 1 || (path.length === 2 && !context.gameStateHandler.hexagonalGridState.getCellAt(robotCoordinates).isLocatedAt(path[0]));
+    return (
+      path.length > 1 ||
+      (path.length === 2 &&
+        !context.gameStateHandler.hexagonalGridState.getCellAt(robotCoordinates).isLocatedAt(path[0]))
+    );
   }
 
   public static checkCoordinateIsValid(context: ContextEvent, coordinates: Coordinate): boolean {
@@ -100,7 +123,9 @@ export class CellCalculator {
   }
 
   public static getVisibleCellsByProximity(context: ContextEvent, robotId: string): string[] {
-    const robotHexCell = context.gameStateHandler.hexagonalGridState.getCellAt(RobotCalculator.getRobotCoordinates(context, robotId));
+    const robotHexCell = context.gameStateHandler.hexagonalGridState.getCellAt(
+      RobotCalculator.getRobotCoordinates(context, robotId)
+    );
     const robotVisionHexCells = context.gameStateHandler.hexagonalGridState.getCellsInRange(robotHexCell, 2);
     return robotVisionHexCells.map(hexCell => hexCell.item.id);
   }

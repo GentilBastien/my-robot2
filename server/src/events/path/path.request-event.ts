@@ -33,6 +33,7 @@ export class PathRequestEvent implements RequestEvent {
       this.path,
       this.movementType
     );
+    console.log(isRobotTurn, enoughRemainingMovement, movementTypeAllowed, pathIsValid);
     return new PathResponseEvent({
       movementType: this.movementType,
       responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathIsValid,

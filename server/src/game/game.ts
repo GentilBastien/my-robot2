@@ -32,6 +32,10 @@ export class Game {
     console.log('------------');
   }
 
+  public getState(): GameState {
+    return this.gameState;
+  }
+
   private resolveAllSubEvents(request: RequestEvent): GameState {
     let tempGameState: GameState = this.gameState;
     const pendingRequests = new ArrayIndexStructure<RequestEvent>([request]);
@@ -51,6 +55,7 @@ export class Game {
   ): GameState {
     const context: ContextEvent = this.getGameContext(pendingRequests);
     const response: ResponseEvent = request.mapToResponse(context);
+    console.log(response);
     if (response.responseValidated) {
       const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
       for (const reducer of reducers) {

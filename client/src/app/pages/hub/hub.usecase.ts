@@ -88,7 +88,7 @@ export class HubUsecase {
   public receivesSession(gameId: string | undefined): void {
     if (gameId) {
       this.queueService.disablesQueue(true);
-      this.gameService.definesGame(gameId);
+      this.gameService.setGame(gameId);
     }
   }
 
@@ -108,7 +108,7 @@ export class HubUsecase {
   public receivesAcceptedProposal(gameId: string | undefined): void {
     this.queueService.dequeues();
     this.proposalService.proposalDisappears();
-    this.gameService.definesGame(gameId);
+    this.gameService.setGame(gameId);
     from(this.router.navigate([routeConstants.GAME])).subscribe();
   }
 
@@ -142,6 +142,6 @@ export class HubUsecase {
 
   public receivesGameFinished(): void {
     this.queueService.disablesQueue(false);
-    this.gameService.definesGame(undefined);
+    this.gameService.setGame(undefined);
   }
 }

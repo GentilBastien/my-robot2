@@ -10,6 +10,9 @@ export class TurnCalculator {
   public static getPlayingRobotId(context: ContextEvent): string {
     const robotPlaying = context.gameStateHandler.cyclicListState.currentItem;
     if (robotPlaying) {
+      //TODO SYNC WITH THE STATE, the cyclicList is the reference, not the initial config idk
+      //currentTurnRobotId: 'bast', not true, it should get it from the cyclicList
+      console.log(robotPlaying);
       return robotPlaying.id;
     }
     throw 'Temp error';

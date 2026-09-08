@@ -218,7 +218,14 @@ export class SessionManager {
     );
   }
 
-  public receiveAndSendPossiblePaths(login: string): void {
+  public answerState(login: string): void {
+    const session = this.sessions[login];
+    this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to get the state of the game');
+    const gameState = this.gameManager.getState(session);
+    this.sendToSession(session, { type: ServerMessageType.GAME_STATE, payload: { gameState } });
+  }
+
+  public answerAndSendPossiblePaths(login: string): void {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to get possible paths');
     const possiblePaths = this.gameManager.getPossiblePaths(session);

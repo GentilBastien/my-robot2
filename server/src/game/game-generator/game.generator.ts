@@ -19,8 +19,8 @@ import { GameConfig } from '@game/game.config';
 import { Game } from '@game/game';
 
 export function createNewGame(gameProposal: GameProposal): Game {
-  const width = 10;
-  const height = 10;
+  const width = 5;
+  const height = 4;
   const gameConfig: GameConfig = {
     initialGameState: defineGameState(gameProposal, width, height),
     mapWidth: width,
@@ -41,10 +41,10 @@ function defineGameState(gameProposal: GameProposal, mapWidth: number, mapHeight
 
 function defineRobotStates(_gameProposal: GameProposal): Record<string, RobotState> {
   //TODO fetch RobotState[] from gameProposal.logins
-  return {
-    bast: temp_defineRandomRobot('bast'),
-    wass: temp_defineRandomRobot('wass'),
-  };
+  const bast = temp_defineRandomRobot('bast');
+  const wass = temp_defineRandomRobot('wass');
+  wass.coordinates = { x: 2, y: 3, z: -5 };
+  return { bast, wass };
 }
 
 function defineInitialTurnState(): TurnState {
@@ -56,9 +56,10 @@ function defineInitialTurnState(): TurnState {
 }
 
 function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaState {
+  const weightsByRow: number[] = [1, 1, 1, 1, 2, 1, 2, 2, 4, 1, 1, 1, 3, 1, 2, 2, 1, 1, 1, 2];
   const cellStates: CellState[] = Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
     id: index.toString(),
-    weight: 2,
+    weight: weightsByRow[index],
     visibleBy: [],
     attributes: {
       baseAttribute: BaseAttribute.GRASS,
@@ -96,8 +97,8 @@ function temp_defineRandomRobot(name: string): RobotState {
       power: 10,
     },
     resources: {
-      remainingMove: 4,
-      totalMove: 4,
+      remainingMove: 2,
+      totalMove: 2,
       coolingDown: 10,
       energyModules: 3,
       mana: 100,

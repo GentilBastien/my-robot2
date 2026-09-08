@@ -1,22 +1,29 @@
 import { Injectable } from '@angular/core';
-import { ClientMessage, ClientMessageType, PathCostCoordinate, ServerMessage, ServerMessageType } from 'shared';
+import {
+  ClientMessage,
+  ClientMessageType,
+  Coordinate,
+  GameState,
+  PathCostCoordinate,
+  ServerMessage,
+  ServerMessageType,
+} from 'shared';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 export interface A {
   gameId: string;
   proposalId: string;
   loginDeclined: string;
+  gameState: GameState;
   possiblePaths: PathCostCoordinate[];
 }
-
-export enum WSState {}
 
 @Injectable({ providedIn: 'root' })
 export class WebsocketService {
   private readonly websocketSubject = new BehaviorSubject<WebSocket | null>(null);
   public readonly websocketReady$ = new Subject<boolean>();
 
-  public get websocket(): WebSocket | null {
+  private get websocket(): WebSocket | null {
     return this.websocketSubject.getValue();
   }
 
@@ -26,6 +33,7 @@ export class WebsocketService {
   private readonly onProposalDeclinedSubject = new Subject<ServerMessage<{ loginDeclined: string }>>();
   private readonly onProposalTimedOutSubject = new Subject<ServerMessage<object>>();
   private readonly onGameFinishedSubject = new Subject<ServerMessage<object>>();
+  private readonly onGameStateSubject = new Subject<ServerMessage<{ gameState: GameState }>>();
   private readonly onPossiblePathsSubject = new Subject<ServerMessage<{ possiblePaths: PathCostCoordinate[] }>>();
 
   public readonly sendSession$ = this.onSendSessionSubject.asObservable();
@@ -34,6 +42,7 @@ export class WebsocketService {
   public readonly proposalDeclined$ = this.onProposalDeclinedSubject.asObservable();
   public readonly proposalTimedOut$ = this.onProposalTimedOutSubject.asObservable();
   public readonly gameFinished$ = this.onGameFinishedSubject.asObservable();
+  public readonly gameState$ = this.onGameStateSubject.asObservable();
   public readonly possiblePaths$ = this.onPossiblePathsSubject.asObservable();
 
   public createWebsocket(login: string): Observable<boolean> {
@@ -45,7 +54,7 @@ export class WebsocketService {
     return this.websocketReady$;
   }
 
-  public destroyWebsocket(): void {
+  public closeWebsocket(): void {
     this.websocket?.close();
     this.websocketSubject.next(null);
     console.log('Websocket DESTROYED');
@@ -82,6 +91,8 @@ export class WebsocketService {
         return this.onProposalDeclinedSubject.next(message);
       case ServerMessageType.PROPOSAL_TIMED_OUT:
         return this.onProposalTimedOutSubject.next(message);
+      case ServerMessageType.GAME_STATE:
+        return this.onGameStateSubject.next(message);
       case ServerMessageType.POSSIBLE_PATHS:
         return this.onPossiblePathsSubject.next(message);
       case ServerMessageType.GAME_FINISHED:
@@ -89,7 +100,7 @@ export class WebsocketService {
     }
   }
 
-  public sendToServer<T extends Record<string, string | undefined>>(
+  public sendToServer<T extends Record<string, string | Coordinate[] | undefined>>(
     login: string,
     type: ClientMessageType,
     payload?: T

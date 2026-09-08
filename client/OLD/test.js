@@ -147,7 +147,7 @@ pathBtn.onclick = () => {
   });
 };
 askPossiblePathBtn.onclick = () => {
-  clientSent(login, 'POSSIBLE_PATHS');
+  clientSent(login, 'ASK_POSSIBLE_PATHS');
 };
 
 function updateLogged(flag, login) {

@@ -45,8 +45,11 @@ export class WebsocketManager {
       case ClientMessageType.TURN_END: {
         return this.sessionManager.receiveTurnEnd(login);
       }
-      case ClientMessageType.POSSIBLE_PATHS: {
-        return this.sessionManager.receiveAndSendPossiblePaths(login);
+      case ClientMessageType.ASK_STATE: {
+        return this.sessionManager.answerState(login);
+      }
+      case ClientMessageType.ASK_POSSIBLE_PATHS: {
+        return this.sessionManager.answerAndSendPossiblePaths(login);
       }
       case ClientMessageType.PATH: {
         return this.sessionManager.receivePathGameEvent(login, payload.path);
