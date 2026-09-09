@@ -20,6 +20,7 @@ export class PathResponseEvent implements ResponseEvent {
     this.responseValidated = parameters.responseValidated;
     this.movementType = parameters.movementType;
     this.path = parameters.path;
+    console.log('PathResponseEvent', this.sourceRobotId, this.responseValidated, this.movementType, this.path);
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {

@@ -4,7 +4,7 @@ import { EffectState, MaybeArray, Reducer, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
-import { startTurnReducer } from '@reducers/turn.reducer';
+import { turnAdvanceReducer, turnStateTypeReducer } from '@reducers/turn.reducer';
 import { ResourcesRequestEvent } from '@events/resources/resources.request-event';
 import { TurnStartRequestEvent } from '@events/turn-start/turn-start.request-event';
 import { TurnCalculator } from '@calculators/turn.calculator';
@@ -59,6 +59,9 @@ export class TurnEndResponseEvent implements ResponseEvent {
     const turnStartRequestEvent = new TurnStartRequestEvent(this.turnRobotId);
     context.pendingRequests.insertEnd(turnStartRequestEvent);
 
-    return startTurnReducer(TurnStateTypeEnum.FINISHED);
+    const turnStateReducer = turnStateTypeReducer(TurnStateTypeEnum.FINISHED);
+    const newTurnStateReducer = turnAdvanceReducer(this.turnNumber + 1, this.turnRobotId);
+
+    return [turnStateReducer, newTurnStateReducer];
   }
 }

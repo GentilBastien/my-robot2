@@ -1,6 +1,6 @@
 import { createServer } from '@server/server';
 import { GameProposal } from '@server/proposal/game-proposal';
-import { createNewGame } from '@game/game-generator/game.generator';
+import { gameGenerator_Create } from '@game/game-generator/game.generator';
 import { Game } from '@game/game';
 
 const logins = ['bast', 'jade', 'raph', 'wass'];
@@ -12,6 +12,6 @@ const gameProposal: GameProposal = {
   loginDeclined: undefined,
   logins: logins,
 };
-const game: Game = createNewGame(gameProposal);
+const game: Game = gameGenerator_Create(gameProposal);
 
 createServer().then();

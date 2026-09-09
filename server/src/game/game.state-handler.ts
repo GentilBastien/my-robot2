@@ -8,7 +8,8 @@ export class GameStateHandler {
   public readonly cyclicListState: CyclicListStructure<RobotState>;
 
   constructor(gameConfig: GameConfig) {
-    const robotComparator: Comparator<RobotState> = (_robot1: RobotState, _robot2: RobotState): number => 1;
+    const robotComparator: Comparator<RobotState> = (robot1: RobotState, robot2: RobotState): number =>
+      robot1.name.localeCompare(robot2.name);
     this.hexagonalGridState = new HexagonalGridStructure<CellState>(gameConfig.mapWidth, gameConfig.mapHeight);
     this.cyclicListState = new CyclicListStructure<RobotState>(robotComparator);
   }

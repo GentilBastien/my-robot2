@@ -1,6 +1,6 @@
 import { GameState, Reducer, TurnState, TurnStateTypeEnum } from 'shared';
 
-export const startTurnReducer =
+export const turnStateTypeReducer =
   (turnStateTypeEnum: TurnStateTypeEnum): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     const currentTurnState = gameState.turnState;

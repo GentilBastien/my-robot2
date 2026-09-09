@@ -1,5 +1,5 @@
 import WebSocket from 'ws';
-import { ActionData, Coordinate, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
+import { ActionData, Coordinate, GameState, ServerMessage, ServerMessageType, SessionStateTypeEnum } from 'shared';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { ProposalManager } from '@server/proposal/proposal-manager';
 import { Session } from '@server/session/session';
@@ -7,7 +7,7 @@ import { QueueManager } from '@server/queue/queue.manager';
 import { GameManager } from '@server/game/game.manager';
 import { GameSession } from '@server/game/game-session';
 
-export class SessionManager {
+class SessionManager {
   private readonly proposalManager: ProposalManager;
   private readonly gameManager: GameManager;
   private readonly queueManager: QueueManager;
@@ -124,17 +124,23 @@ export class SessionManager {
   public receiveTurnEnd(login: string): void {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to endTurn');
-    this.gameManager.receiveTurnEnd(session);
+    const gameState = this.gameManager.receiveTurnEnd(session);
+    const sessions = this.gameManager.getGameSession(login).sessions;
+    this.sendGameStates(sessions, gameState);
   }
 
   public receivePathGameEvent(login: string, path: Coordinate[]): void {
     const session = this.sessions[login];
-    this.gameManager.receivePath(session, path);
+    const gameState = this.gameManager.receivePath(session, path);
+    const sessions = this.gameManager.getGameSession(login).sessions;
+    this.sendGameStates(sessions, gameState);
   }
 
   public receiveAction(login: string, actionData: ActionData): void {
     const session = this.sessions[login];
-    this.gameManager.receiveAction(session, actionData);
+    const gameState = this.gameManager.receiveAction(session, actionData);
+    const sessions = this.gameManager.getGameSession(login).sessions;
+    this.sendGameStates(sessions, gameState);
   }
 
   public sendSession(session: Session): void {
@@ -166,7 +172,8 @@ export class SessionManager {
         payload: { gameId: gameProposal.id },
       }
     );
-    this.gameManager.createGame(gameProposal, sessions);
+    const gameState = this.gameManager.createGame(gameProposal, sessions);
+    this.sendGameStates(sessions, gameState);
   }
 
   public sendGameProposalDeclined(gameProposal: GameProposal): void {
@@ -218,14 +225,22 @@ export class SessionManager {
     );
   }
 
-  public answerState(login: string): void {
+  public sendGameState(login: string): void {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to get the state of the game');
-    const gameState = this.gameManager.getState(session);
+    const gameState = this.gameManager.getGameState(session);
     this.sendToSession(session, { type: ServerMessageType.GAME_STATE, payload: { gameState } });
   }
 
-  public answerAndSendPossiblePaths(login: string): void {
+  public sendGameStates(sessions: Session[], gameState: GameState): void {
+    this.updateSessionsAndSend(
+      sessions.map(session => session.login),
+      undefined,
+      { type: ServerMessageType.GAME_STATE, payload: { gameState } }
+    );
+  }
+
+  public sendPossiblePaths(login: string): void {
     const session = this.sessions[login];
     this.checkSessionState(session, SessionStateTypeEnum.IN_GAME, 'Must be in a game to get possible paths');
     const possiblePaths = this.gameManager.getPossiblePaths(session);
@@ -265,12 +280,16 @@ export class SessionManager {
 
   private updateSessionsAndSend<T>(
     logins: string[],
-    updateSessionFn: (session: Session) => void,
-    message: ServerMessage<T>
+    updateSessionFn?: (session: Session) => void,
+    message?: ServerMessage<T>
   ): Session[] {
     const sessions = logins.map(login => this.sessions[login]).filter(s => s !== undefined);
-    sessions.forEach(session => updateSessionFn(session));
-    sessions.forEach(session => this.sendToSession(session, message));
+    if (updateSessionFn) {
+      sessions.forEach(session => updateSessionFn(session));
+    }
+    if (message) {
+      sessions.forEach(session => this.sendToSession(session, message));
+    }
     return sessions;
   }
 
@@ -278,3 +297,5 @@ export class SessionManager {
     session.webSocket.send(JSON.stringify(message));
   }
 }
+
+export default SessionManager;

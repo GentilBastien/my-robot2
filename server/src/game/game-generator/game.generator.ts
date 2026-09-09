@@ -18,7 +18,7 @@ import { GameProposal } from '@server/proposal/game-proposal';
 import { GameConfig } from '@game/game.config';
 import { Game } from '@game/game';
 
-export function createNewGame(gameProposal: GameProposal): Game {
+export function gameGenerator_Create(gameProposal: GameProposal): Game {
   const width = 5;
   const height = 4;
   const gameConfig: GameConfig = {

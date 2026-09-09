@@ -1,11 +1,12 @@
-import { Component, computed, ElementRef, inject, viewChild } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { AuthenticationService } from '@core/services/authentication.service';
 import { GameUsecase } from '@app/pages/game/game.usecase';
 import { Coordinate, PathCostCoordinate } from 'shared';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'mr2-game-page',
-  imports: [],
+  imports: [ReactiveFormsModule],
   providers: [GameUsecase],
   templateUrl: './game-page.html',
   styleUrl: './game-page.scss',
@@ -14,21 +15,13 @@ export class GamePage {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly gameUsecase = inject(GameUsecase);
 
-  protected login = this.authenticationService.login;
-  protected possiblePaths = this.gameUsecase.possiblePaths;
+  protected readonly login = this.authenticationService.login;
+  protected readonly possiblePaths = this.gameUsecase.possiblePaths;
+  protected readonly gameState = this.gameUsecase.gameState;
 
-  protected coordinates = viewChild<ElementRef<HTMLInputElement>>('coordinates');
-  protected pathMovement = computed<Coordinate[]>(() => {
-    const coordinatesValue: string | undefined = this.coordinates()?.nativeElement.value;
-    if (coordinatesValue) {
-      const coords: Coordinate[] = coordinatesValue.split(' ').map(a => {
-        const xyz = a.split(',').map(e => Number(e));
-        return { x: xyz[0], y: xyz[1], z: xyz[2] };
-      });
-      return coords;
-    }
-    return [];
-  });
+  protected yourTurn = computed<boolean>(() => this.gameState()?.turnState.currentTurnRobotId === this.login());
+
+  protected pathForm = new FormControl<string>('');
 
   protected onTurnEnd(): void {
     this.gameUsecase.doTurnEnd(this.login());
@@ -39,7 +32,8 @@ export class GamePage {
   }
 
   protected onMovement(): void {
-    this.gameUsecase.doMovement(this.login(), this.pathMovement());
+    const coordinates = this.mapInputValueToCoordinates(this.pathForm.value);
+    this.gameUsecase.doMovement(this.login(), coordinates);
   }
 
   protected onLeaveGame(): void {
@@ -58,5 +52,23 @@ export class GamePage {
 
   protected stringifyPathCost(value: PathCostCoordinate): string {
     return value.coordinatesPath.map(c => `(${c.x},${c.y},${c.z})`).join(', ');
+  }
+
+  protected onCopyPath(value: PathCostCoordinate): void {
+    this.pathForm.setValue(this.stringifyPathCost(value));
+  }
+
+  private mapInputValueToCoordinates(inputValue: string | null): Coordinate[] {
+    // (1,2,-3), (7,5,-12) into [{x:1, y:2, z:-3}, {x:7, y:5, z:-12}]
+    if (inputValue) {
+      return inputValue.split(', ').map(elem => {
+        const xyz = elem
+          .slice(1, -1)
+          .split(',')
+          .map(e => Number(e));
+        return { x: xyz[0], y: xyz[1], z: xyz[2] };
+      });
+    }
+    return [];
   }
 }

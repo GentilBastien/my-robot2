@@ -1,5 +1,5 @@
 import { GameProposal } from './game-proposal';
-import { SessionManager } from '@server/session/session.manager';
+import SessionManager from '@server/session/session.manager';
 import { Session } from '@server/session/session';
 
 export class ProposalManager {

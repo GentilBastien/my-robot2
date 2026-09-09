@@ -1,6 +1,6 @@
 import WebSocket, { RawData } from 'ws';
 import { ClientMessageType } from 'shared';
-import { SessionManager } from '@server/session/session.manager';
+import SessionManager from '@server/session/session.manager';
 
 export class WebsocketManager {
   private readonly sessionManager = new SessionManager();
@@ -46,10 +46,10 @@ export class WebsocketManager {
         return this.sessionManager.receiveTurnEnd(login);
       }
       case ClientMessageType.ASK_STATE: {
-        return this.sessionManager.answerState(login);
+        return this.sessionManager.sendGameState(login);
       }
       case ClientMessageType.ASK_POSSIBLE_PATHS: {
-        return this.sessionManager.answerAndSendPossiblePaths(login);
+        return this.sessionManager.sendPossiblePaths(login);
       }
       case ClientMessageType.PATH: {
         return this.sessionManager.receivePathGameEvent(login, payload.path);

@@ -50,6 +50,7 @@ export class StepPathResponseEvent implements ResponseEvent {
 
     const remainingMove: number = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId).remainingMove;
     const newRemainingMove: number = remainingMove - this.stepPath.cost;
+    console.log('newRemainingMove', remainingMove, this.stepPath.cost, newRemainingMove);
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
   }
 }

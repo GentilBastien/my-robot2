@@ -4,7 +4,7 @@ import { EffectState, MaybeArray, Reducer, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
-import { startTurnReducer } from '@reducers/turn.reducer';
+import { turnStateTypeReducer } from '@reducers/turn.reducer';
 import { EffectCalculator } from '@calculators/effect.calculator';
 
 export class TurnStartResponseEvent implements ResponseEvent {
@@ -45,6 +45,6 @@ export class TurnStartResponseEvent implements ResponseEvent {
     );
 
     context.pendingRequests.insertEnd(requestEventsFromEffects);
-    return startTurnReducer(TurnStateTypeEnum.STARTED);
+    return turnStateTypeReducer(TurnStateTypeEnum.STARTED);
   }
 }

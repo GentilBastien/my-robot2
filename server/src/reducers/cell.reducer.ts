@@ -1,7 +1,13 @@
-import { GameState, Reducer } from 'shared';
+import { CellAttributeState, GameState, Reducer } from 'shared';
 
-export const updateCellState =
-  (robotId: string, visibleCellSet: Set<string>): Reducer =>
+export const updateAttributeCellState =
+  (cellId: string, cellAttributeState: CellAttributeState): Reducer =>
+  (gameState: Readonly<GameState>): GameState => {
+    return gameState;
+  };
+
+export const updateWeightCellState =
+  (cellId: string, newWeight: number): Reducer =>
   (gameState: Readonly<GameState>): GameState => {
     return gameState;
   };

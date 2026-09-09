@@ -22,17 +22,18 @@ export class Game {
   }
 
   public getPossiblePaths(robotId: string): PathCostCoordinate[] {
-    const context: ContextEvent = this.getGameContext();
+    const context: ContextEvent = this.getGameContext({ gameState: this.gameState });
     return CellCalculator.getPossiblePaths(context, robotId);
   }
 
-  public resolveEvent(request: RequestEvent): void {
+  public resolveEvent(request: RequestEvent): GameState {
     console.log('------------');
     this.gameState = this.resolveAllSubEvents(request);
     console.log('------------');
+    return this.gameState;
   }
 
-  public getState(): GameState {
+  public getGameState(): GameState {
     return this.gameState;
   }
 
@@ -53,9 +54,8 @@ export class Game {
     currentState: GameState,
     pendingRequests: ArrayIndexStructure<RequestEvent>
   ): GameState {
-    const context: ContextEvent = this.getGameContext(pendingRequests);
+    const context: ContextEvent = this.getGameContext({ gameState: currentState, pendingRequests });
     const response: ResponseEvent = request.mapToResponse(context);
-    console.log(response);
     if (response.responseValidated) {
       const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
       for (const reducer of reducers) {
@@ -65,11 +65,14 @@ export class Game {
     return currentState;
   }
 
-  private getGameContext(pendingRequests?: ArrayIndexStructure<RequestEvent>): ContextEvent {
+  private getGameContext(options?: {
+    gameState: GameState;
+    pendingRequests?: ArrayIndexStructure<RequestEvent>;
+  }): ContextEvent {
     return {
-      gameState: this.gameState,
+      gameState: options?.gameState ?? this.gameState,
       gameStateHandler: this.gameStateHandler,
-      pendingRequests: pendingRequests ?? new ArrayIndexStructure<RequestEvent>(),
+      pendingRequests: options?.pendingRequests ?? new ArrayIndexStructure<RequestEvent>(),
     };
   }
 }

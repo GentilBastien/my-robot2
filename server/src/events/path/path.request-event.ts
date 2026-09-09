@@ -14,6 +14,7 @@ export class PathRequestEvent implements RequestEvent {
     this.sourceRobotId = sourceRobotId;
     this.movementType = movementType;
     this.path = path;
+    console.log('PathRequestEvent', this.sourceRobotId, this.movementType, this.path);
   }
 
   public mapToResponse(context: ContextEvent): PathResponseEvent {

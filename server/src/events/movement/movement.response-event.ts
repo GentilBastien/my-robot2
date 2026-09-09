@@ -18,6 +18,7 @@ export class MovementResponseEvent implements ResponseEvent {
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
     const updateCoordinatesReducer: Reducer = updateCoordinates(this.sourceRobotId, this.coordinates);
+    console.log('updateCoordinatesReducer', this.coordinates);
     const newVisibleCells: string[] = CellCalculator.getVisibleCells(context, this.sourceRobotId);
     const visionReducer: Reducer = updateVision(this.sourceRobotId, newVisibleCells);
     return [updateCoordinatesReducer, visionReducer];

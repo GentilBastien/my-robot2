@@ -1,7 +1,7 @@
 <b>IN GAME</b> <button (click)="onLeaveGame()">Leave game</button>
 
 <div class="inline-bro bg-one">
-  <button (click)="onTurnEnd()">End turn</button>
+  <button (click)="onTurnEnd()" [disabled]="!yourTurn()">End turn</button>
 </div>
 
 <div class="inline-bro bg-two">
@@ -9,14 +9,17 @@
   @let pp = possiblePaths();
   <ul>
     @for (pathCost of pp; track $index) {
-      <li>{{ stringifyPathCost(pathCost) }}</li>
+      <li>
+        <span>{{ stringifyPathCost(pathCost) }}</span>
+        <button (click)="onCopyPath(pathCost)">copy</button>
+      </li>
     }
   </ul>
 </div>
 
 <div class="inline-bro bg-three">
   <label for="connect-ws-input">Path:</label>
-  <input id="connect-ws-input" #coordinates type="text" />
+  <input id="connect-ws-input" [formControl]="pathForm" type="text" />
   <button (click)="onMovement()">MoveTo</button>
 </div>
 

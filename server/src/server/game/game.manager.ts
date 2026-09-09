@@ -1,4 +1,4 @@
-import { createNewGame } from '@game/game-generator/game.generator';
+import { gameGenerator_Create } from '@game/game-generator/game.generator';
 import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
@@ -14,8 +14,8 @@ export class GameManager {
     this.gameSessions = {};
   }
 
-  public createGame(gameProposal: GameProposal, sessions: Session[]): void {
-    const game = createNewGame(gameProposal);
+  public createGame(gameProposal: GameProposal, sessions: Session[]): GameState {
+    const game = gameGenerator_Create(gameProposal);
     const gameId = gameProposal.id;
     this.gameSessions[gameId] = {
       id: gameId,
@@ -23,6 +23,7 @@ export class GameManager {
       createdAt: Date.now(),
       sessions,
     };
+    return game.getGameState();
   }
 
   public finishGame(gameSessionId: string): void {
@@ -73,7 +74,7 @@ export class GameManager {
     return gs.sessions.every(session => session.state !== SessionStateTypeEnum.IN_GAME || session.gameId !== gs.id);
   }
 
-  public receiveTurnEnd(session: Session): void {
+  public receiveTurnEnd(session: Session): GameState {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
       const turnEndRequestEvent = new TurnEndRequestEvent(session.login);
@@ -82,23 +83,7 @@ export class GameManager {
     throw 'no gameId';
   }
 
-  public getState(session: Session): GameState {
-    if (session.gameId) {
-      const gameSession = this.gameSessions[session.gameId];
-      return gameSession.game.getState();
-    }
-    throw 'no gameId';
-  }
-
-  public getPossiblePaths(session: Session): PathCostCoordinate[] {
-    if (session.gameId) {
-      const gameSession = this.gameSessions[session.gameId];
-      return gameSession.game.getPossiblePaths(session.login);
-    }
-    throw 'no gameId';
-  }
-
-  public receivePath(session: Session, path: Coordinate[]): void {
+  public receivePath(session: Session, path: Coordinate[]): GameState {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
       //TODO impl Walked
@@ -108,11 +93,27 @@ export class GameManager {
     throw 'no gameId';
   }
 
-  public receiveAction(session: Session, actionData: ActionData): void {
+  public receiveAction(session: Session, actionData: ActionData): GameState {
     if (session.gameId) {
       const gameSession = this.gameSessions[session.gameId];
       const actionRequestEvent = new ActionRequestEvent(actionData);
       return gameSession.game.resolveEvent(actionRequestEvent);
+    }
+    throw 'no gameId';
+  }
+
+  public getGameState(session: Session): GameState {
+    if (session.gameId) {
+      const gameSession = this.gameSessions[session.gameId];
+      return gameSession.game.getGameState();
+    }
+    throw 'no gameId';
+  }
+
+  public getPossiblePaths(session: Session): PathCostCoordinate[] {
+    if (session.gameId) {
+      const gameSession = this.gameSessions[session.gameId];
+      return gameSession.game.getPossiblePaths(session.login);
     }
     throw 'no gameId';
   }
