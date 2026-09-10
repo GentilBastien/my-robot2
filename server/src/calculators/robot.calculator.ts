@@ -31,6 +31,10 @@ export class RobotCalculator {
     return context.gameState.robots[robotId].selfStates;
   }
 
+  public static hasStates(context: ContextEvent, robotId: string, robotStateTypeEnum: RobotStateTypeEnum): boolean {
+    return context.gameState.robots[robotId].selfStates.includes(robotStateTypeEnum);
+  }
+
   public static getRobotResourcesState(context: ContextEvent, robotId: string): ResourcesState {
     return context.gameState.robots[robotId].resources;
   }

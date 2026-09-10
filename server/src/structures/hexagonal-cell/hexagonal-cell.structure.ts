@@ -10,10 +10,6 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
   private _y = 0;
   // z = -x - y, no need to define it
 
-  public weightFromStart = 0;
-  public distanceFromTarget = 0;
-  public travelSegments = 0;
-
   constructor(item?: T | null) {
     this._item = item ?? null;
   }
@@ -42,10 +38,14 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     return this._item?.weight ?? 0;
   }
 
-  public setCoordinates(coordinates: Coordinate): void {
-    if (coordinates.x + coordinates.y + coordinates.z !== 0) {
+  public static isValid(coordinate: Coordinate): void {
+    if (coordinate.x + coordinate.y + coordinate.z !== 0) {
       throw HexagonalCellError.invalidCoordinatesError;
     }
+  }
+
+  public setCoordinates(coordinates: Coordinate): void {
+    HexagonalCellStructure.isValid(coordinates);
     this._x = coordinates.x;
     this._y = coordinates.y;
   }
@@ -84,9 +84,7 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
   }
 
   public isLocatedAt(coordinates: Coordinate): boolean {
-    if (coordinates.x + coordinates.y + coordinates.z !== 0) {
-      throw HexagonalCellError.invalidCoordinatesError;
-    }
+    HexagonalCellStructure.isValid(coordinates);
     return this._x === coordinates.x && this._y === coordinates.y;
   }
 

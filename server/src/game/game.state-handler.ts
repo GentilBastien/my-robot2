@@ -1,5 +1,5 @@
 import { HexagonalGridStructure } from '@structures/hexagonal-grid/hexagonal-grid.structure';
-import { CellState, Comparator, GameState, RobotState } from 'shared';
+import { CellState, Comparator, GameState, RobotState, TurnState, TurnStateTypeEnum } from 'shared';
 import { CyclicListStructure } from '@structures/cyclic-list/cyclic-list.structure';
 import { GameConfig } from '@game/game.config';
 
@@ -23,6 +23,13 @@ export class GameStateHandler {
     for (const robot of robots) {
       this.cyclicListState.insertItem(robot);
     }
-    this.cyclicListState.next();
+  }
+
+  public defineInitialTurnState(): TurnState {
+    return {
+      currentTurnNumber: 0,
+      turnStateTypeEnum: TurnStateTypeEnum.STARTED,
+      currentTurnRobotId: this.cyclicListState.next().id,
+    };
   }
 }

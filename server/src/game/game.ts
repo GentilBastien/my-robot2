@@ -19,6 +19,7 @@ export class Game {
     this.gameStateHandler = new GameStateHandler(gameConfig);
     this.gameStateHandler.updateCyclicListState(this.gameState);
     this.gameStateHandler.updateHexagonalGridState(this.gameState);
+    this.gameState.turnState = this.gameStateHandler.defineInitialTurnState();
   }
 
   public getPossiblePaths(robotId: string): PathCostCoordinate[] {

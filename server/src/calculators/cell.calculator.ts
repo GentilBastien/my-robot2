@@ -77,27 +77,48 @@ export class CellCalculator {
     const robotCoordinates = RobotCalculator.getRobotCoordinates(context, robotId);
     const robotCell = CellCalculator.getCellAt(context, robotCoordinates);
 
+    /**
+     * Check if coordinates are valid : sum of x, y, z is 0 and are not outside the grid.
+     */
     if (path.some(p => !CellCalculator.checkCoordinateIsValid(context, p))) {
       return false;
     }
+
     const hexCells = path.map(coordinates => CellCalculator.getCellAt(context, coordinates));
+
+    /**
+     * Check that path is not empty.
+     */
     if (path.length === 0) {
       return false;
     }
+
+    /**
+     * Check that path starts from robot location.
+     */
     if (!robotCell.isLocatedAt(path[0])) {
       return false;
     }
+
+    /**
+     * If a teleportation or a jump, check there is only 2 different coordinates (takeoff and landing)
+     */
     if (movementType === MovementTypeEnum.JUMPED || movementType === MovementTypeEnum.TELEPORTED) {
-      if (hexCells.length !== 2) {
+      if (hexCells.length !== 2 || hexCells[0].isLocatedAt(hexCells[1])) {
         return false;
       }
-    }
-    for (let i = 0; i < hexCells.length; i++) {
-      if (hexCells[i + 1] && !hexCells[i].isAdjacentTo(hexCells[i + 1])) {
-        return false;
+    } else {
+      /**
+       * Else, check that every coordinate are adjacent
+       */
+      for (let i = 0; i < hexCells.length; i++) {
+        if (hexCells[i + 1] && !hexCells[i].isAdjacentTo(hexCells[i + 1])) {
+          return false;
+        }
       }
     }
-    return path.length > 1 || (path.length === 2 && !robotCell.isLocatedAt(path[path.length - 1]));
+
+    return path.length > 1;
   }
 
   public static checkCoordinateIsValid(context: ContextEvent, coordinates: Coordinate): boolean {

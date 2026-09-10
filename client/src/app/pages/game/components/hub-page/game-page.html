@@ -1,7 +1,10 @@
 <b>IN GAME</b> <button (click)="onLeaveGame()">Leave game</button>
 
 <div class="inline-bro bg-one">
-  <button (click)="onTurnEnd()">End turn</button>
+  @if (yourTurn()) {
+    <b>YOUR TURN</b>
+  }
+  <button (click)="onTurnEnd()" [disabled]="!yourTurn()">End turn</button>
 </div>
 
 <div class="inline-bro bg-two">

@@ -32,7 +32,7 @@ export function gameGenerator_Create(gameProposal: GameProposal): Game {
 function defineGameState(gameProposal: GameProposal, mapWidth: number, mapHeight: number): GameState {
   return {
     state: GameStateTypeEnum.PENDING,
-    turnState: defineInitialTurnState(),
+    turnState: defineEmptyTurnState(),
     arenaState: defineInitialArenaState(mapWidth, mapHeight),
     effects: defineInitialEffectState(),
     robots: defineRobotStates(gameProposal),
@@ -47,11 +47,11 @@ function defineRobotStates(_gameProposal: GameProposal): Record<string, RobotSta
   return { bast, wass };
 }
 
-function defineInitialTurnState(): TurnState {
+function defineEmptyTurnState(): TurnState {
   return {
     currentTurnNumber: 0,
     turnStateTypeEnum: TurnStateTypeEnum.PENDING,
-    currentTurnRobotId: 'bast',
+    currentTurnRobotId: '',
   };
 }
 

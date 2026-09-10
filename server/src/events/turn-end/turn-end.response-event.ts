@@ -1,6 +1,6 @@
 import { ContextEvent } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { EffectState, MaybeArray, Reducer, TurnStateTypeEnum } from 'shared';
+import { EffectState, MaybeArray, Reducer, RobotStateTypeEnum, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
@@ -8,6 +8,7 @@ import { turnStateTypeReducer } from '@reducers/turn.reducer';
 import { ResourcesRequestEvent } from '@events/resources/resources.request-event';
 import { TurnStartRequestEvent } from '@events/turn-start/turn-start.request-event';
 import { EffectCalculator } from '@calculators/effect.calculator';
+import { RobotCalculator } from '@calculators/robot.calculator';
 
 export class TurnEndResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -41,8 +42,11 @@ export class TurnEndResponseEvent implements ResponseEvent {
     );
     context.pendingRequests.insertEnd(requestStateEventsFromEffects);
 
-    const resourcesRequestEvent: ResourcesRequestEvent = new ResourcesRequestEvent(this.sourceRobotId);
-    context.pendingRequests.insertEnd(resourcesRequestEvent);
+    const isRobotDead = RobotCalculator.hasStates(context, this.sourceRobotId, RobotStateTypeEnum.DEAD);
+    if (!isRobotDead) {
+      const resourcesRequestEvent: ResourcesRequestEvent = new ResourcesRequestEvent(this.sourceRobotId);
+      context.pendingRequests.insertEnd(resourcesRequestEvent);
+    }
 
     const turnStartRequestEvent = new TurnStartRequestEvent(this.sourceRobotId);
     context.pendingRequests.insertEnd(turnStartRequestEvent);
