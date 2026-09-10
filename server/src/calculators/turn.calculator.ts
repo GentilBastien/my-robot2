@@ -23,8 +23,8 @@ export class TurnCalculator {
     return RobotCalculator.getRobotState(context, TurnCalculator.getPlayingRobotId(context));
   }
 
-  public static newTurnState(context: ContextEvent): TurnState {
-    const robotToPlay = context.gameStateHandler.cyclicListState.currentItem;
+  public static advanceTurn(context: ContextEvent): TurnState {
+    const robotToPlay = context.gameStateHandler.cyclicListState.next();
     if (robotToPlay) {
       return {
         turnStateTypeEnum: TurnStateTypeEnum.STARTED,
@@ -33,9 +33,5 @@ export class TurnCalculator {
       };
     }
     throw new Error('Temp error');
-  }
-
-  public static advanceTurn(context: ContextEvent): RobotState {
-    return context.gameStateHandler.cyclicListState.next();
   }
 }

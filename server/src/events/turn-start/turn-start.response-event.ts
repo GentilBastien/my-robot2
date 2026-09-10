@@ -4,32 +4,30 @@ import { EffectState, MaybeArray, Reducer, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
 import { Effect } from '@entities/effects/effect';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
-import { turnStateTypeReducer } from '@reducers/turn.reducer';
+import { turnAdvanceReducer, turnStateTypeReducer } from '@reducers/turn.reducer';
 import { EffectCalculator } from '@calculators/effect.calculator';
+import { TurnCalculator } from '@calculators/turn.calculator';
 
 export class TurnStartResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
-  turnNumber: number;
-  turnRobotId: string;
 
-  public constructor(parameters: {
-    sourceRobotId: string;
-    responseValidated: boolean;
-    turnNumber: number;
-    turnRobotId: string;
-  }) {
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean }) {
     this.sourceRobotId = parameters.sourceRobotId;
     this.responseValidated = parameters.responseValidated;
-    this.turnNumber = parameters.turnNumber;
-    this.turnRobotId = parameters.turnRobotId;
   }
 
   public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const effectStatesFromRobot: EffectState[] = EffectCalculator.getEffectStatesFromRobot(context, this.turnRobotId);
+    //sourceRobotId is the id of the robot that previously played.
+    const newTurnState = TurnCalculator.advanceTurn(context);
+
+    const effectStatesFromRobot: EffectState[] = EffectCalculator.getEffectStatesFromRobot(
+      context,
+      newTurnState.currentTurnRobotId
+    );
     const effectStatesFromCell: EffectState[] = EffectCalculator.getEffectStatesFromRobotCell(
       context,
-      this.turnRobotId
+      newTurnState.currentTurnRobotId
     );
 
     const requestEventsFromEffects: RequestEvent[] = [...effectStatesFromRobot, ...effectStatesFromCell].flatMap(
@@ -45,6 +43,9 @@ export class TurnStartResponseEvent implements ResponseEvent {
     );
 
     context.pendingRequests.insertEnd(requestEventsFromEffects);
-    return turnStateTypeReducer(TurnStateTypeEnum.STARTED);
+    const turnStateReducer = turnStateTypeReducer(TurnStateTypeEnum.STARTED);
+    const turnReducer = turnAdvanceReducer(newTurnState.currentTurnNumber, newTurnState.currentTurnRobotId);
+
+    return [turnStateReducer, turnReducer];
   }
 }

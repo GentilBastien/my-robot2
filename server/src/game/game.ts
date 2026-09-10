@@ -55,7 +55,9 @@ export class Game {
     pendingRequests: ArrayIndexStructure<RequestEvent>
   ): GameState {
     const context: ContextEvent = this.getGameContext({ gameState: currentState, pendingRequests });
+    console.log(request);
     const response: ResponseEvent = request.mapToResponse(context);
+    console.log(response);
     if (response.responseValidated) {
       const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
       for (const reducer of reducers) {
