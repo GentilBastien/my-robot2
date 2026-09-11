@@ -1,16 +1,17 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
-import { ActionElementTypeEnum, ActionTypeEnum, MaybeArray, Reducer } from 'shared';
-import { RobotDestroyedRequestEvent } from '@events/robot-destroyed/robot-destroyed.request-event';
-import { hpAndShieldReducer, hpReducer, shieldReducer } from '@reducers/resources.reducer';
+import { ActionTypeEnum, EffectTypeEnum, ElementTypeEnum, MaybeArray, Reducer } from 'shared';
 import { RobotCalculator } from '@calculators/robot.calculator';
+import { HpRequestEvent } from '@events/hp/hp.request-event';
+import { ShieldRequestEvent } from '@events/shield/shield.request-event';
 
 export class DamageResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
-  actionTypeEnum: ActionTypeEnum;
+  actionTypeEnum: ActionTypeEnum | undefined;
+  effectTypeEnum: EffectTypeEnum | undefined;
   targetRobotId: string;
-  actionElementTypeEnum: ActionElementTypeEnum;
+  elementTypeEnum: ElementTypeEnum;
   damageDealt: number;
   isDodged: boolean;
   isCritical: boolean;
@@ -19,9 +20,10 @@ export class DamageResponseEvent implements ResponseEvent {
   public constructor(parameters: {
     sourceRobotId: string;
     responseValidated: boolean;
-    actionTypeEnum: ActionTypeEnum;
+    actionTypeEnum: ActionTypeEnum | undefined;
+    effectTypeEnum: EffectTypeEnum | undefined;
     targetRobotId: string;
-    actionElementTypeEnum: ActionElementTypeEnum;
+    elementTypeEnum: ElementTypeEnum;
     damageDealt: number;
     isDodged: boolean;
     isCritical: boolean;
@@ -30,37 +32,40 @@ export class DamageResponseEvent implements ResponseEvent {
     this.sourceRobotId = parameters.sourceRobotId;
     this.responseValidated = parameters.responseValidated;
     this.actionTypeEnum = parameters.actionTypeEnum;
+    this.effectTypeEnum = parameters.effectTypeEnum;
     this.targetRobotId = parameters.targetRobotId;
-    this.actionElementTypeEnum = parameters.actionElementTypeEnum;
+    this.elementTypeEnum = parameters.elementTypeEnum;
     this.damageDealt = parameters.damageDealt;
     this.isDodged = parameters.isDodged;
     this.isCritical = parameters.isCritical;
     this.defArmor = parameters.defArmor;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
-    const { hp, shield } = RobotCalculator.getRobotResourcesState(context, this.targetRobotId);
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
+    const shield = RobotCalculator.getRobotResourcesState(context, this.targetRobotId).shield;
 
     const damageToShield = Math.min(this.damageDealt, shield);
     const damageToHp = this.damageDealt - damageToShield;
 
-    const newShield = shield - damageToShield;
-    const newHp = Math.max(hp - damageToHp, 0);
+    const shieldRequest = new ShieldRequestEvent(this.targetRobotId, -damageToShield);
+    const hpRequest = new HpRequestEvent(this.targetRobotId, -damageToHp);
 
-    const isDestroyed = newHp === 0;
-    if (isDestroyed) {
-      context.pendingRequests.insertEnd(
-        new RobotDestroyedRequestEvent(
-          this.sourceRobotId,
-          this.targetRobotId,
-          this.actionTypeEnum,
-          `damage (${this.damageDealt})`
-        )
-      );
-    }
+    context.pendingRequests.insertEnd([shieldRequest, hpRequest]);
 
-    if (newShield === shield) return hpReducer(this.targetRobotId, newHp);
-    if (newHp === hp) return shieldReducer(this.targetRobotId, newShield);
-    return hpAndShieldReducer(this.targetRobotId, newHp);
+    //TODO: destroy robot if damage leads to 0 hp
+    //POSSIBLE SOLUTION: HpRequestEvent takes the DamageResponse in parameter
+    // const isDestroyed = newHpValue === 0;
+    // if (isDestroyed) {
+    //   context.pendingRequests.insertEnd(
+    //     new RobotDestroyedRequestEvent(
+    //       this.sourceRobotId,
+    //       this.targetRobotId,
+    //       this.actionTypeEnum,
+    //       this.effectTypeEnum,
+    //       `damage (${this.damageDealt})`
+    //     )
+    //   );
+    // }
+    return [];
   }
 }

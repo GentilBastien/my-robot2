@@ -1,5 +1,5 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { StepPathResponseEvent } from '@events/step-path/step-path.response-event';
 import { MovementTypeEnum, StepPathCostCoordinate } from 'shared';
 import { RobotCalculator } from '@calculators/robot.calculator';
@@ -15,7 +15,7 @@ export class StepPathRequestEvent implements RequestEvent {
     this.stepPath = stepPath;
   }
 
-  public mapToResponse(context: ContextEvent): StepPathResponseEvent {
+  public mapToResponse(context: EventContext): StepPathResponseEvent {
     const isRobotTurn = RobotCalculator.isRobotTurn(context, this.sourceRobotId);
     const enoughRemainingMovement =
       RobotCalculator.getRobotState(context, this.sourceRobotId).resources.remainingMove >= this.stepPath.cost;

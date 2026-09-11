@@ -1,12 +1,12 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ShieldResponseEvent } from '@events/shield/shield.response-event';
 
 export class ShieldRequestEvent implements RequestEvent {
   sourceRobotId: string;
   value: number;
 
-  public mapToResponse(_context: ContextEvent): ShieldResponseEvent {
+  public mapToResponse(_context: EventContext): ShieldResponseEvent {
     return new ShieldResponseEvent({
       sourceRobotId: this.sourceRobotId,
       responseValidated: true,

@@ -1,5 +1,5 @@
 import { ResponseEvent } from '@events/response.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { EffectState, MaybeArray, Reducer } from 'shared';
 import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
@@ -7,7 +7,7 @@ import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { addEffectState, updateEffectState } from '@reducers/effect.reducer';
 import { EffectCalculator } from '@calculators/effect.calculator';
 
-export class AddEffectResponseEvent implements ResponseEvent {
+export class EffectAddResponseEvent implements ResponseEvent {
   sourceRobotId: string;
   responseValidated: boolean;
   effectState: EffectState;
@@ -18,7 +18,7 @@ export class AddEffectResponseEvent implements ResponseEvent {
     this.effectState = parameters.effectState;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const effect: Effect = EffectCalculator.getEffect(this.effectState);
 
     const existingEffectState: EffectState | undefined = EffectCalculator.getEffectStateIfTargetAlreadyAffectedBy(
@@ -29,12 +29,12 @@ export class AddEffectResponseEvent implements ResponseEvent {
     const newEffectsFromApply: RequestEvent[] = effect.handle({
       trigger: EffectTrigger.ON_APPLY,
       effectState: existingEffectState ?? this.effectState,
-      gameState: context.gameState,
-      gameStateHandler: context.gameStateHandler,
+      ...context,
     });
     context.pendingRequests.insertEnd(newEffectsFromApply);
 
     if (existingEffectState) {
+      //TODO updateEffectState seems to do nothing ?
       return updateEffectState(existingEffectState);
     } else {
       return addEffectState(this.effectState);

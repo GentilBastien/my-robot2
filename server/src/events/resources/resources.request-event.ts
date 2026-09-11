@@ -1,5 +1,5 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResourcesResponseEvent } from '@events/resources/resources.response-event';
 
 export class ResourcesRequestEvent implements RequestEvent {
@@ -9,7 +9,7 @@ export class ResourcesRequestEvent implements RequestEvent {
     this.sourceRobotId = sourceRobotId;
   }
 
-  public mapToResponse(_context: ContextEvent): ResourcesResponseEvent {
+  public mapToResponse(_context: EventContext): ResourcesResponseEvent {
     return new ResourcesResponseEvent({ sourceRobotId: this.sourceRobotId, responseValidated: true });
   }
 }

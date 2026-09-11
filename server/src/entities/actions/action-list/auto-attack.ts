@@ -1,10 +1,10 @@
-import { ActionElementTypeEnum } from 'shared';
+import { ElementTypeEnum } from 'shared';
 import { Action } from '@entities/actions/action';
 import { RequestEvent } from '@events/request.event';
 import { ActionContext } from '../action.context';
 
 export class AutoAttack extends Action {
-  public override actionElementTypeEnum = ActionElementTypeEnum.ENERGETIC;
+  public override elementTypeEnum = ElementTypeEnum.ENERGETIC;
   public override baseAmount = 10;
 
   public override needVision = true;

@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer } from 'shared';
 import { valueInRange } from '@utils/function.utils';
@@ -16,9 +16,10 @@ export class HpResponseEvent implements ResponseEvent {
     this.value = parameters.value;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const resourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
     const newHpValue = valueInRange(0, resourcesState.maxHp, resourcesState.hp + this.value);
+
     return hpReducer(this.sourceRobotId, newHpValue);
   }
 }

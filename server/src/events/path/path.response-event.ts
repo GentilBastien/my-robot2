@@ -1,5 +1,5 @@
 import { ResponseEvent } from '@events/response.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { MaybeArray, MovementTypeEnum, PathCostCoordinate, Reducer, StepPathCostCoordinate } from 'shared';
 import { StepPathRequestEvent } from '@events/step-path/step-path.request-event';
 import { CellCalculator } from '@calculators/cell.calculator';
@@ -23,7 +23,7 @@ export class PathResponseEvent implements ResponseEvent {
     console.log('PathResponseEvent', this.sourceRobotId, this.responseValidated, this.movementType, this.path);
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     switch (this.movementType) {
       case MovementTypeEnum.JUMPED:
       case MovementTypeEnum.TELEPORTED: {

@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer, ResourcesState } from 'shared';
 import { updateResourcesState } from '@reducers/resources.reducer';
@@ -13,7 +13,7 @@ export class ResourcesResponseEvent implements ResponseEvent {
     this.responseValidated = parameters.responseValidated;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const resourcesState: ResourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
 
     const { regenHp, regenMana, coolingDown, isOverheating, maxOverheating, totalActions, totalSubActions, totalMove } =

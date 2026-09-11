@@ -1,9 +1,9 @@
-import { ContextEvent } from '@events/context.event';
-import { AddEffectResponseEvent } from '@events/add-effect/add-effect.response-event';
+import { EventContext } from '@events/context.event';
 import { RequestEvent } from '@events/request.event';
 import { EffectState } from 'shared';
+import { EffectAddResponseEvent } from '@events/effect-add/effect-add.response-event';
 
-export class AddEffectRequestEvent implements RequestEvent {
+export class EffectAddRequestEvent implements RequestEvent {
   sourceRobotId: string;
   effectState: EffectState;
 
@@ -12,8 +12,8 @@ export class AddEffectRequestEvent implements RequestEvent {
     this.effectState = effectState;
   }
 
-  public mapToResponse(_context: ContextEvent): AddEffectResponseEvent {
-    return new AddEffectResponseEvent({
+  public mapToResponse(_context: EventContext): EffectAddResponseEvent {
+    return new EffectAddResponseEvent({
       sourceRobotId: this.sourceRobotId,
       responseValidated: true,
       effectState: this.effectState,

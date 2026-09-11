@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer, ResourcesState } from 'shared';
 import { remainingActionsReducer, remainingSubActionsReducer } from '@reducers/resources.reducer';
@@ -22,7 +22,7 @@ export class ActionCostResponseEvent implements ResponseEvent {
     this.subActionCost = parameters.subActionCost;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const resourcesState: ResourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
     const newRemainingActions = resourcesState.remainingActions - this.actionCost;
     const newRemainingSubActions = resourcesState.remainingSubActions - this.subActionCost;

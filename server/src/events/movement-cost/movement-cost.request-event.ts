@@ -1,5 +1,5 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { MovementCostResponseEvent } from '@events/movement-cost/movement-cost.response-event';
 import { RobotCalculator } from '@calculators/robot.calculator';
 
@@ -12,7 +12,7 @@ export class MovementCostRequestEvent implements RequestEvent {
     this.movementCost = movementCost;
   }
 
-  public mapToResponse(context: ContextEvent): MovementCostResponseEvent {
+  public mapToResponse(context: EventContext): MovementCostResponseEvent {
     const hasEnoughMovement: boolean =
       RobotCalculator.getRobotResourcesState(context, this.sourceRobotId).remainingMove >= this.movementCost;
     return new MovementCostResponseEvent({

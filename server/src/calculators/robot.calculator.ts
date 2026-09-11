@@ -10,7 +10,7 @@ import {
   StatisticsState,
   StatisticsTypeEnum,
 } from 'shared';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { TurnCalculator } from '@calculators/turn.calculator';
 import { Action } from '@entities/actions/action';
 import { actionList } from '@entities/actions/action-list/action.list';
@@ -19,36 +19,36 @@ import { ActionRequestEvent } from '@events/action/action.request-event';
 import { CellCalculator } from '@calculators/cell.calculator';
 
 export class RobotCalculator {
-  public static getRobotState(context: ContextEvent, robotId: string): RobotState {
+  public static getRobotState(context: EventContext, robotId: string): RobotState {
     return context.gameState.robots[robotId];
   }
 
-  public static getRobotCoordinates(context: ContextEvent, robotId: string): Coordinate {
+  public static getRobotCoordinates(context: EventContext, robotId: string): Coordinate {
     return RobotCalculator.getRobotState(context, robotId).coordinates;
   }
 
-  public static getRobotSelfStates(context: ContextEvent, robotId: string): RobotStateTypeEnum[] {
+  public static getRobotSelfStates(context: EventContext, robotId: string): RobotStateTypeEnum[] {
     return context.gameState.robots[robotId].selfStates;
   }
 
-  public static hasStates(context: ContextEvent, robotId: string, robotStateTypeEnum: RobotStateTypeEnum): boolean {
+  public static hasStates(context: EventContext, robotId: string, robotStateTypeEnum: RobotStateTypeEnum): boolean {
     return context.gameState.robots[robotId].selfStates.includes(robotStateTypeEnum);
   }
 
-  public static getRobotResourcesState(context: ContextEvent, robotId: string): ResourcesState {
+  public static getRobotResourcesState(context: EventContext, robotId: string): ResourcesState {
     return context.gameState.robots[robotId].resources;
   }
 
-  public static getRobotAttributeState(context: ContextEvent, robotId: string): AttributesState {
+  public static getRobotAttributeState(context: EventContext, robotId: string): AttributesState {
     return context.gameState.robots[robotId].attributes;
   }
 
-  public static getRobotStatisticState(context: ContextEvent, robotId: string): StatisticsState {
+  public static getRobotStatisticState(context: EventContext, robotId: string): StatisticsState {
     return context.gameState.robots[robotId].statistics;
   }
 
   public static getRobotAttributeValue(
-    context: ContextEvent,
+    context: EventContext,
     robotId: string,
     attributesTypeEnum: AttributesTypeEnum
   ): number {
@@ -70,7 +70,7 @@ export class RobotCalculator {
   }
 
   public static getRobotStatisticValue(
-    context: ContextEvent,
+    context: EventContext,
     robotId: string,
     statisticsTypeEnum: StatisticsTypeEnum
   ): number {
@@ -96,7 +96,7 @@ export class RobotCalculator {
   }
 
   public static getRobotAttributeModifier(
-    context: ContextEvent,
+    context: EventContext,
     robotId: string,
     attributesTypeEnum: AttributesTypeEnum
   ): number {
@@ -104,7 +104,7 @@ export class RobotCalculator {
     return Math.floor((value - 10) / 2);
   }
 
-  public static isRobotTurn(context: ContextEvent, robotId: string): boolean {
+  public static isRobotTurn(context: EventContext, robotId: string): boolean {
     const playingRobotId = TurnCalculator.getPlayingRobotId(context);
     return robotId === playingRobotId;
   }
@@ -129,7 +129,7 @@ export class RobotCalculator {
   }
 
   public static robotAllowedForAction(
-    context: ContextEvent,
+    context: EventContext,
     { sourceRobotId, targetRobotId, targetCellCoordinate, action }: ActionRequestEvent
   ): ActionResponseErrors {
     const response: ActionResponseErrors = {};
@@ -178,7 +178,7 @@ export class RobotCalculator {
   }
 
   public static movementTypeAllowedForRobot(
-    context: ContextEvent,
+    context: EventContext,
     robotId: string,
     movementType: MovementTypeEnum
   ): boolean {

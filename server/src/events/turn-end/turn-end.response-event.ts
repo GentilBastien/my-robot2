@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { EffectState, MaybeArray, Reducer, RobotStateTypeEnum, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
@@ -19,7 +19,7 @@ export class TurnEndResponseEvent implements ResponseEvent {
     this.responseValidated = parameters.responseValidated;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     /**
      * At the end of the turn, get the effects from the robot ending turn, and the effects from the cell it is on.
      */
@@ -35,8 +35,7 @@ export class TurnEndResponseEvent implements ResponseEvent {
         return effect.handle({
           trigger: EffectTrigger.ON_TURN_END,
           effectState,
-          gameState: context.gameState,
-          gameStateHandler: context.gameStateHandler,
+          ...context,
         });
       }
     );

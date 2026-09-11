@@ -40,15 +40,15 @@ class SessionManager {
       const session = this.sessions[login];
       if (session.webSocket === ws) {
         if (session.state === SessionStateTypeEnum.IN_QUEUE) {
-          console.log(`${login}left while in queue`);
+          console.log(`${login} left while in queue`);
           this.queueManager.remove(session.login);
         }
         if (session.state === SessionStateTypeEnum.PROPOSAL_ASKING) {
-          console.log(`${login}left while in proposal`);
+          console.log(`${login} left while in proposal`);
           this.proposalManager.declineProposal(session, session.proposalId!);
         }
         if (session.state === SessionStateTypeEnum.IN_GAME) {
-          console.log(`${login}left while in game`);
+          console.log(`${login} left while in game`);
           this.leaveGame(session);
         }
         delete this.sessions[login];

@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer } from 'shared';
 import { remainingMovementReducer } from '@reducers/resources.reducer';
@@ -15,7 +15,7 @@ export class MovementCostResponseEvent implements ResponseEvent {
     this.movementCost = parameters.movementCost;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const newRemainingMove: number =
       RobotCalculator.getRobotResourcesState(context, this.sourceRobotId).remainingMove - this.movementCost;
     return remainingMovementReducer(this.sourceRobotId, newRemainingMove);

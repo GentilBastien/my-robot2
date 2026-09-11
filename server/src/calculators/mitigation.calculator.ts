@@ -1,14 +1,15 @@
-import { ActionElementTypeEnum, ActionTypeEnum, AttributesTypeEnum, StatisticsTypeEnum } from 'shared';
+import { ActionTypeEnum, AttributesTypeEnum, EffectTypeEnum, ElementTypeEnum, StatisticsTypeEnum } from 'shared';
 import { diceRolls } from '@utils/dice.utils';
 import { RobotCalculator } from '@calculators/robot.calculator';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 
 export interface DamageCalculatorParams {
-  context: ContextEvent;
+  context: EventContext;
   sourceRobotId: string;
   targetRobotId: string;
-  actionTypeEnum: ActionTypeEnum;
-  actionElementTypeEnum: ActionElementTypeEnum; // reserved for elemental logic
+  actionTypeEnum: ActionTypeEnum | undefined;
+  effectTypeEnum: EffectTypeEnum | undefined;
+  elementTypeEnum: ElementTypeEnum; // reserved for elemental logic
   baseDamage: number;
 }
 
@@ -20,31 +21,31 @@ export interface DamageResult {
 }
 
 export class MitigationCalculator {
-  public static resolveHitChance(context: ContextEvent, robotId: string): number {
+  public static resolveHitChance(context: EventContext, robotId: string): number {
     const fromAttributes = RobotCalculator.getRobotAttributeModifier(context, robotId, AttributesTypeEnum.CPU);
     const fromStatistics = RobotCalculator.getRobotStatisticValue(context, robotId, StatisticsTypeEnum.ACCURACY);
     return diceRolls(1, 20) + fromAttributes + fromStatistics;
   }
 
-  public static resolveDodgeThreshold(context: ContextEvent, robotId: string): number {
+  public static resolveDodgeThreshold(context: EventContext, robotId: string): number {
     const fromAttributes = RobotCalculator.getRobotAttributeModifier(context, robotId, AttributesTypeEnum.MOB);
     const fromStatistics = RobotCalculator.getRobotStatisticValue(context, robotId, StatisticsTypeEnum.DODGE);
     return 10 + fromAttributes + fromStatistics;
   }
 
-  public static resolveRawDamage(context: ContextEvent, robotId: string, baseDamage: number): number {
+  public static resolveRawDamage(context: EventContext, robotId: string, baseDamage: number): number {
     const fromAttributes = RobotCalculator.getRobotAttributeModifier(context, robotId, AttributesTypeEnum.POW);
     const fromStatistics = RobotCalculator.getRobotStatisticValue(context, robotId, StatisticsTypeEnum.DAMAGE);
     return baseDamage + fromAttributes + fromStatistics;
   }
 
-  public static resolveIsCritical(context: ContextEvent, robotId: string): boolean {
+  public static resolveIsCritical(context: EventContext, robotId: string): boolean {
     const critChance = RobotCalculator.getRobotStatisticValue(context, robotId, StatisticsTypeEnum.CRITICAL);
     return diceRolls(1, 100) <= critChance;
   }
 
   public static applyArmorAndReduction(
-    context: ContextEvent,
+    context: EventContext,
     targetRobotId: string,
     damage: number
   ): { finalDamage: number; defArmor: number } {

@@ -1,5 +1,5 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { PathResponseEvent } from '@events/path/path.response-event';
 import { Coordinate, MovementTypeEnum, PathCostCoordinate } from 'shared';
 import { RobotCalculator } from '@calculators/robot.calculator';
@@ -14,10 +14,9 @@ export class PathRequestEvent implements RequestEvent {
     this.sourceRobotId = sourceRobotId;
     this.movementType = movementType;
     this.path = path;
-    console.log('PathRequestEvent', this.sourceRobotId, this.movementType, this.path);
   }
 
-  public mapToResponse(context: ContextEvent): PathResponseEvent {
+  public mapToResponse(context: EventContext): PathResponseEvent {
     const isRobotTurn = RobotCalculator.isRobotTurn(context, this.sourceRobotId);
     const pathWithCosts: PathCostCoordinate = CellCalculator.mapPathToPathWithCost(context, this.path);
     const pathCost: number = CellCalculator.getPathCoordinateCost(pathWithCosts);
@@ -34,7 +33,12 @@ export class PathRequestEvent implements RequestEvent {
       this.path,
       this.movementType
     );
-    console.log(isRobotTurn, enoughRemainingMovement, movementTypeAllowed, pathIsValid);
+
+    console.log('isRobotTurn', isRobotTurn);
+    console.log('enoughRemainingMovement', enoughRemainingMovement);
+    console.log('movementTypeAllowed', movementTypeAllowed);
+    console.log('pathIsValid', pathIsValid);
+
     return new PathResponseEvent({
       movementType: this.movementType,
       responseValidated: isRobotTurn && enoughRemainingMovement && movementTypeAllowed && pathIsValid,

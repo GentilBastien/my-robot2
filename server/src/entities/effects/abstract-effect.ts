@@ -3,7 +3,7 @@ import { EffectCategoryTypeEnum } from 'shared';
 import { EffectContext } from '@entities/effects/effect-context';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { RequestEvent } from '@events/request.event';
-import { RemoveEffectRequestEvent } from '@events/remove-effect/remove-effect.request-event';
+import { EffectRemoveRequestEvent } from '@events/effect-remove/effect-remove.request-event';
 
 /**
  * Handler methods should not call each other.
@@ -21,8 +21,8 @@ export abstract class AbstractEffect implements Effect {
 
   protected generalHandle(effContext: EffectContext): RequestEvent[] {
     const requestEvents: RequestEvent[] = [];
-    if (effContext.effectState.remainingTurns <= 0) {
-      requestEvents.push(new RemoveEffectRequestEvent(effContext.effectState.sourceRobotId, effContext.effectState.id));
+    if ((effContext.effectState?.remainingTurns ?? 0) <= 0) {
+      requestEvents.push(new EffectRemoveRequestEvent(effContext.effectState.sourceRobotId, effContext.effectState.id));
     }
     return requestEvents;
   }

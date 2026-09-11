@@ -4,7 +4,7 @@ import { RequestEvent } from '@events/request.event';
 import { ArrayIndexStructure } from '@structures/array-index/array-index.structure';
 import { GameStateHandler } from '@game/game.state-handler';
 import { CellCalculator } from '@calculators/cell.calculator';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 
 /**
@@ -23,7 +23,7 @@ export class Game {
   }
 
   public getPossiblePaths(robotId: string): PathCostCoordinate[] {
-    const context: ContextEvent = this.getGameContext({ gameState: this.gameState });
+    const context: EventContext = this.getGameContext({ gameState: this.gameState });
     return CellCalculator.getPossiblePaths(context, robotId);
   }
 
@@ -55,7 +55,7 @@ export class Game {
     currentState: GameState,
     pendingRequests: ArrayIndexStructure<RequestEvent>
   ): GameState {
-    const context: ContextEvent = this.getGameContext({ gameState: currentState, pendingRequests });
+    const context: EventContext = this.getGameContext({ gameState: currentState, pendingRequests });
     console.log(request);
     const response: ResponseEvent = request.mapToResponse(context);
     console.log(response);
@@ -71,7 +71,7 @@ export class Game {
   private getGameContext(options?: {
     gameState: GameState;
     pendingRequests?: ArrayIndexStructure<RequestEvent>;
-  }): ContextEvent {
+  }): EventContext {
     return {
       gameState: options?.gameState ?? this.gameState,
       gameStateHandler: this.gameStateHandler,

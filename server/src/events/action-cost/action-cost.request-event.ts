@@ -1,5 +1,5 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ActionCostResponseEvent } from '@events/action-cost/action-cost.response-event';
 import { ResourcesState } from 'shared';
 import { RobotCalculator } from '@calculators/robot.calculator';
@@ -15,7 +15,7 @@ export class ActionCostRequestEvent implements RequestEvent {
     this.subActionCost = subActionCost;
   }
 
-  public mapToResponse(context: ContextEvent): ActionCostResponseEvent {
+  public mapToResponse(context: EventContext): ActionCostResponseEvent {
     const resourcesState: ResourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
     const enoughRemainingAction: boolean =
       resourcesState.remainingActions > this.actionCost && resourcesState.remainingSubActions > this.subActionCost;

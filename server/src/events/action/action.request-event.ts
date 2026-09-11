@@ -1,5 +1,5 @@
 import { ActionData, ActionTypeEnum, Coordinate } from 'shared';
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { Action } from '@entities/actions/action';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 import { RobotCalculator } from '@calculators/robot.calculator';
@@ -23,7 +23,7 @@ export class ActionRequestEvent implements RequestEvent, ActionData {
     this.targetCellCoordinate = data.targetCellCoordinate;
   }
 
-  public mapToResponse(context: ContextEvent): ActionResponseEvent {
+  public mapToResponse(context: EventContext): ActionResponseEvent {
     const actionResponseErrors: ActionResponseErrors = RobotCalculator.robotAllowedForAction(context, this);
     const actionValidated: boolean = Object.keys(actionResponseErrors).length === 0;
     return new ActionResponseEvent(this.action, this.sourceRobotId, actionValidated, actionResponseErrors);

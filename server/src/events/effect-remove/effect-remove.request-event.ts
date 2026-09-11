@@ -1,8 +1,8 @@
 import { RequestEvent } from '@events/request.event';
-import { ContextEvent } from '@events/context.event';
-import { RemoveEffectResponseEvent } from '@events/remove-effect/remove-effect.response-event';
+import { EventContext } from '@events/context.event';
+import { EffectRemoveResponseEvent } from '@events/effect-remove/effect-remove.response-event';
 
-export class RemoveEffectRequestEvent implements RequestEvent {
+export class EffectRemoveRequestEvent implements RequestEvent {
   sourceRobotId: string;
   effectStateId: string;
 
@@ -11,8 +11,8 @@ export class RemoveEffectRequestEvent implements RequestEvent {
     this.effectStateId = effectStateId;
   }
 
-  public mapToResponse(_context: ContextEvent): RemoveEffectResponseEvent {
-    return new RemoveEffectResponseEvent({
+  public mapToResponse(_context: EventContext): EffectRemoveResponseEvent {
+    return new EffectRemoveResponseEvent({
       sourceRobotId: this.sourceRobotId,
       responseValidated: true,
       effectStateId: this.effectStateId,

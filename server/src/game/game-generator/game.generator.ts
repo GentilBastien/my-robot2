@@ -3,6 +3,7 @@ import {
   BaseAttribute,
   CellState,
   EffectState,
+  EffectTypeEnum,
   FeatureAttribute,
   GameState,
   GameStateTypeEnum,
@@ -81,7 +82,19 @@ function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaStat
 }
 
 function defineInitialEffectState(): EffectState[] {
-  return [];
+  return [
+    {
+      id: 'aze',
+      effectId: EffectTypeEnum.EFFECT_FIRE,
+      targetCoordinates: undefined,
+      radius: undefined,
+      lastedTurns: 0,
+      sourceRobotId: 'bast',
+      stacks: 0,
+      remainingTurns: 10,
+      targetRobotId: 'wass',
+    },
+  ];
 }
 
 function temp_defineRandomRobot(name: string): RobotState {

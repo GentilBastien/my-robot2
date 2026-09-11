@@ -1,4 +1,4 @@
-export enum ActionElementTypeEnum {
+export enum ElementTypeEnum {
   ENERGETIC = 'ENERGETIC',
   IONIC = 'IONIC',
   EMP = 'EMP',

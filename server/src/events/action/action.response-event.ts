@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { MaybeArray, Reducer } from 'shared';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
@@ -24,7 +24,7 @@ export class ActionResponseEvent implements ResponseEvent {
     this.actionResponseErrors = actionResponseErrors;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const actionContext: ActionContext = {
       actionResponseEvent: this,
       ...context,

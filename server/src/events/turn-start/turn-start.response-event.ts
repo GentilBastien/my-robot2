@@ -1,4 +1,4 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { EffectState, MaybeArray, Reducer, RobotStateTypeEnum, TurnStateTypeEnum } from 'shared';
 import { RequestEvent } from '@events/request.event';
@@ -19,7 +19,7 @@ export class TurnStartResponseEvent implements ResponseEvent {
     this.responseValidated = parameters.responseValidated;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     //sourceRobotId is the id of the robot that previously played.
     const newTurnState = TurnCalculator.advanceTurn(context);
     const turnStartRobotId = newTurnState.currentTurnRobotId;
@@ -36,8 +36,7 @@ export class TurnStartResponseEvent implements ResponseEvent {
         return effect.handle({
           trigger: EffectTrigger.ON_TURN_START,
           effectState,
-          gameState: context.gameState,
-          gameStateHandler: context.gameStateHandler,
+          ...context,
         });
       }
     );

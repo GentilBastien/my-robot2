@@ -1,13 +1,12 @@
-import { ContextEvent } from '@events/context.event';
+import { EventContext } from '@events/context.event';
 import { ResponseEvent } from '@events/response.event';
 import { EffectState, MaybeArray, MovementTypeEnum, Reducer, StepPathCostCoordinate } from 'shared';
 import { Effect } from '@entities/effects/effect';
 import { RequestEvent } from '@events/request.event';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
-import { remainingMovementReducer } from '@reducers/resources.reducer';
 import { MovementRequestEvent } from '@events/movement/movement.request-event';
 import { EffectCalculator } from '@calculators/effect.calculator';
-import { RobotCalculator } from '@calculators/robot.calculator';
+import { MovementCostRequestEvent } from '@events/movement-cost/movement-cost.request-event';
 
 export class StepPathResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -27,11 +26,14 @@ export class StepPathResponseEvent implements ResponseEvent {
     this.stepPath = parameters.stepPath;
   }
 
-  public mapToReducer(context: ContextEvent): MaybeArray<Reducer> {
+  public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const effectStatesFromCoordinates: EffectState[] = EffectCalculator.getEffectStatesAtCoordinates(
       context,
       this.stepPath.endCoordinates
     );
+
+    const movementCostReq = new MovementCostRequestEvent(this.sourceRobotId, this.stepPath.cost);
+    context.pendingRequests.insertEnd(movementCostReq);
 
     const requestMovementStateEvent = new MovementRequestEvent(this.sourceRobotId, this.stepPath.endCoordinates);
     context.pendingRequests.insertEnd(requestMovementStateEvent);
@@ -42,15 +44,11 @@ export class StepPathResponseEvent implements ResponseEvent {
         trigger: EffectTrigger.ON_APPLY,
         effectState,
         coordinates: this.stepPath.endCoordinates,
-        gameState: context.gameState,
-        gameStateHandler: context.gameStateHandler,
+        ...context,
       });
     });
     context.pendingRequests.insertEnd(newPendingRequestStateEvents);
 
-    const remainingMove: number = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId).remainingMove;
-    const newRemainingMove: number = remainingMove - this.stepPath.cost;
-    console.log('newRemainingMove', remainingMove, this.stepPath.cost, newRemainingMove);
-    return remainingMovementReducer(this.sourceRobotId, newRemainingMove);
+    return [];
   }
 }
