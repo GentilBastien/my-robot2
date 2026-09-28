@@ -9,6 +9,6 @@ export interface EffectState {
   targetCoordinates?: Coordinate;
   radius?: number;
   stacks?: number;
-  lastedTurns?: number;
-  remainingTurns?: number;
+  lastedTurns: number;
+  remainingTurns: number;
 }

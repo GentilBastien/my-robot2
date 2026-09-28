@@ -20,8 +20,12 @@ export abstract class AbstractEffect implements Effect {
   }
 
   protected generalHandle(effContext: EffectContext): RequestEvent[] {
+    const effState = effContext.effectState;
+    effState.remainingTurns = effState.remainingTurns - 1;
+    effState.lastedTurns = effState.lastedTurns + 1;
+
     const requestEvents: RequestEvent[] = [];
-    if ((effContext.effectState?.remainingTurns ?? 0) <= 0) {
+    if (effContext.effectState.remainingTurns <= 0) {
       requestEvents.push(new EffectRemoveRequestEvent(effContext.effectState.sourceRobotId, effContext.effectState.id));
     }
     return requestEvents;

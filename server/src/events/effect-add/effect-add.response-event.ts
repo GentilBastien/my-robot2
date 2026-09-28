@@ -34,9 +34,7 @@ export class EffectAddResponseEvent implements ResponseEvent {
     context.pendingRequests.insertEnd(newEffectsFromApply);
 
     if (existingEffectState) {
-      //TODO updateEffectState seems to do nothing ?
-      const updatedEffectState: EffectState = EffectCalculator.updateEffectState(context, existingEffectState);
-      return updateEffectState(updatedEffectState);
+      return updateEffectState(existingEffectState);
     } else {
       return addEffectState(this.effectState);
     }
