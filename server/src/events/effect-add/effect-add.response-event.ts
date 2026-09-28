@@ -19,12 +19,12 @@ export class EffectAddResponseEvent implements ResponseEvent {
   }
 
   public mapToReducer(context: EventContext): MaybeArray<Reducer> {
-    const effect: Effect = EffectCalculator.getEffect(this.effectState);
-
     const existingEffectState: EffectState | undefined = EffectCalculator.getEffectStateIfTargetAlreadyAffectedBy(
       context,
       this.effectState
     );
+
+    const effect: Effect = EffectCalculator.getEffect(this.effectState);
 
     const newEffectsFromApply: RequestEvent[] = effect.handle({
       trigger: EffectTrigger.ON_APPLY,
@@ -35,7 +35,8 @@ export class EffectAddResponseEvent implements ResponseEvent {
 
     if (existingEffectState) {
       //TODO updateEffectState seems to do nothing ?
-      return updateEffectState(existingEffectState);
+      const updatedEffectState: EffectState = EffectCalculator.updateEffectState(context, existingEffectState);
+      return updateEffectState(updatedEffectState);
     } else {
       return addEffectState(this.effectState);
     }

@@ -48,4 +48,11 @@ export class EffectCalculator {
           effectState.targetCoordinates === newEffectState.targetCoordinates)
     );
   }
+
+  public static updateEffectState(_context: EventContext, effectState: EffectState): EffectState {
+    const effect = EffectCalculator.getEffect(effectState);
+    console.log(_context, effect, effectState);
+    //TODO update the effectState according to the effect and the context
+    return effectState;
+  }
 }
