@@ -30,7 +30,7 @@ export abstract class Action {
 
   public requestResourcesForAction(context: ActionContext): RequestEvent[] {
     const requestEvents: RequestEvent[] = [];
-    const sourceRobotId: string = context.actionResponseEvent.sourceRobotId;
+    const sourceRobotId: string = context.actionData.sourceRobotId;
     if (this.hpCost) {
       requestEvents.push(new HpRequestEvent(sourceRobotId, -this.hpCost));
     }

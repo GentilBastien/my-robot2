@@ -23,7 +23,8 @@ export class EffectFire extends AbstractEffect {
   }
 
   protected override _handleOnTurnEnd = (effectContext: EffectContext): RequestEvent[] => {
-    const { trigger, effectState, gameState, gameStateHandler, pendingRequests, action, coordinates } = effectContext;
+    const { trigger, effectState, gameState, gameStateHandler, pendingRequests, actionData, coordinates } =
+      effectContext;
     const damageRequestEvent = new DamageRequestEvent(
       effectContext.effectState.sourceRobotId,
       undefined,

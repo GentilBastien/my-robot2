@@ -41,7 +41,7 @@ export class StepPathResponseEvent implements ResponseEvent {
     const newPendingRequestStateEvents: RequestEvent[] = effectStatesFromCoordinates.flatMap(effectState => {
       const effect: Effect = EffectCalculator.getEffect(effectState);
       return effect.handle({
-        trigger: EffectTrigger.ON_APPLY,
+        trigger: EffectTrigger.ON_WALK,
         effectState,
         coordinates: this.stepPath.endCoordinates,
         ...context,

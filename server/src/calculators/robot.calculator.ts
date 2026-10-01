@@ -1,4 +1,5 @@
 import {
+  ActionData,
   ActionTypeEnum,
   AttributesState,
   AttributesTypeEnum,
@@ -15,7 +16,6 @@ import { TurnCalculator } from '@calculators/turn.calculator';
 import { Action } from '@entities/actions/action';
 import { actionList } from '@entities/actions/action-list/action.list';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
-import { ActionRequestEvent } from '@events/action/action.request-event';
 import { CellCalculator } from '@calculators/cell.calculator';
 
 export class RobotCalculator {
@@ -130,9 +130,11 @@ export class RobotCalculator {
 
   public static robotAllowedForAction(
     context: EventContext,
-    { sourceRobotId, targetRobotId, targetCellCoordinate, action }: ActionRequestEvent
+    actionData: ActionData,
+    action: Action
   ): ActionResponseErrors {
     const response: ActionResponseErrors = {};
+    const { sourceRobotId, targetRobotId, targetCellCoordinate } = actionData;
 
     const isRobotTurn = RobotCalculator.isRobotTurn(context, sourceRobotId);
     if (!isRobotTurn) {
@@ -170,7 +172,7 @@ export class RobotCalculator {
     if (!robotHasEnoughRange) {
       response.noEnoughRange = { required: 1000, available: action.range }; //TODO, export data
     }
-    const robotHasVision = !action.needVision || (action.needVision && true); //TODO
+    const robotHasVision = !action.needVision || (action.needVision && true); //TODO RobotCalculator.hasVision
     if (!robotHasVision) {
       response.noVision = { invisible: true };
     }
@@ -183,5 +185,10 @@ export class RobotCalculator {
     movementType: MovementTypeEnum
   ): boolean {
     return RobotCalculator.getRobotState(context, robotId).movementType === movementType;
+  }
+
+  public static hasVision(context: EventContext, robotId: string, coordinate: Coordinate): boolean {
+    const cellId: string = context.gameStateHandler.hexagonalGridState.getCellAt(coordinate).item.id;
+    return RobotCalculator.getRobotState(context, robotId).vision.includes(cellId);
   }
 }
