@@ -3,7 +3,7 @@ import { ResponseEvent } from '@events/response.event';
 import { Coordinate, MaybeArray, Reducer } from 'shared';
 import { updateCoordinates } from '@reducers/robot.reducer';
 import { CellCalculator } from '@calculators/cell.calculator';
-import { updateVision } from '@reducers/vision.reducer';
+import { updateVisionCells } from '@reducers/vision.reducer';
 
 export class MovementResponseEvent implements ResponseEvent {
   sourceRobotId: string;
@@ -19,7 +19,7 @@ export class MovementResponseEvent implements ResponseEvent {
   public mapToReducer(context: EventContext): MaybeArray<Reducer> {
     const updateCoordinatesReducer: Reducer = updateCoordinates(this.sourceRobotId, this.coordinates);
     const newVisibleCells: string[] = CellCalculator.getVisibleCells(context, this.sourceRobotId);
-    const visionReducer: Reducer = updateVision(this.sourceRobotId, newVisibleCells);
+    const visionReducer: Reducer = updateVisionCells(this.sourceRobotId, newVisibleCells);
     return [updateCoordinatesReducer, visionReducer];
   }
 }

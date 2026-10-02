@@ -11,7 +11,8 @@ export interface RobotState {
   coordinates: Coordinate;
   selfStates: RobotStateTypeEnum[];
   movementType: MovementTypeEnum;
-  vision: string[];
+  visionRange: number;
+  visionCells: string[];
   resources: ResourcesState;
   attributes: AttributesState;
   statistics: StatisticsState;

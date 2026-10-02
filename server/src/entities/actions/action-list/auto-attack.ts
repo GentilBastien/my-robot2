@@ -14,6 +14,6 @@ export class AutoAttack extends Action {
   public override actionCost = 1;
 
   public onUse(_context: ActionContext): RequestEvent[] {
-    throw new Error('Method not implemented.');
+    return [];
   }
 }

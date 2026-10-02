@@ -22,7 +22,7 @@ export class EffectCalculator {
   }
 
   public static getEffectStatesFromRobotCell(context: EventContext, robotId: string): EffectState[] {
-    const robotCoordinates = RobotCalculator.getRobotCoordinates(context, robotId);
+    const robotCoordinates = RobotCalculator.getRobotCoordinate(context, robotId);
     return EffectCalculator.getEffectStatesAtCoordinates(context, robotCoordinates);
   }
 

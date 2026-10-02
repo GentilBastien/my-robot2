@@ -31,56 +31,50 @@ export abstract class AbstractEffect implements Effect {
     return requestEvents;
   }
 
-  protected _handleOnApply = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
+  protected onApply = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
-  protected _handleOnAction = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
+  protected onAction = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
-  protected _handleOnWalk = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
+  protected onWalk = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
-  protected _handleOnTurnStart = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
+  protected onTurnStart = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
-  protected _handleOnTurnEnd = (effectContext: EffectContext): RequestEvent[] => {
-    // const { trigger, effectState, readonlyGameState, gameCalculator, action, coordinates } = _effectContext;
-    return this.generalHandle(effectContext);
+  protected onTurnEnd = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
-  protected _handleOnExpire = (effectContext: EffectContext): RequestEvent[] => {
-    // const effectState = effectContext.effectState;
-    // const requestRemoveEffectStateEvent: RequestRemoveEffectStateEvent = {
-    //   gameEventType: GameEventTypeEnum.REMOVE_EFFECT,
-    //   effectStateId: effectState.id,
-    //   sourceRobotId: effectState.sourceRobotId,
-    // };
-    // return [requestRemoveEffectStateEvent];
-    return this.generalHandle(effectContext);
+  protected onExpire = (effectContext: EffectContext): RequestEvent[] => {
+    console.log(effectContext);
+    return [];
   };
 
   public handle(context: EffectContext): RequestEvent[] {
     switch (context.trigger) {
       case EffectTrigger.ON_APPLY:
-        return this._handleOnApply(context);
+        return this.onApply(context);
       case EffectTrigger.ON_ACTION:
-        return this._handleOnAction(context);
+        return this.onAction(context);
       case EffectTrigger.ON_WALK:
-        return this._handleOnWalk(context);
+        return this.onWalk(context);
       case EffectTrigger.ON_TURN_START:
-        return this._handleOnTurnStart(context);
+        return this.onTurnStart(context);
       case EffectTrigger.ON_TURN_END:
-        return this._handleOnTurnEnd(context);
+        return this.onTurnEnd(context);
       case EffectTrigger.ON_EXPIRE:
-        return this._handleOnExpire(context);
+        return this.onExpire(context);
       default:
         return [];
     }

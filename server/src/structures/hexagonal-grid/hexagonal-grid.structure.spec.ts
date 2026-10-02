@@ -10,26 +10,26 @@ type Land = Weight & { landType: number };
 const produceCustomGrid = () => {
   const grid = new HexagonalGridStructure(5, 4);
   const weights: Weight[] = [
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 2 },
-    { weight: 1 },
-    { weight: 2 },
-    { weight: 2 },
-    { weight: 4 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 3 },
-    { weight: 1 },
-    { weight: 2 },
-    { weight: 2 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 1 },
-    { weight: 2 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
+    { moveWeight: 4, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 3, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 1, visionWeight: 1 },
+    { moveWeight: 2, visionWeight: 1 },
   ];
   grid.setAllCellItems(weights);
   return grid;
@@ -79,9 +79,9 @@ describe('HexagonalGridStructure', () => {
     const grid = new HexagonalGridStructure(10, 10);
     const specifiedCoordinates = { x: 2, y: 3, z: -5 };
     //when
-    grid.setCellAt(specifiedCoordinates, { weight: 80 });
+    grid.setCellAt(specifiedCoordinates, { moveWeight: 80, visionWeight: 1 });
     //then
-    expect(grid.getCellAt(specifiedCoordinates).weight).toBe(80);
+    expect(grid.getCellAt(specifiedCoordinates).moveWeight).toBe(80);
   });
 
   test('HexagonalGrid set cells throws if coordinates are invalid', () => {
@@ -90,7 +90,7 @@ describe('HexagonalGridStructure', () => {
     //when
     const specifiedCoordinates = { x: -2, y: 1, z: 0 };
     //then
-    expect(() => grid.setCellAt(specifiedCoordinates, { weight: 80 })).toThrow(
+    expect(() => grid.setCellAt(specifiedCoordinates, { moveWeight: 80, visionWeight: 1 })).toThrow(
       HexagonalCellError.invalidCoordinatesErrorMessage
     );
   });

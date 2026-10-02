@@ -23,7 +23,7 @@ export class RobotCalculator {
     return context.gameState.robots[robotId];
   }
 
-  public static getRobotCoordinates(context: EventContext, robotId: string): Coordinate {
+  public static getRobotCoordinate(context: EventContext, robotId: string): Coordinate {
     return RobotCalculator.getRobotState(context, robotId).coordinates;
   }
 
@@ -192,17 +192,12 @@ export class RobotCalculator {
     return RobotCalculator.getRobotState(context, robotId).movementType === movementType;
   }
 
-  public static hasVision(context: EventContext, robotId: string, coordinate: Coordinate): boolean {
-    const cellId: string = context.gameStateHandler.hexagonalGridState.getCellAt(coordinate).item.id;
-    return RobotCalculator.getRobotState(context, robotId).vision.includes(cellId);
-  }
-
   public static actionHasVision(
     context: EventContext,
     { sourceRobotId, targetRobotId, targetCellCoordinate }: ActionData
   ): boolean {
     const coordinate: Coordinate | undefined =
-      targetCellCoordinate ?? (targetRobotId ? RobotCalculator.getRobotCoordinates(context, targetRobotId) : undefined);
-    return coordinate ? RobotCalculator.hasVision(context, sourceRobotId, coordinate) : false;
+      targetCellCoordinate ?? (targetRobotId ? RobotCalculator.getRobotCoordinate(context, targetRobotId) : undefined);
+    return coordinate ? CellCalculator.hasVision(context, sourceRobotId, coordinate) : false;
   }
 }

@@ -34,8 +34,12 @@ export class HexagonalCellStructure<T extends Weight> implements HexagonalCellSt
     };
   }
 
-  public get weight(): number {
-    return this._item?.weight ?? 0;
+  public get moveWeight(): number {
+    return this._item?.moveWeight ?? 0;
+  }
+
+  public get visionWeight(): number {
+    return this._item?.visionWeight ?? 0;
   }
 
   public static isValid(coordinate: Coordinate): void {

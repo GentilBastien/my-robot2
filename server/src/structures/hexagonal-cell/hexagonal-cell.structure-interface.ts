@@ -28,9 +28,14 @@ export interface HexagonalCellStructureInterface<T extends Weight> {
   coordinates: Coordinate;
 
   /**
-   * The weight hold by the cell.
+   * The weight hold by the cell for movement.
    */
-  weight: number;
+  moveWeight: number;
+
+  /**
+   * The weight hold by the cell for vision.
+   */
+  visionWeight: number;
 
   /**
    * Sets this cell's coordinates.

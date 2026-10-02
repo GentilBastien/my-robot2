@@ -104,7 +104,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
     // min-priority queue by accumulated cost
     const queue: { cell: HexagonalCellStructure<T>; cost: number; path: PathCostCoordinate }[] = [];
 
-    const startPath: PathCostCoordinate = { coordinatesPath: [start.coordinates], costs: [start.weight] };
+    const startPath: PathCostCoordinate = { coordinatesPath: [start.coordinates], costs: [start.moveWeight] };
     bestCost.set(key(start.coordinates), 0);
     bestPath.set(key(start.coordinates), startPath);
     queue.push({ cell: start, cost: 0, path: startPath });
@@ -118,14 +118,14 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
       if (cost > (bestCost.get(key(cell.coordinates)) ?? Number.MAX_VALUE)) continue;
 
       for (const neighbor of this.getCellsInRange(cell, 1, false)) {
-        const nextCost = cost + neighbor.weight;
+        const nextCost = cost + neighbor.moveWeight;
         if (nextCost > maxCost) continue;
 
         const nKey = key(neighbor.coordinates);
         if (nextCost < (bestCost.get(nKey) ?? Number.MAX_VALUE)) {
           const nextPath: PathCostCoordinate = {
             coordinatesPath: [...path.coordinatesPath, neighbor.coordinates],
-            costs: [...path.costs, neighbor.weight],
+            costs: [...path.costs, neighbor.moveWeight],
           };
           bestCost.set(nKey, nextCost);
           bestPath.set(nKey, nextPath);
@@ -171,7 +171,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
         const nKey = key(neighbor);
         if (closedList.has(nKey)) continue;
 
-        const tentativeCost = currentCost + neighbor.weight;
+        const tentativeCost = currentCost + neighbor.moveWeight;
         if (tentativeCost < (cost.get(nKey) ?? Number.MAX_VALUE)) {
           cost.set(nKey, tentativeCost);
           cameFrom.set(nKey, currentNode);
@@ -195,7 +195,7 @@ export class HexagonalGridStructure<T extends Weight> implements HexagonalGridSt
 
     return {
       coordinatesPath: path.map(cell => cell.coordinates),
-      costs: path.map(cell => cell.weight),
+      costs: path.map(cell => cell.moveWeight),
     };
   }
 

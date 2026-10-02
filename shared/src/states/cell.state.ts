@@ -3,6 +3,7 @@ import { CellAttributeState } from './cell-attribute.state';
 
 export interface CellState extends Weight {
   id: string;
-  weight: number;
+  moveWeight: number;
+  visionWeight: number;
   attributes: CellAttributeState;
 }

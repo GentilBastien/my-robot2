@@ -57,11 +57,11 @@ function defineEmptyTurnState(): TurnState {
 }
 
 function defineInitialArenaState(mapWidth: number, mapHeight: number): ArenaState {
-  const weightsByRow: number[] = [1, 1, 1, 1, 2, 1, 2, 2, 4, 1, 1, 1, 3, 1, 2, 2, 1, 1, 1, 2];
+  const moveWeightsByRow: number[] = [1, 1, 1, 1, 2, 1, 2, 2, 4, 1, 1, 1, 3, 1, 2, 2, 1, 1, 1, 2];
   const cellStates: CellState[] = Array.from({ length: mapWidth * mapHeight }).map((_, index) => ({
     id: index.toString(),
-    weight: weightsByRow[index],
-    visibleBy: [],
+    moveWeight: moveWeightsByRow[index],
+    visionWeight: 1,
     attributes: {
       baseAttribute: BaseAttribute.GRASS,
       topographyAttribute: TopographyAttribute.FLAT,
@@ -129,7 +129,8 @@ function temp_defineRandomRobot(name: string): RobotState {
       totalActions: 1,
       totalSubActions: 1,
     },
-    vision: [],
+    visionRange: 2,
+    visionCells: [],
     selfStates: [],
     movementType: MovementTypeEnum.WALKED,
     coordinates: { x: 0, y: 0, z: 0 },

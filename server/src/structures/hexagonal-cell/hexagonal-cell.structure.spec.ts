@@ -6,7 +6,7 @@ import { HexagonalCellDirectionEnum } from './hexagonal-cell-direction.enum';
 describe('HexagonalCellStructure', () => {
   test('HexagonalCell setCoordinates valid coordinates', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     //when
     land1.setCoordinates({ x: -4, y: 3, z: 1 });
     //then
@@ -15,7 +15,7 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinates invalid coordinates', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     //when and then
     expect(() => land1.setCoordinates({ x: -4, y: -4, z: 1 })).toThrow(
       HexagonalCellError.invalidCoordinatesErrorMessage
@@ -24,8 +24,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo TOP LEFT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.TOP_LEFT);
@@ -35,8 +35,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo TOP RIGHT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.TOP_RIGHT);
@@ -46,8 +46,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo BOT LEFT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.BOTTOM_LEFT);
@@ -57,8 +57,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo BOT RIGHT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.BOTTOM_RIGHT);
@@ -68,8 +68,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo LEFT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.LEFT);
@@ -79,8 +79,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell setCoordinatesAdjacentTo RIGHT', () => {
     //given
-    const land = new HexagonalCellStructure({ weight: 1 });
-    const landPlaced = new HexagonalCellStructure({ weight: 2 });
+    const land = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const landPlaced = new HexagonalCellStructure({ moveWeight: 2, visionWeight: 1 });
     landPlaced.setCoordinates({ x: 0, y: 0, z: 0 });
     //when
     land.setCoordinatesAdjacentTo(landPlaced, HexagonalCellDirectionEnum.RIGHT);
@@ -90,7 +90,7 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell isLocatedAt same locations', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     const coords = { x: -4, y: 3, z: 1 };
     land1.setCoordinates({ x: -4, y: 3, z: 1 });
     //when
@@ -101,7 +101,7 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell isLocatedAt different locations', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     const coords = { x: -4, y: 3, z: 1 };
     land1.setCoordinates({ x: -4, y: 3, z: 1 });
     //when
@@ -112,8 +112,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell hasSameLocationWith same locations', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land1SameCoordinates = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land1SameCoordinates = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     land1.setCoordinates({ x: -4, y: 3, z: 1 });
     land1SameCoordinates.setCoordinates({ x: -4, y: 3, z: 1 });
     //when
@@ -124,8 +124,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell hasSameLocationWith different locations', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land1SameCoordinates = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land1SameCoordinates = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     land1.setCoordinates({ x: -4, y: 3, z: 1 });
     land1SameCoordinates.setCoordinates({ x: -4, y: 2, z: 2 });
     //when
@@ -136,8 +136,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell isAdjacentTo true and commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land1Adjacent = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land1Adjacent = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     land1.setCoordinates({ x: 3, y: 1, z: -4 });
     //when
     land1Adjacent.setCoordinates({ x: 3, y: 0, z: -3 });
@@ -148,8 +148,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell isAdjacentTo false and commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land1Adjacent = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land1Adjacent = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     land1.setCoordinates({ x: 3, y: 1, z: -4 });
     //when
     land1Adjacent.setCoordinates({ x: 1, y: 1, z: -2 });
@@ -160,8 +160,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell euclideanDistanceFrom is commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land2 = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land2 = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     //when
     land1.setCoordinates({ x: -1, y: 0, z: 1 });
     land2.setCoordinates({ x: 3, y: 0, z: -3 });
@@ -173,8 +173,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell cubeDistanceFrom is commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land2 = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land2 = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     //when
     land1.setCoordinates({ x: -1, y: 1, z: 0 });
     land2.setCoordinates({ x: 1, y: 2, z: -3 });
@@ -189,8 +189,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell hasSameItem is true and commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 3 });
-    const land2 = new HexagonalCellStructure({ weight: 3 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 3, visionWeight: 1 });
+    const land2 = new HexagonalCellStructure({ moveWeight: 3, visionWeight: 1 });
     //then
     expect(land1.hasSameItem(land2)).toBe(true);
     expect(land2.hasSameItem(land1)).toBe(true);
@@ -198,8 +198,8 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell hasSameItem is false and commutative', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
-    const land2 = new HexagonalCellStructure({ weight: 8 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
+    const land2 = new HexagonalCellStructure({ moveWeight: 8, visionWeight: 1 });
     //then
     expect(land1.hasSameItem(land2)).toBe(false);
     expect(land2.hasSameItem(land1)).toBe(false);
@@ -207,9 +207,9 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell getItemOrThrow gets the item', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     //then
-    expect(land1.item).toStrictEqual({ weight: 1 });
+    expect(land1.item).toStrictEqual({ moveWeight: 1, visionWeight: 1 });
   });
 
   test('HexagonalCell getItemOrThrow throws an error', () => {
@@ -221,21 +221,27 @@ describe('HexagonalCellStructure', () => {
 
   test('HexagonalCell getItemOrDefault gets the item', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     //then
-    expect(land1.getItemOrDefault({ weight: 5 })).toStrictEqual({ weight: 1 });
+    expect(land1.getItemOrDefault({ moveWeight: 5, visionWeight: 1 })).toStrictEqual({
+      moveWeight: 1,
+      visionWeight: 1,
+    });
   });
 
   test('HexagonalCell getItemOrDefault gets the default', () => {
     //given
     const land1 = new HexagonalCellStructure();
     //then
-    expect(land1.getItemOrDefault({ weight: 5 })).toStrictEqual({ weight: 5 });
+    expect(land1.getItemOrDefault({ moveWeight: 5, visionWeight: 1 })).toStrictEqual({
+      moveWeight: 5,
+      visionWeight: 1,
+    });
   });
 
   test('HexagonalCell hasItem has an item', () => {
     //given
-    const land1 = new HexagonalCellStructure({ weight: 1 });
+    const land1 = new HexagonalCellStructure({ moveWeight: 1, visionWeight: 1 });
     //then
     expect(land1.hasItem()).toBe(true);
   });

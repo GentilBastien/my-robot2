@@ -8,7 +8,7 @@ import { DamageRequestEvent } from '@events/damage/damage.request-event';
 export class EffectFire extends AbstractEffect {
   public static instance = new EffectFire();
 
-  constructor() {
+  private constructor() {
     const ticking: EffectTickingConfig = {
       totalTurns: 5,
       everyTurn: true,
@@ -22,7 +22,7 @@ export class EffectFire extends AbstractEffect {
     super(EffectCategoryTypeEnum.NEGATIVE, ticking, stacking);
   }
 
-  protected override _handleOnTurnEnd = (effectContext: EffectContext): RequestEvent[] => {
+  protected override onTurnEnd = (effectContext: EffectContext): RequestEvent[] => {
     const { trigger, effectState, gameState, gameStateHandler, pendingRequests, actionData, coordinates } =
       effectContext;
     const damageRequestEvent = new DamageRequestEvent(

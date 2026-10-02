@@ -1,3 +1,4 @@
 export interface Weight {
-  weight: number;
+  moveWeight: number;
+  visionWeight: number;
 }
