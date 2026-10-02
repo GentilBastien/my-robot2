@@ -45,6 +45,29 @@ export class CellCalculator {
     return context.gameStateHandler.hexagonalGridState.isCellInRange(sourceHexCell, action.range, targetHexCell);
   }
 
+  public static requiredRangeForRobotTarget(
+    context: EventContext,
+    sourceRobotId: string,
+    targetRobotId: string
+  ): number {
+    const sourceRobotCoordinates = RobotCalculator.getRobotCoordinates(context, sourceRobotId);
+    const targetRobotCoordinates = RobotCalculator.getRobotCoordinates(context, targetRobotId);
+    const sourceHexCell = CellCalculator.getCellAt(context, sourceRobotCoordinates);
+    const targetHexCell = CellCalculator.getCellAt(context, targetRobotCoordinates);
+    return context.gameStateHandler.hexagonalGridState.getRange(sourceHexCell, targetHexCell);
+  }
+
+  public static requiredRangeForCoordinateTarget(
+    context: EventContext,
+    sourceRobotId: string,
+    targetCellCoordinate: Coordinate
+  ): number {
+    const sourceRobotCoordinates = RobotCalculator.getRobotCoordinates(context, sourceRobotId);
+    const sourceHexCell = CellCalculator.getCellAt(context, sourceRobotCoordinates);
+    const targetHexCell = CellCalculator.getCellAt(context, targetCellCoordinate);
+    return context.gameStateHandler.hexagonalGridState.getRange(sourceHexCell, targetHexCell);
+  }
+
   public static getShortestPathTo(
     context: EventContext,
     robotId: string,

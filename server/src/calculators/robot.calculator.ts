@@ -158,8 +158,10 @@ export class RobotCalculator {
       response.noEnoughMana = { cost: action.manaCost ?? 0, available: resourcesState.mana };
     }
     let robotHasEnoughRange = true;
+    let rangeRequired = 0;
     if (targetRobotId) {
       robotHasEnoughRange = CellCalculator.hasEnoughRangeForRobotTarget(context, sourceRobotId, targetRobotId, action);
+      rangeRequired = CellCalculator.requiredRangeForRobotTarget(context, sourceRobotId, targetRobotId);
     }
     if (targetCellCoordinate) {
       robotHasEnoughRange = CellCalculator.hasEnoughRangeForCoordinateTarget(
@@ -168,11 +170,14 @@ export class RobotCalculator {
         targetCellCoordinate,
         action
       );
+      rangeRequired = CellCalculator.requiredRangeForCoordinateTarget(context, sourceRobotId, targetCellCoordinate);
     }
     if (!robotHasEnoughRange) {
-      response.noEnoughRange = { required: 1000, available: action.range }; //TODO, export data
+      response.noEnoughRange = { required: rangeRequired, available: action.range };
     }
-    const robotHasVision = !action.needVision || (action.needVision && true); //TODO RobotCalculator.hasVision
+    const robotHasVision =
+      !action.needVision || (action.needVision && RobotCalculator.actionHasVision(context, actionData));
+
     if (!robotHasVision) {
       response.noVision = { invisible: true };
     }
@@ -190,5 +195,14 @@ export class RobotCalculator {
   public static hasVision(context: EventContext, robotId: string, coordinate: Coordinate): boolean {
     const cellId: string = context.gameStateHandler.hexagonalGridState.getCellAt(coordinate).item.id;
     return RobotCalculator.getRobotState(context, robotId).vision.includes(cellId);
+  }
+
+  public static actionHasVision(
+    context: EventContext,
+    { sourceRobotId, targetRobotId, targetCellCoordinate }: ActionData
+  ): boolean {
+    const coordinate: Coordinate | undefined =
+      targetCellCoordinate ?? (targetRobotId ? RobotCalculator.getRobotCoordinates(context, targetRobotId) : undefined);
+    return coordinate ? RobotCalculator.hasVision(context, sourceRobotId, coordinate) : false;
   }
 }
