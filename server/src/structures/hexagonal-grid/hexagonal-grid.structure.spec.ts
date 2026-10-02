@@ -7,7 +7,7 @@ import { HexagonalCellStructure } from '../hexagonal-cell/hexagonal-cell.structu
 
 type Land = Weight & { landType: number };
 
-const produceCustomGrid = () => {
+const produceCustomGrid = (): HexagonalGridStructure<Weight> => {
   const grid = new HexagonalGridStructure(5, 4);
   const weights: Weight[] = [
     { moveWeight: 1, visionWeight: 1 },
@@ -105,7 +105,7 @@ describe('HexagonalGridStructure', () => {
   });
 
   test('HexagonalGrid setAllCoordinates with any widths or heights', () => {
-    const testGridWidthHeight = (width: number, height: number) => {
+    const testGridWidthHeight = (width: number, height: number): void => {
       const grid = new HexagonalGridStructure(width, height);
       let row = 0;
       let column = 0;
