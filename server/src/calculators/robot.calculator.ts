@@ -17,6 +17,7 @@ import { Action } from '@entities/actions/action';
 import { actionList } from '@entities/actions/action-list/action.list';
 import { ActionResponseErrors } from '@entities/actions/action-responses/action-response-errors';
 import { CellCalculator } from '@calculators/cell.calculator';
+import { VisionCalculator } from '@calculators/vision.calculator';
 
 export class RobotCalculator {
   public static getRobotState(context: EventContext, robotId: string): RobotState {
@@ -198,6 +199,6 @@ export class RobotCalculator {
   ): boolean {
     const coordinate: Coordinate | undefined =
       targetCellCoordinate ?? (targetRobotId ? RobotCalculator.getRobotCoordinate(context, targetRobotId) : undefined);
-    return coordinate ? CellCalculator.hasVision(context, sourceRobotId, coordinate) : false;
+    return coordinate ? VisionCalculator.hasVision(context, sourceRobotId, coordinate) : false;
   }
 }
