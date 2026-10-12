@@ -19,6 +19,7 @@ import { GameProposal } from '@server/proposal/game-proposal';
 import { GameConfig } from '@game/game.config';
 import { Game } from '@game/game';
 
+//TODO: gameGenerator should not use gameProposal
 export function gameGenerator_Create(gameProposal: GameProposal): Game {
   const width = 5;
   const height = 4;

@@ -3,7 +3,6 @@ import { EffectCategoryTypeEnum } from 'shared';
 import { EffectContext } from '@entities/effects/effect-context';
 import { EffectTrigger } from '@entities/effects/effect-trigger';
 import { RequestEvent } from '@events/request.event';
-import { EffectRemoveRequestEvent } from '@events/effect-remove/effect-remove.request-event';
 
 /**
  * Handler methods should not call each other.
@@ -17,18 +16,6 @@ export abstract class AbstractEffect implements Effect {
     this._type = type;
     this._ticking = ticking;
     this._stacking = stacking;
-  }
-
-  protected generalHandle(effContext: EffectContext): RequestEvent[] {
-    const effState = effContext.effectState;
-    effState.remainingTurns = effState.remainingTurns - 1;
-    effState.lastedTurns = effState.lastedTurns + 1;
-
-    const requestEvents: RequestEvent[] = [];
-    if (effContext.effectState.remainingTurns <= 0) {
-      requestEvents.push(new EffectRemoveRequestEvent(effContext.effectState.sourceRobotId, effContext.effectState.id));
-    }
-    return requestEvents;
   }
 
   protected onApply = (effectContext: EffectContext): RequestEvent[] => {

@@ -57,10 +57,10 @@ export class Game {
   ): GameState {
     const context: EventContext = this.getGameContext({ gameState: currentState, pendingRequests });
     console.log(request);
-    const response: ResponseEvent = request.mapToResponse(context);
+    const response: ResponseEvent = request.resolve(context);
     console.log(response);
     if (response.responseValidated) {
-      const reducers: Reducer[] = resolveMaybeArray(response.mapToReducer(context));
+      const reducers: Reducer[] = resolveMaybeArray(response.apply(context));
       for (const reducer of reducers) {
         currentState = reducer(currentState);
       }

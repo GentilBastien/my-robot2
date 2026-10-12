@@ -152,11 +152,11 @@ export class RobotCalculator {
     }
     const robotHasEnoughAction = RobotCalculator.hasEnoughActionResource(resourcesState, action);
     if (!robotHasEnoughAction) {
-      response.noEnoughAction = { cost: action.actionCost ?? 0, available: resourcesState.totalActions };
+      response.notEnoughAction = { cost: action.actionCost ?? 0, available: resourcesState.totalActions };
     }
     const robotHasEnoughMana = RobotCalculator.hasEnoughMana(resourcesState, action);
     if (!robotHasEnoughMana) {
-      response.noEnoughMana = { cost: action.manaCost ?? 0, available: resourcesState.mana };
+      response.notEnoughMana = { cost: action.manaCost ?? 0, available: resourcesState.mana };
     }
     let robotHasEnoughRange = true;
     let rangeRequired = 0;
@@ -174,7 +174,7 @@ export class RobotCalculator {
       rangeRequired = CellCalculator.requiredRangeForCoordinateTarget(context, sourceRobotId, targetCellCoordinate);
     }
     if (!robotHasEnoughRange) {
-      response.noEnoughRange = { required: rangeRequired, available: action.range };
+      response.notEnoughRange = { required: rangeRequired, available: action.range };
     }
     const robotHasVision =
       !action.needVision || (action.needVision && RobotCalculator.actionHasVision(context, actionData));

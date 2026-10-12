@@ -7,6 +7,13 @@ import { QueueManager } from '@server/queue/queue.manager';
 import { GameManager } from '@server/game/game.manager';
 import { GameSession } from '@server/game/game-session';
 
+/**
+ * TODO
+ * SessionManager is a god class. It handles queue, proposal, game, messaging and state transitions. It also has a circular dependency with ProposalManager, which starts a setInterval in its constructor that is never cleared. That makes this layer almost impossible to test. Consider:
+ * an explicit session state machine with a transition table,
+ * a MessageSender interface instead of raw WebSocket,
+ * an injected scheduler/clock.
+ */
 class SessionManager {
   private readonly proposalManager: ProposalManager;
   private readonly gameManager: GameManager;

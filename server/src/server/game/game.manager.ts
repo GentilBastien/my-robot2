@@ -3,9 +3,9 @@ import { GameProposal } from '@server/proposal/game-proposal';
 import { GameSession } from '@server/game/game-session';
 import { Session } from '@server/session/session';
 import { ActionData, Coordinate, GameState, MovementTypeEnum, PathCostCoordinate, SessionStateTypeEnum } from 'shared';
-import { TurnEndRequestEvent } from '@events/turn-end/turn-end.request-event';
-import { PathRequestEvent } from '@events/path/path.request-event';
-import { ActionRequestEvent } from '@events/action/action.request-event';
+import { TurnEndRequestEvent } from '@events/user/turn-end/turn-end.request-event';
+import { PathRequestEvent } from '@events/user/path/path.request-event';
+import { ActionRequestEvent } from '@events/user/action/action.request-event';
 
 export class GameManager {
   private readonly gameSessions: Record<string, GameSession>;

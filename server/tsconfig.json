@@ -11,16 +11,9 @@
       "@events/*": ["events/*"],
       "@game/*": ["game/*"],
       "@reducers/*": ["reducers/*"],
-      "@managers/*": ["managers/*"],
-      "@proposal/*": ["proposal/*"],
-      "@resolvers-request/*": ["resolvers/request-state-cases/*"],
-      "@resolvers-response/*": ["resolvers/response-state-cases/*"],
-      "@resolvers/*": ["resolvers/*"],
       "@server-api/*": ["server/api/*"],
       "@server-websocket/*": ["server/websocket/*"],
       "@server/*": ["server/*"],
-      "@states/*": ["states/*"],
-      "@handlers/*": ["event-handlers/*"],
       "@structures/*": ["structures/*"],
       "@utils/*": ["utils/*"]
     }

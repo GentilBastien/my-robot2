@@ -3,5 +3,5 @@ import { MaybeArray, Reducer } from 'shared';
 
 export interface ResponseEvent {
   readonly responseValidated: boolean;
-  mapToReducer(context: EventContext): MaybeArray<Reducer>;
+  apply(context: EventContext): MaybeArray<Reducer>;
 }

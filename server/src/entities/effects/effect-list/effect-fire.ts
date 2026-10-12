@@ -3,7 +3,7 @@ import { AbstractEffect } from '@entities/effects/abstract-effect';
 import { EffectStackingConfig, EffectTickingConfig } from '@entities/effects/effect';
 import { EffectContext } from '@entities/effects/effect-context';
 import { RequestEvent } from '@events/request.event';
-import { DamageRequestEvent } from '@events/damage/damage.request-event';
+import { DamageRequestEvent } from '@events/system/damage/damage.request-event';
 
 export class EffectFire extends AbstractEffect {
   public static instance = new EffectFire();
@@ -35,6 +35,6 @@ export class EffectFire extends AbstractEffect {
     );
     pendingRequests.insertEnd(damageRequestEvent);
 
-    return this.generalHandle(effectContext);
+    return [];
   };
 }

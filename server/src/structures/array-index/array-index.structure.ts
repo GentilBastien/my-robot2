@@ -1,6 +1,9 @@
 import { MaybeArray, resolveMaybeArray } from 'shared';
 import { ArrayIndexStructureInterface } from '@structures/array-index/array-index.structure-interface';
 
+/**
+ * TODO rename in "EventQueue"
+ */
 export class ArrayIndexStructure<T> implements ArrayIndexStructureInterface<T> {
   private readonly _elements: T[];
 

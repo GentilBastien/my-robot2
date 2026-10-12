@@ -1,11 +1,11 @@
-import { HpRequestEvent } from '@events/hp/hp.request-event';
+import { HpRequestEvent } from '@events/system/hp/hp.request-event';
 import { RequestEvent } from '@events/request.event';
 import { ActionContext } from '@entities/actions/action.context';
-import { ShieldRequestEvent } from '@events/shield/shield.request-event';
-import { ManaRequestEvent } from '@events/mana/mana.request-event';
-import { MovementCostRequestEvent } from '@events/movement-cost/movement-cost.request-event';
-import { HeatRequestEvent } from '@events/heat/heat.request-event';
-import { ActionCostRequestEvent } from '@events/action-cost/action-cost.request-event';
+import { ShieldRequestEvent } from '@events/system/shield/shield.request-event';
+import { ManaRequestEvent } from '@events/system/mana/mana.request-event';
+import { MovementCostRequestEvent } from '@events/system/movement-cost/movement-cost.request-event';
+import { HeatRequestEvent } from '@events/system/heat/heat.request-event';
+import { ActionCostRequestEvent } from '@events/system/action-cost/action-cost.request-event';
 import { ElementTypeEnum } from 'shared';
 
 export abstract class Action {

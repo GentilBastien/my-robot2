@@ -3,5 +3,5 @@ import { EventContext } from '@events/context.event';
 
 export interface RequestEvent {
   readonly sourceRobotId: string;
-  mapToResponse(context: EventContext): ResponseEvent;
+  resolve(context: EventContext): ResponseEvent;
 }

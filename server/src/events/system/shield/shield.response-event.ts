@@ -1,0 +1,24 @@
+import { EventContext } from '@events/context.event';
+import { ResponseEvent } from '@events/response.event';
+import { MaybeArray, Reducer } from 'shared';
+import { valueInRange } from '@utils/function.utils';
+import { shieldReducer } from '@reducers/resources.reducer';
+import { RobotCalculator } from '@calculators/robot.calculator';
+
+export class ShieldResponseEvent implements ResponseEvent {
+  sourceRobotId: string;
+  responseValidated: boolean;
+  value: number;
+
+  public constructor(parameters: { sourceRobotId: string; responseValidated: boolean; value: number }) {
+    this.sourceRobotId = parameters.sourceRobotId;
+    this.responseValidated = parameters.responseValidated;
+    this.value = parameters.value;
+  }
+
+  public apply(context: EventContext): MaybeArray<Reducer> {
+    const resourcesState = RobotCalculator.getRobotResourcesState(context, this.sourceRobotId);
+    const newHpValue = valueInRange(0, Number.MAX_VALUE, resourcesState.shield + this.value);
+    return shieldReducer(this.sourceRobotId, newHpValue);
+  }
+}

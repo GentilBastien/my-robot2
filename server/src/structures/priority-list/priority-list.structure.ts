@@ -1,6 +1,9 @@
 import { Comparator } from 'shared';
 import { PriorityListStructureInterface } from '@structures/priority-list/priority-list.structure-interface';
 
+/**
+ * TODO: rename to "SortedListStrucure"
+ */
 export class PriorityListStructure<T> implements PriorityListStructureInterface<T> {
   private readonly _comparator: Comparator<T>;
   private readonly _elems: T[];

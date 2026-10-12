@@ -3,6 +3,7 @@ import { effectList } from '@entities/effects/effect-list/effect.list';
 import { Effect } from '@entities/effects/effect';
 import { RobotCalculator } from '@calculators/robot.calculator';
 import { EventContext } from '@events/context.event';
+import { coordinateEquals } from '@utils/equals.utils';
 
 export class EffectCalculator {
   public static getEffect(effectState: EffectState): Effect {
@@ -27,7 +28,9 @@ export class EffectCalculator {
   }
 
   public static getEffectStatesAtCoordinates(context: EventContext, coordinates: Coordinate): EffectState[] {
-    return context.gameState.effects.filter(effectState => effectState.targetCoordinates === coordinates);
+    return context.gameState.effects.filter(effectState =>
+      effectState.targetCoordinates ? coordinateEquals(effectState.targetCoordinates, coordinates) : false
+    );
   }
 
   /**
@@ -45,7 +48,9 @@ export class EffectCalculator {
       effectState =>
         effectState.effectId === newEffectState.effectId &&
         (effectState.targetRobotId === newEffectState.targetRobotId ||
-          effectState.targetCoordinates === newEffectState.targetCoordinates)
+          (effectState.targetCoordinates
+            ? coordinateEquals(effectState.targetCoordinates, newEffectState.targetCoordinates)
+            : false))
     );
   }
 }

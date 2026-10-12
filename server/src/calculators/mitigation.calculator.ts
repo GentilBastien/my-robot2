@@ -50,7 +50,7 @@ export class MitigationCalculator {
     damage: number
   ): { finalDamage: number; defArmor: number } {
     const defArmor = RobotCalculator.getRobotStatisticValue(context, targetRobotId, StatisticsTypeEnum.ARMOR);
-    const afterArmor = damage + (damage * defArmor) / 100;
+    const afterArmor = damage - (damage * defArmor) / 100;
 
     const reductionFromAttributes = RobotCalculator.getRobotAttributeModifier(
       context,

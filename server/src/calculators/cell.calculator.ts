@@ -98,7 +98,7 @@ export class CellCalculator {
     };
   }
 
-  public static checkPathIsValid(
+  public static isPathValid(
     context: EventContext,
     robotId: string,
     path: Coordinate[],
@@ -110,7 +110,7 @@ export class CellCalculator {
     /**
      * Check if coordinates are valid : sum of x, y, z is 0 and are not outside the grid.
      */
-    if (path.some(p => !CellCalculator.checkCoordinateIsValid(context, p))) {
+    if (path.some(p => !CellCalculator.isCoordinatesValid(context, p))) {
       return false;
     }
 
@@ -151,7 +151,7 @@ export class CellCalculator {
     return path.length > 1;
   }
 
-  public static checkCoordinateIsValid(context: EventContext, coordinates: Coordinate): boolean {
+  public static isCoordinatesValid(context: EventContext, coordinates: Coordinate): boolean {
     try {
       CellCalculator.getCellAt(context, coordinates);
       return true;

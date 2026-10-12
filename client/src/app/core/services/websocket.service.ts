@@ -10,7 +10,7 @@ import {
 } from 'shared';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
-export interface A {
+export interface ServerMessageData {
   gameId: string;
   proposalId: string;
   loginDeclined: string;
@@ -46,7 +46,7 @@ export class WebsocketService {
   public readonly possiblePaths$ = this.onPossiblePathsSubject.asObservable();
 
   public createWebsocket(login: string): Observable<boolean> {
-    const ws = new WebSocket(`ws://localhost:8080/api/v1/game?login=${login}`);
+    const ws = new WebSocket(`ws://localhost:8080/api/v1/game?login=${login}`); //TODO This should move to Angular environment configuration.
     ws.onopen = () => this.wsOnOpen(ws);
     ws.onmessage = messageEvent => this.wsOnMessage(messageEvent);
     ws.onclose = () => this.wsOnClose();
@@ -78,7 +78,7 @@ export class WebsocketService {
   }
 
   private wsOnMessage(messageEvent: MessageEvent): void {
-    const message: ServerMessage<A> = JSON.parse(messageEvent.data);
+    const message: ServerMessage<ServerMessageData> = JSON.parse(messageEvent.data);
     console.log('Websocket RECEIVE', message);
     switch (message.type) {
       case ServerMessageType.SEND_SESSION:
